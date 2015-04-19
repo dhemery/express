@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-// TODO: Test diagnosis methods
 public class NamedBooleanSupplierTests {
     private static final String ARBITRARY_NAME = null;
     private static final BooleanSupplier ALWAYS_SATISFIED = () -> true;
