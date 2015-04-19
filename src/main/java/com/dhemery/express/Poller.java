@@ -1,5 +1,7 @@
 package com.dhemery.express;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * Poll a condition until it is satisfied.
  */
@@ -9,7 +11,7 @@ public interface Poller {
      * @return {@code true} if the condition is satisfied before the polling schedule expires,
      * otherwise {@code false}.
      */
-    boolean poll(Condition condition, PollingSchedule schedule);
+    boolean poll(BooleanSupplier condition, PollingSchedule schedule);
 
     /**
      * Return the default polling schedule.

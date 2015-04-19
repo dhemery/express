@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static java.lang.String.format;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class FunctionOfSubjectSatisfiesMatcher<T, R> extends Named implements Condition {
     private final T subject;

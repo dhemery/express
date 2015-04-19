@@ -1,14 +1,12 @@
 package com.dhemery.express.expressions;
 
-import com.dhemery.express.Condition;
-import com.dhemery.express.Diagnosis;
 import com.dhemery.express.Expressions;
-import com.dhemery.express.Named;
 import org.hamcrest.Matcher;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -20,20 +18,25 @@ import static org.hamcrest.Matchers.is;
 
 public class AssertThatTests {
     @Test
-    public void returnsWithoutThrowingIfTheConditionIsSatisfied() {
-        Expressions.assertThat(Named.condition("always satisfied", () -> true));
+    public void returnsWithoutThrowingIfTheSupplierIsSatisfied() {
+        BooleanSupplier supplier = () -> true;
+        Expressions.assertThat(supplier);
     }
 
     @Test
     public void throwsADiagnosticAssertionErrorIfTheConditionIsNotSatisfied() {
-        Condition condition = Named.condition("never satisfied", () -> false);
-        Runnable expression = () -> Expressions.assertThat(condition);
+        BooleanSupplier supplier = () -> false;
+        Runnable expression = () -> Expressions.assertThat(supplier);
 
         Optional<Throwable> thrown = throwableThrownByRunning(expression);
 
         assertThat(thrown, is(present()));
         assertThat(thrown.get(), instanceOf(AssertionError.class));
-        assertThat(thrown.get().getMessage(), is(Diagnosis.of(condition)));
+        String detail = new StringJoiner(System.lineSeparator())
+                .add("")
+                .add("Expected: " + supplier)
+                .toString();
+        assertThat(thrown.get().getMessage(), is(detail));
     }
 
     @Test
@@ -44,14 +47,18 @@ public class AssertThatTests {
     @Test
     public void throwsADiagnosticAssertionErrorIfTheSubjectMismatchesThePredicate() {
         Predicate<String> predicate = String::isEmpty;
-        String subject = "foo";
+        String subject = "subject";
         Runnable expression = () -> Expressions.assertThat(subject, predicate);
 
         Optional<Throwable> thrown = throwableThrownByRunning(expression);
 
         assertThat(thrown, is(present()));
         assertThat(thrown.get(), instanceOf(AssertionError.class));
-        assertThat(thrown.get().getMessage(), is(Diagnosis.of(Named.condition(subject, predicate))));
+        String detail = new StringJoiner(System.lineSeparator())
+                .add("subject")
+                .add("Expected: " + predicate)
+                .toString();
+        assertThat(thrown.get().getMessage(), is(detail));
     }
 
     @Test
@@ -61,11 +68,10 @@ public class AssertThatTests {
         Expressions.assertThat("foo", toUpperCase, isFOO);
     }
 
-    @Ignore("finish diagnosis tests first")
     @Test
     public void throwsADiagnosticAssertionErrorIfTheFunctionOfTheSubjectMismatchesTheMatcher() {
-        String subject = "foo";
-        Function<String, String> function = Function.identity();
+        String subject = "subject";
+        Function<String, String> function = String::toUpperCase;
         Matcher<String> matcher = is("bar");
         Runnable expression = () -> Expressions.assertThat(subject, function, matcher);
 
@@ -73,6 +79,11 @@ public class AssertThatTests {
 
         assertThat(thrown, is(present()));
         assertThat(thrown.get(), instanceOf(AssertionError.class));
-        assertThat(thrown.get().getMessage(), is(Diagnosis.of(Named.condition(subject, function, matcher))));
+        String detail = new StringJoiner(System.lineSeparator())
+                .add("subject")
+                .add("Expected: " + function + " " + matcher)
+                .add("     but: was \"SUBJECT\"")
+                .toString();
+        assertThat(thrown.get().getMessage(), is(detail));
     }
 }

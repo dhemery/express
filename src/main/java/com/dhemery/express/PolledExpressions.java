@@ -28,7 +28,7 @@ public interface PolledExpressions extends Poller {
      * @see Named#condition(String, BooleanSupplier)
      * @see NamedCondition
      */
-    default void assertThat(PollingSchedule schedule, Condition condition) {
+    default void assertThat(PollingSchedule schedule, BooleanSupplier condition) {
         if(!poll(condition, schedule)) throw new AssertionError(Diagnosis.of(condition, schedule));
     }
 
@@ -72,7 +72,7 @@ public interface PolledExpressions extends Poller {
      * @see Named#condition(String, BooleanSupplier)
      * @see NamedCondition
      */
-    default boolean satisfiedThat(PollingSchedule schedule, Condition condition) {
+    default boolean satisfiedThat(PollingSchedule schedule, BooleanSupplier condition) {
         return poll(condition, schedule);
     }
 
@@ -114,7 +114,7 @@ public interface PolledExpressions extends Poller {
      * @see Named#condition(String, BooleanSupplier)
      * @see NamedCondition
      */
-    default void waitUntil(Condition condition) {
+    default void waitUntil(BooleanSupplier condition) {
         PollingSchedule schedule = eventually();
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
@@ -127,7 +127,7 @@ public interface PolledExpressions extends Poller {
      * @see Named#condition(String, BooleanSupplier)
      * @see NamedCondition
      */
-    default void waitUntil(PollingSchedule schedule, Condition condition) {
+    default void waitUntil(PollingSchedule schedule, BooleanSupplier condition) {
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
@@ -257,73 +257,5 @@ public interface PolledExpressions extends Poller {
         Condition condition = condition(subject, function, matcher);
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
-    }
-
-    /**
-     * Perform the action on the subject when the subject satisfies the matcher.
-     * @param <T> the type of the subject
-     * @param subject the subject to evaluate
-     * @param predicate the predicate that defines a satisfactory subject
-     * @param action the action to perform on the subject when the condition is satisfied
-     * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
-     * @see Named#predicate(String, Predicate)
-     * @see NamedPredicate
-     */
-    default <T> void when(T subject, Predicate<? super T> predicate, Consumer<? super T> action) {
-        Condition condition = condition(subject, predicate);
-        PollingSchedule schedule = eventually();
-        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
-        action.accept(subject);
-    }
-
-    /**
-     * Perform the action on the subject when the subject satisfies the matcher.
-     * @param <T> the type of the subject
-     * @param subject the subject to evaluate
-     * @param predicate the predicate that defines a satisfactory subject
-     * @param schedule the schedule that governs the polling
-     * @param action the action to perform on the subject when the condition is satisfied
-     * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
-     */
-    default <T> void when(T subject, PollingSchedule schedule, Predicate<? super T> predicate, Consumer<? super T> action) {
-        Condition condition = condition(subject, predicate);
-        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
-        action.accept(subject);
-    }
-
-    /**
-     * Perform the action on the subject when the characteristic that the function extracts from the subject satisfies the matcher.
-     * @param <T> the type of the subject
-     * @param subject the subject to evaluate
-     * @param function the function that extracts the characteristic to evaluate
-     * @param matcher the matcher that defines satisfactory values for the characteristic
-     * @param action the action to perform on the subject when the condition is satisfied
-     * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
-     * @see Named#function(String, Function)
-     * @see NamedFunction
-     */
-    default <T, R> void when(T subject, Function<? super T, R> function, Matcher<? super R> matcher, Consumer<? super T> action) {
-        Condition condition = condition(subject, function, matcher);
-        PollingSchedule schedule = eventually();
-        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
-        action.accept(subject);
-    }
-
-    /**
-     * Perform the action on the subject when the characteristic that the function extracts from the subject satisfies the matcher.
-     * @param <T> the type of the subject
-     * @param subject the subject to evaluate
-     * @param function the function that extracts the characteristic to evaluate
-     * @param matcher the matcher that defines satisfactory values for the characteristic
-     * @param schedule the schedule that governs the polling
-     * @param action the action to perform on the subject when the condition is satisfied
-     * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
-     * @see Named#function(String, Function)
-     * @see NamedFunction
-     */
-    default <T, R> void when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher, Consumer<? super T> action) {
-        Condition condition = condition(subject, function, matcher);
-        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
-        action.accept(subject);
     }
 }

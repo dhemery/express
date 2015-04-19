@@ -15,7 +15,7 @@ import static com.dhemery.express.Named.condition;
  * @see NamedCondition
  */
 public interface Expressions {
-    static void assertThat(Condition condition) {
+    static void assertThat(BooleanSupplier condition) {
         if(!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
     }
 
@@ -44,7 +44,7 @@ public interface Expressions {
     /**
      * Report whether the condition is satisfied.
      */
-    static boolean satisfiedThat(Condition condition) {
+    static boolean satisfiedThat(BooleanSupplier condition) {
         return condition.getAsBoolean();
     }
 
