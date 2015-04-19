@@ -31,48 +31,43 @@ public class Named {
     }
 
     /**
-     * Create a {@link Condition}
+     * Create a {@link Diagnosable} {@link BooleanSupplier}
      * with the given name
      * and underlying supplier.
      */
-    public static Condition condition(String name, BooleanSupplier condition) {
-        return new NamedCondition(name, condition);
+    public static BooleanSupplier booleanSupplier(String name, BooleanSupplier condition) {
+        return new NamedBooleanSupplier(name, condition);
     }
 
     /**
-     * Create a named {@link Condition} that is satisfied
-     * if its {@code subject} satisfies its {@code predicate}.
-     * This condition's name
-     * describes the subject and predicate.
+     * Create a {@link Diagnosable} {@link BooleanSupplier}
+     * that indicates whether the subject satisfies the predicate.
      * @param subject the subject to evaluate
      * @param predicate defines a satisfactory subject
      * @param <T> the type of the subject
-     * @return a condition that is satisfied
-     * if the subject satisfies the predicate
+     * @return a diagnosable supplier that indicates whether the subject satisfies the predicate
      * @see SubjectSatisfiesPredicate
      */
-    public static <T> Condition condition(T subject, Predicate<? super T> predicate) {
+    public static <T> BooleanSupplier booleanSupplier(T subject, Predicate<? super T> predicate) {
         return new SubjectSatisfiesPredicate<>(subject, predicate);
     }
 
     /**
-     * Create a named {@link Condition} that is satisfied
-     * if the characteristic extracted from its {@code subject} by its {@code function}
-     * satisfies its {@code matcher}.
-     * This condition's name
-     * describes the subject, function, and matcher.
+     * Create a {@link Diagnosable} {@link BooleanSupplier}
+     * that indicates whether
+     * the characteristic extracted from the subject by the function
+     * satisfies the matcher.
      * @param subject the subject to evaluate
      * @param function extracts the pertinent characteristic from the subject
      * @param matcher defines satisfactory values for the characteristic
      * @param <T> the type of the subject
      * @param <R> the type of the function result
-     * @return
-     * a condition that is satisfied
-     * if the result of applying the function to the subject
+     * @return a diagnosable supplier that indicates whether
+     * the characteristic extracted from the subject by the function
      * satisfies the matcher
      * @see FunctionOfSubjectSatisfiesMatcher
      */
-    public static <T, R> Condition condition(T subject, Function<? super T, ? extends R> function, Matcher<? super R> matcher) {
+    public static <T, R> BooleanSupplier booleanSupplier(T subject, Function<? super T, ? extends R> function, Matcher<? super R> matcher) {
         return new FunctionOfSubjectSatisfiesMatcher<>(subject, function, matcher);
     }
 

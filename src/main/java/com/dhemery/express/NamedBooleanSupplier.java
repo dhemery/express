@@ -3,19 +3,19 @@ package com.dhemery.express;
 import java.util.function.BooleanSupplier;
 
 /**
- * A {@link Condition} with a fixed name.
+ * A {@link BooleanSupplier} with a fixed name.
  * The {@code toString()} method
  * returns the fixed name.
  */
-public class NamedCondition extends Named implements Condition {
+public class NamedBooleanSupplier extends Named implements Diagnosable, BooleanSupplier {
     private final BooleanSupplier supplier;
 
     /**
-     * Create a {@link Condition}
+     * Create a {@link BooleanSupplier}
      * with the given name
      * and underlying supplier.
      */
-    public NamedCondition(String description, BooleanSupplier supplier) {
+    public NamedBooleanSupplier(String description, BooleanSupplier supplier) {
         super(description);
         this.supplier = supplier;
     }

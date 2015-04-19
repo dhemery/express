@@ -1,9 +1,9 @@
 package com.dhemery.express.expressions;
 
-import com.dhemery.express.Condition;
 import com.dhemery.express.Expressions;
-import com.dhemery.express.Named;
 import org.junit.Test;
+
+import java.util.function.BooleanSupplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -11,15 +11,13 @@ import static org.hamcrest.Matchers.is;
 public class SatisfiedThatTests {
     @Test
     public void returnsTrueIfTheConditionIsSatisfied() {
-        Condition alwaysSatisfied = Named.condition("always satisfied", () -> true);
-        boolean result = Expressions.satisfiedThat(alwaysSatisfied);
+        boolean result = Expressions.satisfiedThat(() -> true);
         assertThat(result, is(true));
     }
 
     @Test
     public void returnsFalseIfTheConditionIsNotSatisfied() {
-        Condition neverSatisfied = Named.condition("never satisfied", () -> false);
-        boolean result = Expressions.satisfiedThat(neverSatisfied);
+        boolean result = Expressions.satisfiedThat(() -> false);
         assertThat(result, is(false));
     }
 

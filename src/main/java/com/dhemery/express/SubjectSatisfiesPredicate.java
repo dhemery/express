@@ -1,16 +1,16 @@
 package com.dhemery.express;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
 
-public class SubjectSatisfiesPredicate<T> extends Named implements Condition {
+public class SubjectSatisfiesPredicate<T> implements Diagnosable, BooleanSupplier {
     private final T subject;
     private final Predicate<? super T> predicate;
 
     public SubjectSatisfiesPredicate(T subject, Predicate<? super T> predicate) {
-        super(format("%s %s", subject, predicate));
         this.subject = subject;
         this.predicate = predicate;
     }

@@ -1,59 +1,72 @@
 package com.dhemery.express;
 
+import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.function.BooleanSupplier;
 
 import static java.lang.String.format;
 
 /**
- * Produces diagnoses
- * suitable for logging
- * and for use as detail messages in {@link Throwable Throwables}.
+ * Diagnoses operations in a format suitable for use
+ * in detail messages for {@link Throwable Throwables}.
  */
 public class Diagnosis {
-    public static final String EXPECTATION = "Expected: %s";
-    public static final String FAILURE =     "     but: %s";
-    public static final String POLLING =     " polling: %s";
+    private static final String EXPECTATION = "Expected: %s";
+    private static final String FAILURE =     "     but: %s";
+    private static final String POLLING =     " polling: %s";
 
-    public static String of(Condition condition) {
-        return of((Diagnosable) condition);
+    /**
+     * Diagnose the operation.
+     * @param operation the operation to diagnose
+     * @return a formatted diagnosis of the operation
+     */
+    public static String of(Diagnosable operation) {
+        return diagnose(operation.subject(), operation.expectation(), operation.failure(), Optional.empty());
     }
 
-    public static String of(Condition condition, PollingSchedule schedule) {
-        return of((Diagnosable) condition, schedule);
+    /**
+     * Diagnose the polled operation.
+     * and the polling schedule.
+     * @param operation the operation to diagnose
+     * @param schedule the schedule on which the operation was polled
+     * @return a formatted diagnosis of the operation
+     */
+    public static String of(Diagnosable operation, PollingSchedule schedule) {
+        return diagnose(operation.subject(), operation.expectation(), operation.failure(), Optional.of(schedule));
     }
 
-    public static String of(Diagnosable diagnosable) {
+    /**
+     * Diagnose the operation.
+     * The diagnosis includes neither subject nor failure.
+     * The string value of the operation is used as the explanation.
+     * @param operation the operation to diagnose
+     * @return a formatted diagnosis of the operation
+     */
+    public static String of(Object operation) {
+        return of(diagnosable(operation));
+    }
+
+    /**
+     * Diagnose the polled operation.
+     * The diagnosis includes neither subject nor failure.
+     * The string value of the operation is used as the explanation.
+     * @param operation the operation to diagnose
+     * @param schedule the schedule on which the operation was polled
+     * @return a formatted diagnosis of the operation
+     */
+    public static String of(Object operation, PollingSchedule schedule) {
+        return of(diagnosable(operation), schedule);
+    }
+
+    private static String diagnose(Optional<String> subject, String expectation, Optional<String> failure, Optional<PollingSchedule> schedule) {
         StringJoiner diagnosis = new StringJoiner(System.lineSeparator());
-        diagnosis.add(diagnosable.subject().orElse(""));
-        diagnosis.add(format(EXPECTATION, diagnosable.expectation()));
-        diagnosable.failure().ifPresent(d -> diagnosis.add(format(FAILURE, d)));
+        diagnosis.add(subject.orElse(""));
+        diagnosis.add(format(EXPECTATION, expectation));
+        schedule.ifPresent(s -> diagnosis.add(format(POLLING, s)));
+        failure.ifPresent(d -> diagnosis.add(format(FAILURE, d)));
         return diagnosis.toString();
     }
 
-    public static String of(BooleanSupplier supplier, PollingSchedule schedule) {
-        if(supplier instanceof Diagnosable) return of((Diagnosable) supplier, schedule);
-        StringJoiner diagnosis = new StringJoiner(System.lineSeparator())
-                .add("")
-                .add(format(EXPECTATION, supplier))
-                .add(format(POLLING, schedule));
-        return diagnosis.toString();
-    }
-
-    public static String of(Diagnosable diagnosable, PollingSchedule schedule) {
-        StringJoiner diagnosis = new StringJoiner(System.lineSeparator());
-        diagnosis.add(diagnosable.subject().orElse(""));
-        diagnosis.add(format(EXPECTATION, diagnosable.expectation()));
-        diagnosis.add(format(POLLING, schedule));
-        diagnosable.failure().ifPresent(d -> diagnosis.add(format(FAILURE, d)));
-        return diagnosis.toString();
-    }
-
-    public static String of(BooleanSupplier supplier) {
-        if(supplier instanceof Diagnosable) return of((Diagnosable) supplier);
-        StringJoiner diagnosis = new StringJoiner(System.lineSeparator());
-        diagnosis.add("");
-        diagnosis.add(format(EXPECTATION, supplier));
-        return diagnosis.toString();
+    private static Diagnosable diagnosable(Object object) {
+        return object instanceof Diagnosable ? (Diagnosable) object : object::toString;
     }
 }

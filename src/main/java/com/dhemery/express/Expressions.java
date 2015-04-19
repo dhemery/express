@@ -6,13 +6,13 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.dhemery.express.Named.condition;
+import static com.dhemery.express.Named.booleanSupplier;
 
 /**
  * Composable methods to express assertions and evaluations.
  * @see PolledExpressions
- * @see Named#condition(String, BooleanSupplier)
- * @see NamedCondition
+ * @see Named#booleanSupplier(String, BooleanSupplier)
+ * @see NamedBooleanSupplier
  */
 public interface Expressions {
     static void assertThat(BooleanSupplier condition) {
@@ -26,7 +26,7 @@ public interface Expressions {
      * @see NamedPredicate
      */
     static <T> void assertThat(T subject, Predicate<? super T> predicate) {
-        Condition condition = condition(subject, predicate);
+        BooleanSupplier condition = booleanSupplier(subject, predicate);
         if(!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
     }
 
@@ -37,7 +37,7 @@ public interface Expressions {
      * @see NamedFunction
      */
     static <T, R> void assertThat(T subject, Function<? super T, ? extends R> function, Matcher<? super R> matcher) {
-        Condition condition = condition(subject, function, matcher);
+        BooleanSupplier condition = booleanSupplier(subject, function, matcher);
         if(!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
     }
 

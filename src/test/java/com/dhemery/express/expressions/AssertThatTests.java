@@ -19,8 +19,7 @@ import static org.hamcrest.Matchers.is;
 public class AssertThatTests {
     @Test
     public void returnsWithoutThrowingIfTheSupplierIsSatisfied() {
-        BooleanSupplier supplier = () -> true;
-        Expressions.assertThat(supplier);
+        Expressions.assertThat(() -> true);
     }
 
     @Test
