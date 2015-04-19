@@ -1,5 +1,6 @@
-package com.dhemery.express;
+package com.dhemery.express.descriptive;
 
+import com.dhemery.express.DescriptiveFunction;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,7 +9,7 @@ import java.util.function.Function;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ADescriptiveFunction {
+public class DescriptiveFunctionTests {
     private static final String IGNORED_DESCRIPTION = null;
 
     @Test

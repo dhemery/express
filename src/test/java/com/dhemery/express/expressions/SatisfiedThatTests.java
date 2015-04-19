@@ -1,11 +1,12 @@
-package com.dhemery.express;
+package com.dhemery.express.expressions;
 
+import com.dhemery.express.Expressions;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ASatisfiedThatExpression {
+public class SatisfiedThatTests {
     @Test
     public void returnsTrueIfTheConditionIsSatisfied() {
         boolean result = Expressions.satisfiedThat(() -> true);
@@ -50,6 +51,18 @@ public class ASatisfiedThatExpression {
 
     @Test
     public void returnsFalseIfTheFunctionOfTheSubjectMismatchesTheMatcher() {
+        boolean result = Expressions.satisfiedThat("foo", String::toUpperCase, is("foo"));
+        assertThat(result, is(false));
+    }
+
+    @Test
+    public void returnsTrueIfTheFunctionOfTheSubjectMatchesThePredicate() {
+        boolean result = Expressions.satisfiedThat("foo", String::toUpperCase, is("FOO"));
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void returnsFalseIfTheFunctionOfTheSubjectMismatchesThePredicate() {
         boolean result = Expressions.satisfiedThat("foo", String::toUpperCase, is("foo"));
         assertThat(result, is(false));
     }

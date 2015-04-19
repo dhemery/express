@@ -1,5 +1,6 @@
-package com.dhemery.express;
+package com.dhemery.express.descriptive;
 
+import com.dhemery.express.DescriptiveConsumer;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ADescriptiveConsumer {
+public class DescriptiveConsumerTests {
     private static final String IGNORED_DESCRIPTION = null;
 
     @Test

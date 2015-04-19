@@ -1,5 +1,7 @@
-package com.dhemery.express;
+package com.dhemery.express.descriptive;
 
+import com.dhemery.express.Condition;
+import com.dhemery.express.DescriptiveCondition;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -8,7 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class ADescriptiveCondition {
+public class DescriptiveConditionTests {
     private static final String ARBITRARY_NAME = null;
     private static final Condition ALWAYS_SATISFIED = () -> true;
     private  static final Condition NEVER_SATISFIED = () -> false;

@@ -1,5 +1,6 @@
-package com.dhemery.express;
+package com.dhemery.express.descriptive;
 
+import com.dhemery.express.DescriptivePredicate;
 import org.junit.Test;
 
 import java.util.function.Predicate;
@@ -7,7 +8,7 @@ import java.util.function.Predicate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ADescriptivePredicate {
+public class DescriptivePredicateTests {
     private static final String IGNORED_DESCRIPTION = null;
     private static final Predicate<String> IGNORED_PREDICATE = t -> false;
 
