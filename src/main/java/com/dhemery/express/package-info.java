@@ -1,8 +1,5 @@
 /**
- * Composable methods to
- * evaluate boolean expressions,
- * make assertions,
- * wait for conditions,
- * and take action when preconditions are met.
+ * Composable methods to evaluate conditions,
+ * either immediately or by polling.
  */
 package com.dhemery.express;
