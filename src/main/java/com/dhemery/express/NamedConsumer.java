@@ -2,6 +2,8 @@ package com.dhemery.express;
 
 import java.util.function.Consumer;
 
+import static java.lang.String.format;
+
 
 /**
  * A {@link Consumer} with a fixed description.
@@ -12,7 +14,7 @@ import java.util.function.Consumer;
  * receives a description of the composition.
  * @param <T> the type of the input to the consumer
  */
-public class DescriptiveConsumer<T> extends Descriptive implements Consumer<T> {
+public class NamedConsumer<T> extends Named implements Consumer<T> {
     private final Consumer<? super T> consumer;
 
     /**
@@ -20,7 +22,7 @@ public class DescriptiveConsumer<T> extends Descriptive implements Consumer<T> {
      * with the given description
      * and underlying consumer.
      */
-    public DescriptiveConsumer(String description, Consumer<? super T> consumer) {
+    public NamedConsumer(String description, Consumer<? super T> consumer) {
         super(description);
         this.consumer = consumer;
     }
@@ -45,6 +47,6 @@ public class DescriptiveConsumer<T> extends Descriptive implements Consumer<T> {
      */
     @Override
     public Consumer<T> andThen(Consumer<? super T> after) {
-        return new DescriptiveConsumer<>(describedAs(this, "and then", after), Consumer.super.andThen(after));
+        return new NamedConsumer<>(format("%s %s %s", this, "and then", after), Consumer.super.andThen(after));
     }
 }

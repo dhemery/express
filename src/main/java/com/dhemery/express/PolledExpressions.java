@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.dhemery.express.Descriptive.condition;
+import static com.dhemery.express.Named.condition;
 
 /**
  * Polled composable methods to
@@ -24,7 +24,7 @@ public interface PolledExpressions extends Poller {
      * @throws AssertionError if the schedule's duration expires before the condition is satisfied
      */
     default void assertThat(PollingSchedule schedule, Condition condition) {
-        if(!poll(schedule, condition)) throw new PolledAssertionError(schedule, condition);
+        if(!poll(condition, schedule)) throw new AssertionError(Diagnosis.of(condition, schedule));
     }
 
     /**
@@ -37,7 +37,7 @@ public interface PolledExpressions extends Poller {
      */
     default <T> void assertThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
-        if(!poll(schedule, condition)) throw new PolledAssertionError(schedule, condition);
+        if(!poll(condition, schedule)) throw new AssertionError(Diagnosis.of(condition, schedule));
     }
 
     /**
@@ -51,7 +51,7 @@ public interface PolledExpressions extends Poller {
      */
     default <T,V> void assertThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
         Condition condition = condition(subject, function, matcher);
-        if(!poll(schedule, condition)) throw new PolledAssertionError(schedule, condition);
+        if(!poll(condition, schedule)) throw new AssertionError(Diagnosis.of(condition, schedule));
     }
 
     /**
@@ -62,7 +62,7 @@ public interface PolledExpressions extends Poller {
      * and {@code false} otherwise.
      */
     default boolean satisfiedThat(PollingSchedule schedule, Condition condition) {
-        return poll(schedule, condition);
+        return poll(condition, schedule);
     }
 
     /**
@@ -75,7 +75,7 @@ public interface PolledExpressions extends Poller {
      * and {@code false} otherwise.
      */
     default <T> boolean satisfiedThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        return poll(schedule, condition(subject, predicate));
+        return poll(condition(subject, predicate), schedule);
     }
 
     /**
@@ -89,7 +89,7 @@ public interface PolledExpressions extends Poller {
      * and {@code false} otherwise.
      */
     default <T,V> boolean satisfiedThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
-        return poll(schedule, condition(subject, function, matcher));
+        return poll(condition(subject, function, matcher), schedule);
     }
 
     /**
@@ -98,7 +98,8 @@ public interface PolledExpressions extends Poller {
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
      */
     default void waitUntil(Condition condition) {
-        if(!poll(condition)) throw new PollTimeoutException(condition);
+        PollingSchedule schedule = eventually();
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
     /**
@@ -108,7 +109,7 @@ public interface PolledExpressions extends Poller {
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
      */
     default void waitUntil(PollingSchedule schedule, Condition condition) {
-        if(!poll(schedule, condition)) throw new PollTimeoutException(schedule, condition);
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
     /**
@@ -120,7 +121,8 @@ public interface PolledExpressions extends Poller {
      */
     default <T> void waitUntil(T subject, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
-        if(!poll(condition)) throw new PollTimeoutException(condition);
+        PollingSchedule schedule = eventually();
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
     /**
@@ -132,7 +134,8 @@ public interface PolledExpressions extends Poller {
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
      */
     default <T> void waitUntil(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        waitUntil(schedule, condition(subject, predicate));
+        Condition condition = condition(subject, predicate);
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
     /**
@@ -145,7 +148,8 @@ public interface PolledExpressions extends Poller {
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
-        if(!poll(condition)) throw new PollTimeoutException(condition);
+        PollingSchedule schedule = eventually();
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
     /**
@@ -159,7 +163,7 @@ public interface PolledExpressions extends Poller {
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
-        if(!poll(schedule, condition)) throw new PollTimeoutException(schedule, condition);
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
     /**
@@ -171,7 +175,8 @@ public interface PolledExpressions extends Poller {
      */
     default <T> T when(T subject, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
-        if(!poll(condition)) throw new PollTimeoutException(condition);
+        PollingSchedule schedule = eventually();
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
     }
 
@@ -185,7 +190,7 @@ public interface PolledExpressions extends Poller {
      */
     default <T> T when(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
-        if(!poll(schedule, condition)) throw new PollTimeoutException(schedule, condition);
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
     }
 
@@ -199,7 +204,8 @@ public interface PolledExpressions extends Poller {
      */
     default <T, R> T when(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
-        if(!poll(condition)) throw new PollTimeoutException(condition);
+        PollingSchedule schedule = eventually();
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
     }
 
@@ -214,7 +220,7 @@ public interface PolledExpressions extends Poller {
      */
     default <T, R> T when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
-        if(!poll(schedule, condition)) throw new PollTimeoutException(schedule, condition);
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
     }
 
@@ -227,9 +233,9 @@ public interface PolledExpressions extends Poller {
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
      */
     default <T> void when(T subject, Predicate<? super T> predicate, Consumer<? super T> action) {
-        PollingSchedule schedule = eventually();
         Condition condition = condition(subject, predicate);
-        if(!poll(schedule, condition)) throw new PollTimeoutException(schedule, condition);
+        PollingSchedule schedule = eventually();
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         action.accept(subject);
     }
 
@@ -244,7 +250,7 @@ public interface PolledExpressions extends Poller {
      */
     default <T> void when(T subject, PollingSchedule schedule, Predicate<? super T> predicate, Consumer<? super T> action) {
         Condition condition = condition(subject, predicate);
-        if(!poll(schedule, condition)) throw new PollTimeoutException(schedule, condition);
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         action.accept(subject);
     }
 
@@ -259,7 +265,8 @@ public interface PolledExpressions extends Poller {
      */
     default <T, R> void when(T subject, Function<? super T, R> function, Matcher<? super R> matcher, Consumer<? super T> action) {
         Condition condition = condition(subject, function, matcher);
-        if(!poll(condition)) throw new PollTimeoutException(condition);
+        PollingSchedule schedule = eventually();
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         action.accept(subject);
     }
 
@@ -275,7 +282,7 @@ public interface PolledExpressions extends Poller {
      */
     default <T, R> void when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher, Consumer<? super T> action) {
         Condition condition = condition(subject, function, matcher);
-        if(!poll(schedule, condition)) throw new PollTimeoutException(schedule, condition);
+        if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         action.accept(subject);
     }
 }

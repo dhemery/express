@@ -15,8 +15,7 @@ import static java.lang.String.format;
  * @param <T> the type of the input to the function
  * @param <R> the type of the function result
  */
-public class DescriptiveFunction<T, R> extends Descriptive implements Function<T, R> {
-    private static final String OF = "(%s of %s)";
+public class NamedFunction<T, R> extends Named implements Function<T, R> {
     private final Function<? super T, ? extends R> function;
 
     /**
@@ -24,7 +23,7 @@ public class DescriptiveFunction<T, R> extends Descriptive implements Function<T
      * with the given description
      * and underlying function.
      */
-    public DescriptiveFunction(String description, Function<? super T, ? extends R> function) {
+    public NamedFunction(String description, Function<? super T, ? extends R> function) {
         super(description);
         this.function = function;
     }
@@ -49,7 +48,7 @@ public class DescriptiveFunction<T, R> extends Descriptive implements Function<T
      */
     @Override
     public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
-        return new DescriptiveFunction<>(format(OF, after, this), function.andThen(after));
+        return new NamedFunction<>(format("(%s of %s)", after, this), function.andThen(after));
     }
 
     /**
@@ -63,6 +62,6 @@ public class DescriptiveFunction<T, R> extends Descriptive implements Function<T
      */
     @Override
     public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
-        return new DescriptiveFunction<>(format(OF, this, before), function.compose(before));
+        return new NamedFunction<>(format("(%s of %s)", this, before), function.compose(before));
     }
 }

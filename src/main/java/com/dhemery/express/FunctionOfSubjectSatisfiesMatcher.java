@@ -7,27 +7,39 @@ import org.hamcrest.StringDescription;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class FunctionOfSubjectSatisfiesMatcher<T, R> extends Descriptive implements Condition {
+import static java.lang.String.format;
+
+public class FunctionOfSubjectSatisfiesMatcher<T, R> extends Named implements Condition {
     private final T subject;
     private final Function<? super T, R> function;
     private final Matcher<? super R> matcher;
     private R mostRecentResult;
 
     public FunctionOfSubjectSatisfiesMatcher(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        super(describedAs(subject, function, matcher));
+        super(format("%s %s %s", subject, function, matcher));
         this.subject = subject;
         this.function = function;
         this.matcher = matcher;
     }
 
     @Override
-    public boolean isSatisfied() {
+    public boolean getAsBoolean() {
         mostRecentResult = function.apply(subject);
         return matcher.matches(mostRecentResult);
     }
 
     @Override
-    public Optional<String> diagnosis() {
+    public Optional<String> subject() {
+        return Optional.of(String.valueOf(subject));
+    }
+
+    @Override
+    public String expectation() {
+        return format("%s %s", function, matcher);
+    }
+
+    @Override
+    public Optional<String> failure() {
         Description mismatchDescription = new StringDescription();
         matcher.describeMismatch(mostRecentResult, mismatchDescription);
         return Optional.of(mismatchDescription.toString());

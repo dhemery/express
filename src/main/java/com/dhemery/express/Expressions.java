@@ -1,17 +1,11 @@
 package com.dhemery.express;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.StringDescription;
 
-import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-import static com.dhemery.express.Descriptive.describedAs;
-import static java.util.stream.Collectors.joining;
+import static com.dhemery.express.Named.condition;
 
 /**
  * Composable methods to express assertions and evaluations.
@@ -19,12 +13,7 @@ import static java.util.stream.Collectors.joining;
  */
 public interface Expressions {
     static void assertThat(Condition condition) {
-        if(condition.isSatisfied()) return;
-        StringJoiner message = new StringJoiner(" ")
-                .add("Expected:")
-                .add(String.valueOf(condition));
-        condition.diagnosis().ifPresent(d -> message.add("\n     but:").add(d));
-        throw new AssertionError(message);
+        if(!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
     }
 
     /**
@@ -32,9 +21,8 @@ public interface Expressions {
      * @throws AssertionError with a diagnostic description if the assertion fails
      */
     static <T> void assertThat(T subject, Predicate<? super T> predicate) {
-        if(predicate.test(subject)) return;
-        String message = describedAs("Expected:", subject, predicate);
-        throw new AssertionError(message);
+        Condition condition = condition(subject, predicate);
+        if(!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
     }
 
     /**
@@ -42,22 +30,15 @@ public interface Expressions {
      * @throws AssertionError with a diagnostic description if the assertion fails
      */
     static <T, R> void assertThat(T subject, Function<? super T, ? extends R> function, Matcher<? super R> matcher) {
-        R characteristic = function.apply(subject);
-        if(matcher.matches(characteristic)) return;
-        String failedExpectation = describedAs("Expected:", subject, function, matcher);
-        Description diagnosis = new StringDescription();
-        diagnosis.appendText("     but: ");
-        matcher.describeMismatch(characteristic, diagnosis);
-        StringJoiner message = new StringJoiner("\n");
-        message.add(failedExpectation).add(diagnosis.toString());
-        throw new AssertionError(message);
+        Condition condition = condition(subject, function, matcher);
+        if(!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
     }
 
     /**
      * Report whether the condition is satisfied.
      */
     static boolean satisfiedThat(Condition condition) {
-        return condition.isSatisfied();
+        return condition.getAsBoolean();
     }
 
     /**

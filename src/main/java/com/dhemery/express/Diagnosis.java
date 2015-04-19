@@ -7,6 +7,10 @@ import org.hamcrest.StringDescription;
 import java.util.Arrays;
 import java.util.StringJoiner;
 
+/**
+ * Produces diagnoses suitable for use
+ * as detail messages for {@link Throwable Throwables}.
+ */
 public class Diagnosis {
     public static final String EXPECTATION_PREFIX = "Expected";
     public static final String RESULT_PREFIX = "but";
@@ -14,6 +18,14 @@ public class Diagnosis {
 
     public static Expected expected(Object... expectations) {
         return new Expected(expectations);
+    }
+
+    public static String of(Diagnosable diagnosable) {
+        return "";
+    }
+
+    public static String of(Diagnosable diagnosable, PollingSchedule schedule) {
+        return "";
     }
 
     private static class Entry {

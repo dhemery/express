@@ -3,6 +3,7 @@ package com.dhemery.express;
 import org.hamcrest.Matcher;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -10,41 +11,41 @@ import java.util.function.Predicate;
 import static java.util.stream.Collectors.joining;
 
 /**
- * An object with a fixed description.
+ * An object with a fixed name.
  * The {@code toString()} method
- * returns the fixed description.
+ * returns the fixed name.
  */
-public class Descriptive {
-    private final String description;
+public class Named {
+    private final String name;
 
     /**
-     * Create an object with the given description.
+     * Create an object with the given name.
      */
-    public Descriptive(String description) {
-        this.description = description;
+    public Named(String name) {
+        this.name = name;
     }
 
     /**
-     * Return this object's fixed description
+     * Return this object's name
      */
     @Override
     public String toString() {
-        return description;
+        return name;
     }
 
     /**
      * Create a {@link Condition}
-     * with the given description
-     * and underlying condition.
+     * with the given name
+     * and underlying supplier.
      */
-    public static Condition condition(String name, Condition condition) {
-        return new DescriptiveCondition(name, condition);
+    public static Condition condition(String name, BooleanSupplier condition) {
+        return new NamedCondition(name, condition);
     }
 
     /**
-     * Create a descriptive {@link Condition} that is satisfied
+     * Create a named {@link Condition} that is satisfied
      * if its {@code subject} satisfies its {@code predicate}.
-     * This condition's description
+     * This condition's name
      * describes the subject and predicate.
      * @param subject the subject to evaluate
      * @param predicate defines a satisfactory subject
@@ -58,10 +59,10 @@ public class Descriptive {
     }
 
     /**
-     * Create a descriptive {@link Condition} that is satisfied
+     * Create a named {@link Condition} that is satisfied
      * if the characteristic extracted from its {@code subject} by its {@code function}
      * satisfies its {@code matcher}.
-     * This condition's description
+     * This condition's name
      * describes the subject, function, and matcher.
      * @param subject the subject to evaluate
      * @param function extracts the pertinent characteristic from the subject
@@ -79,38 +80,31 @@ public class Descriptive {
 
     /**
      * Create a {@link Consumer}
-     * with the given description
+     * with the given name
      * and underlying consumer.
-     * @see DescriptiveConsumer
+     * @see NamedConsumer
      */
     public static <T> Consumer<T> consumer(String description, Consumer<? super T> consumer) {
-        return new DescriptiveConsumer<>(description, consumer);
+        return new NamedConsumer<>(description, consumer);
     }
 
     /**
      * Create a {@link Function}
-     * with the given description
+     * with the given name
      * and underlying function.
-     * @see DescriptiveFunction
+     * @see NamedFunction
      */
     public <T,R> Function<T,R> function(String description, Function<? super T, ? extends R> function) {
-        return new DescriptiveFunction<>(description, function);
+        return new NamedFunction<>(description, function);
     }
 
     /**
      * Create a {@link Predicate}
-     * with the given description
+     * with the given name
      * and underlying predicate.
-     * @see DescriptivePredicate
+     * @see NamedPredicate
      */
     public <T> Predicate<T> predicate(String description, Predicate<? super T> predicate) {
-        return new DescriptivePredicate<>(description, predicate);
-    }
-
-    /**
-     * Join the string values of the description parts, separated by spaces.
-     */
-    public static String describedAs(Object... descriptionParts) {
-        return Arrays.stream(descriptionParts).map(Object::toString).collect(joining(" "));
+        return new NamedPredicate<>(description, predicate);
     }
 }

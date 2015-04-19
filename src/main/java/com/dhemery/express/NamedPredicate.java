@@ -13,10 +13,7 @@ import static java.lang.String.format;
  * receives a description of the composition.
  * @param <T> the type of the input to the predicate
  */
-public class DescriptivePredicate<T> extends Descriptive implements Predicate<T> {
-    public static final String NEGATE = "(not %s)";
-    public static final String AND = "(%s and %s)";
-    public static final String OR = "(%s or %s)";
+public class NamedPredicate<T> extends Named implements Predicate<T> {
     private final Predicate<? super T> predicate;
 
     /**
@@ -24,7 +21,7 @@ public class DescriptivePredicate<T> extends Descriptive implements Predicate<T>
      * with the given description
      * and underlying predicate.
      */
-    public DescriptivePredicate(String description, Predicate<? super T> predicate) {
+    public NamedPredicate(String description, Predicate<? super T> predicate) {
         super(description);
         this.predicate = predicate;
     }
@@ -49,7 +46,7 @@ public class DescriptivePredicate<T> extends Descriptive implements Predicate<T>
      */
     @Override
     public Predicate<T> and(Predicate<? super T> other) {
-        return new DescriptivePredicate<>(format(AND, this, other), Predicate.super.and(other));
+        return new NamedPredicate<>(format("(%s and %s)", this, other), Predicate.super.and(other));
     }
 
     /**
@@ -63,7 +60,7 @@ public class DescriptivePredicate<T> extends Descriptive implements Predicate<T>
      */
     @Override
     public Predicate<T> or(Predicate<? super T> other) {
-        return new DescriptivePredicate<>(format(OR, this, other), Predicate.super.or(other));
+        return new NamedPredicate<>(format("(%s or %s)", this, other), Predicate.super.or(other));
     }
 
     /**
@@ -76,6 +73,6 @@ public class DescriptivePredicate<T> extends Descriptive implements Predicate<T>
      */
     @Override
     public Predicate<T> negate() {
-        return new DescriptivePredicate<>(format(NEGATE, this), predicate.negate());
+        return new NamedPredicate<>(format("(not %s)", this), predicate.negate());
     }
 }

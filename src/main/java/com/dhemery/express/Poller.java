@@ -9,17 +9,7 @@ public interface Poller {
      * @return {@code true} if the condition is satisfied before the polling schedule expires,
      * otherwise {@code false}.
      */
-    boolean poll(PollingSchedule schedule, Condition condition);
-
-    /**
-     * Poll the condition on the default polling schedule.
-     * @return {@code true} if the condition is satisfied before the default polling schedule expires,
-     * otherwise {@code false}.
-     * @see #eventually()
-     */
-    default boolean poll(Condition condition) {
-        return poll(eventually(), condition);
-    }
+    boolean poll(Condition condition, PollingSchedule schedule);
 
     /**
      * Return the default polling schedule.
