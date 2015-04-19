@@ -6,12 +6,12 @@ import static java.lang.String.format;
 
 
 /**
- * A {@link Function} with a fixed description.
+ * A {@link Function} with a fixed name.
  * The {@code toString()} method
- * returns the fixed description.
+ * returns the fixed name.
  * Each composed function
  * created by this function
- * receives a description of the composition.
+ * is named to describe the composition.
  * @param <T> the type of the input to the function
  * @param <R> the type of the function result
  */
@@ -20,17 +20,16 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
 
     /**
      * Create a {@link Function}
-     * with the given description
+     * with the given name
      * and underlying function.
      */
-    public NamedFunction(String description, Function<? super T, ? extends R> function) {
-        super(description);
+    public NamedFunction(String name, Function<? super T, ? extends R> function) {
+        super(name);
         this.function = function;
     }
 
     /**
-     * {@inheritDoc}
-     * This implementation delegates to the underlying condition.
+     * @return the value returned by the underlying function
      */
     @Override
     public R apply(T t) {
@@ -40,8 +39,8 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
     /**
      * {@inheritDoc}
      * <p>
-     * The composed function's description
-     * describes this function,
+     * The composed function is named
+     * to describe this function,
      * the {@code after} function,
      * and their composition.
      * </p>
@@ -54,8 +53,8 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
     /**
      * {@inheritDoc}
      * <p>
-     * The composed function's description
-     * describes this function,
+     * The composed function is named
+     * to describe this function,
      * the {@code before} function,
      * and their composition.
      * </p>

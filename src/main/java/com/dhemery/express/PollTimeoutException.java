@@ -1,8 +1,5 @@
 package com.dhemery.express;
 
-import java.util.Optional;
-import java.util.StringJoiner;
-
 /**
  * Indicates that a poll timed out before the polled condition was satisfied.
  */

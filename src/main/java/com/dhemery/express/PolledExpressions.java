@@ -2,6 +2,7 @@ package com.dhemery.express;
 
 import org.hamcrest.Matcher;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -14,6 +15,8 @@ import static com.dhemery.express.Named.condition;
  * make assertions,
  * wait for conditions,
  * and take action when preconditions are met.
+ * @see Expressions
+ * @see Poller
  */
 public interface PolledExpressions extends Poller {
 
@@ -22,6 +25,8 @@ public interface PolledExpressions extends Poller {
      * @param schedule the schedule that governs the polling
      * @param condition the condition to satisfy
      * @throws AssertionError if the schedule's duration expires before the condition is satisfied
+     * @see Named#condition(String, BooleanSupplier)
+     * @see NamedCondition
      */
     default void assertThat(PollingSchedule schedule, Condition condition) {
         if(!poll(condition, schedule)) throw new AssertionError(Diagnosis.of(condition, schedule));
@@ -34,6 +39,8 @@ public interface PolledExpressions extends Poller {
      * @param predicate the predicate that defines a satisfactory subject
      * @param schedule the schedule that governs the polling
      * @throws AssertionError if the schedule's duration expires before the condition is satisfied
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     default <T> void assertThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
@@ -48,6 +55,8 @@ public interface PolledExpressions extends Poller {
      * @param matcher the matcher that defines satisfactory values for the characteristic
      * @param schedule the schedule that governs the polling
      * @throws AssertionError if the schedule's duration expires before the condition is satisfied
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T,V> void assertThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
         Condition condition = condition(subject, function, matcher);
@@ -60,6 +69,8 @@ public interface PolledExpressions extends Poller {
      * @param condition the condition to satisfy
      * @return {@code true} if the condition is satisfied with the schedule's duration,
      * and {@code false} otherwise.
+     * @see Named#condition(String, BooleanSupplier)
+     * @see NamedCondition
      */
     default boolean satisfiedThat(PollingSchedule schedule, Condition condition) {
         return poll(condition, schedule);
@@ -73,6 +84,8 @@ public interface PolledExpressions extends Poller {
      * @param schedule the schedule that governs the polling
      * @return {@code true} if the condition is satisfied within the schedule's duration,
      * and {@code false} otherwise.
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     default <T> boolean satisfiedThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
         return poll(condition(subject, predicate), schedule);
@@ -87,6 +100,8 @@ public interface PolledExpressions extends Poller {
      * @param schedule the schedule that governs the polling
      * @return {@code true} if the condition is satisfied within the schedule's duration,
      * and {@code false} otherwise.
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T,V> boolean satisfiedThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
         return poll(condition(subject, function, matcher), schedule);
@@ -96,6 +111,8 @@ public interface PolledExpressions extends Poller {
      * Wait until the condition is satisfied.
      * @param condition the condition to satisfy
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
+     * @see Named#condition(String, BooleanSupplier)
+     * @see NamedCondition
      */
     default void waitUntil(Condition condition) {
         PollingSchedule schedule = eventually();
@@ -107,6 +124,8 @@ public interface PolledExpressions extends Poller {
      * @param schedule the schedule that governs the polling
      * @param condition the condition to satisfy
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
+     * @see Named#condition(String, BooleanSupplier)
+     * @see NamedCondition
      */
     default void waitUntil(PollingSchedule schedule, Condition condition) {
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
@@ -118,6 +137,8 @@ public interface PolledExpressions extends Poller {
      * @param subject the subject to evaluate
      * @param predicate the predicate that defines a satisfactory subject
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     default <T> void waitUntil(T subject, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
@@ -132,6 +153,8 @@ public interface PolledExpressions extends Poller {
      * @param predicate the predicate that defines a satisfactory subject
      * @param schedule the schedule that governs the polling
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     default <T> void waitUntil(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
@@ -145,6 +168,8 @@ public interface PolledExpressions extends Poller {
      * @param function the function that extracts the characteristic to evaluate
      * @param matcher the matcher that defines satisfactory values for the characteristic
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
@@ -160,6 +185,8 @@ public interface PolledExpressions extends Poller {
      * @param matcher the matcher that defines satisfactory values for the characteristic
      * @param schedule the schedule that governs the polling
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
@@ -172,6 +199,8 @@ public interface PolledExpressions extends Poller {
      * @param subject the subject to evaluate
      * @param predicate the predicate that defines a satisfactory subject
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     default <T> T when(T subject, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
@@ -187,6 +216,8 @@ public interface PolledExpressions extends Poller {
      * @param predicate the predicate that defines a satisfactory subject
      * @param schedule the schedule that governs the polling
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     default <T> T when(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
@@ -201,6 +232,8 @@ public interface PolledExpressions extends Poller {
      * @param function the function that extracts the characteristic to evaluate
      * @param matcher the matcher that defines satisfactory values for the characteristic
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T, R> T when(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
@@ -217,6 +250,8 @@ public interface PolledExpressions extends Poller {
      * @param matcher the matcher that defines a satisfactory value for the characteristic
      * @param schedule the schedule that governs the polling
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T, R> T when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);
@@ -231,6 +266,8 @@ public interface PolledExpressions extends Poller {
      * @param predicate the predicate that defines a satisfactory subject
      * @param action the action to perform on the subject when the condition is satisfied
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     default <T> void when(T subject, Predicate<? super T> predicate, Consumer<? super T> action) {
         Condition condition = condition(subject, predicate);
@@ -262,6 +299,8 @@ public interface PolledExpressions extends Poller {
      * @param matcher the matcher that defines satisfactory values for the characteristic
      * @param action the action to perform on the subject when the condition is satisfied
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T, R> void when(T subject, Function<? super T, R> function, Matcher<? super R> matcher, Consumer<? super T> action) {
         Condition condition = condition(subject, function, matcher);
@@ -279,6 +318,8 @@ public interface PolledExpressions extends Poller {
      * @param schedule the schedule that governs the polling
      * @param action the action to perform on the subject when the condition is satisfied
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     default <T, R> void when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher, Consumer<? super T> action) {
         Condition condition = condition(subject, function, matcher);

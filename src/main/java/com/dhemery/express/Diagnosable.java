@@ -15,7 +15,7 @@ public interface Diagnosable {
     default Optional<String> subject() { return Optional.empty(); }
 
     /**
-     * Describe of the expected result of the operation.
+     * Describe the expected result of the operation.
      * @return a description of the expected result of the operation
      */
     String expectation();

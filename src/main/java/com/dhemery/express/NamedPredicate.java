@@ -5,12 +5,12 @@ import java.util.function.Predicate;
 import static java.lang.String.format;
 
 /**
- * A {@link Predicate} with a fixed description.
+ * A {@link Predicate} with a fixed name.
  * The {@code toString()} method
- * returns the fixed description.
+ * returns the fixed name.
  * Each composed predicate
  * created by this predicate
- * receives a description of the composition.
+ * is named to describe the composition.
  * @param <T> the type of the input to the predicate
  */
 public class NamedPredicate<T> extends Named implements Predicate<T> {
@@ -18,17 +18,16 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
 
     /**
      * Create a {@link Predicate}
-     * with the given description
+     * with the given name`
      * and underlying predicate.
      */
-    public NamedPredicate(String description, Predicate<? super T> predicate) {
-        super(description);
+    public NamedPredicate(String name, Predicate<? super T> predicate) {
+        super(name);
         this.predicate = predicate;
     }
 
     /**
-     * {@inheritDoc}
-     * This implementation delegates to the underlying predicate.
+     * @return the value returned by the underlying predicate
      */
     @Override
     public boolean test(T t) {
@@ -38,8 +37,8 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
     /**
      * {@inheritDoc}
      * <p>
-     * The composed predicate's description
-     * describes this predicate,
+     * The composed predicate is named to describe
+     * this predicate,
      * the {@code other} predicate,
      * and their composition.
      * </p>
@@ -52,8 +51,8 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
     /**
      * {@inheritDoc}
      * <p>
-     * The composed predicate's description
-     * describes this predicate,
+     * The composed predicate is named to describe
+     * this predicate,
      * the {@code other} predicate,
      * and their composition.
      * </p>
@@ -66,8 +65,8 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
     /**
      * {@inheritDoc}
      * <p>
-     * The composed predicate's description
-     * is this predicate's description
+     * The composed predicate is named to describe
+     * this predicate,
      * with the word "not" prepended.
      * </p>
      */

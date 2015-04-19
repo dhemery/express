@@ -2,13 +2,10 @@ package com.dhemery.express;
 
 import org.hamcrest.Matcher;
 
-import java.util.Arrays;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import static java.util.stream.Collectors.joining;
 
 /**
  * An object with a fixed name.
@@ -69,7 +66,8 @@ public class Named {
      * @param matcher defines satisfactory values for the characteristic
      * @param <T> the type of the subject
      * @param <R> the type of the function result
-     * @return a condition that is satisfied
+     * @return
+     * a condition that is satisfied
      * if the result of applying the function to the subject
      * satisfies the matcher
      * @see FunctionOfSubjectSatisfiesMatcher

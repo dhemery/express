@@ -6,12 +6,12 @@ import static java.lang.String.format;
 
 
 /**
- * A {@link Consumer} with a fixed description.
+ * A {@link Consumer} with a fixed name.
  * The {@code toString()} method
- * returns the fixed description.
+ * returns the fixed name.
  * Each composed consumer
  * created by this consumer
- * receives a description of the composition.
+ * is named to describe the composition.
  * @param <T> the type of the input to the consumer
  */
 public class NamedConsumer<T> extends Named implements Consumer<T> {
@@ -19,17 +19,17 @@ public class NamedConsumer<T> extends Named implements Consumer<T> {
 
     /**
      * Create a {@link Consumer}
-     * with the given description
+     * with the given name
      * and underlying consumer.
      */
-    public NamedConsumer(String description, Consumer<? super T> consumer) {
-        super(description);
+    public NamedConsumer(String name, Consumer<? super T> consumer) {
+        super(name);
         this.consumer = consumer;
     }
 
     /**
      * {@inheritDoc}
-     * This implementation delegates to the underlying consumer.
+     * This implementation simply calls the underlying consumer.
      */
     @Override
     public void accept(T t) {
@@ -39,8 +39,8 @@ public class NamedConsumer<T> extends Named implements Consumer<T> {
     /**
      * {@inheritDoc}
      * <p>
-     * The composed consumer's description
-     * describes this consumer,
+     * The composed consumer is named to describe
+     * this consumer,
      * the {@code after} consumer,
      * and their composition.
      * </p>

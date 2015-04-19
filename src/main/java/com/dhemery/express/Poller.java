@@ -13,6 +13,7 @@ public interface Poller {
 
     /**
      * Return the default polling schedule.
+     * This is a factory method, named to read nicely in {@link PolledExpressions polled expressions}.
      * @return the default polling schedule
      */
     PollingSchedule eventually();

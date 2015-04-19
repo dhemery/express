@@ -2,6 +2,7 @@ package com.dhemery.express;
 
 import org.hamcrest.Matcher;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -9,7 +10,9 @@ import static com.dhemery.express.Named.condition;
 
 /**
  * Composable methods to express assertions and evaluations.
- * These methods evaluate their expressions immediately, without polling.
+ * @see PolledExpressions
+ * @see Named#condition(String, BooleanSupplier)
+ * @see NamedCondition
  */
 public interface Expressions {
     static void assertThat(Condition condition) {
@@ -19,6 +22,8 @@ public interface Expressions {
     /**
      * Assert that subject satisfies the predicate.
      * @throws AssertionError with a diagnostic description if the assertion fails
+     * @see Named#predicate(String, Predicate)
+     * @see NamedPredicate
      */
     static <T> void assertThat(T subject, Predicate<? super T> predicate) {
         Condition condition = condition(subject, predicate);
@@ -28,6 +33,8 @@ public interface Expressions {
     /**
      * Assert that the characteristic that the function extracts from the subject satisfies the matcher.
      * @throws AssertionError with a diagnostic description if the assertion fails
+     * @see Named#function(String, Function)
+     * @see NamedFunction
      */
     static <T, R> void assertThat(T subject, Function<? super T, ? extends R> function, Matcher<? super R> matcher) {
         Condition condition = condition(subject, function, matcher);

@@ -4,7 +4,6 @@ import com.dhemery.express.Condition;
 import com.dhemery.express.NamedCondition;
 import org.junit.Test;
 
-import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;

@@ -21,8 +21,7 @@ public class NamedCondition extends Named implements Condition {
     }
 
     /**
-     * {@inheritDoc}
-     * This implementation delegates to the underlying supplier.
+     * @return the value returned by the underlying supplier
      */
     @Override
     public boolean getAsBoolean() {
@@ -30,8 +29,7 @@ public class NamedCondition extends Named implements Condition {
     }
 
     /**
-     * {@inheritDoc}
-     * This implementation yields its name as its expectation.
+     * @return the condition's name
      */
     @Override
     public String expectation() { return toString(); }

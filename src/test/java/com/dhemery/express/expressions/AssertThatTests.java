@@ -1,11 +1,10 @@
 package com.dhemery.express.expressions;
 
 import com.dhemery.express.Condition;
+import com.dhemery.express.Diagnosis;
 import com.dhemery.express.Expressions;
 import com.dhemery.express.Named;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -25,9 +24,8 @@ public class AssertThatTests {
         Expressions.assertThat(Named.condition("always satisfied", () -> true));
     }
 
-    @Ignore("Rewriting diagnosis provider")
     @Test
-    public void throwsADescriptiveAssertionErrorIfTheConditionIsNotSatisfied() {
+    public void throwsADiagnosticAssertionErrorIfTheConditionIsNotSatisfied() {
         Condition condition = Named.condition("never satisfied", () -> false);
         Runnable expression = () -> Expressions.assertThat(condition);
 
@@ -35,7 +33,7 @@ public class AssertThatTests {
 
         assertThat(thrown, is(present()));
         assertThat(thrown.get(), instanceOf(AssertionError.class));
-        assertThat(thrown.get().getMessage(), is("Expected: " + condition));
+        assertThat(thrown.get().getMessage(), is(Diagnosis.of(condition)));
     }
 
     @Test
@@ -43,9 +41,8 @@ public class AssertThatTests {
         Expressions.assertThat("", String::isEmpty);
     }
 
-    @Ignore("Rewriting diagnosis provider")
     @Test
-    public void throwsADescriptiveAssertionErrorIfTheSubjectMismatchesThePredicate() {
+    public void throwsADiagnosticAssertionErrorIfTheSubjectMismatchesThePredicate() {
         Predicate<String> predicate = String::isEmpty;
         String subject = "foo";
         Runnable expression = () -> Expressions.assertThat(subject, predicate);
@@ -54,7 +51,7 @@ public class AssertThatTests {
 
         assertThat(thrown, is(present()));
         assertThat(thrown.get(), instanceOf(AssertionError.class));
-        assertThat(thrown.get().getMessage(), is("Expected: " + subject + " " + predicate));
+        assertThat(thrown.get().getMessage(), is(Diagnosis.of(Named.condition(subject, predicate))));
     }
 
     @Test
@@ -64,23 +61,18 @@ public class AssertThatTests {
         Expressions.assertThat("foo", toUpperCase, isFOO);
     }
 
-    @Ignore("Rewriting diagnosis provider")
+    @Ignore("finish diagnosis tests first")
     @Test
-    public void throwsADescriptiveAssertionErrorIfTheFunctionOfTheSubjectMismatchesTheMatcher() {
+    public void throwsADiagnosticAssertionErrorIfTheFunctionOfTheSubjectMismatchesTheMatcher() {
         String subject = "foo";
         Function<String, String> function = Function.identity();
         Matcher<String> matcher = is("bar");
         Runnable expression = () -> Expressions.assertThat(subject, function, matcher);
 
-        Description expectedDiagnosis = new StringDescription();
-        matcher.describeMismatch(function.apply(subject), expectedDiagnosis);
-        String expectedMessage = "Expected: " + subject + " " + function + " " + matcher + "\n     but: " + expectedDiagnosis;
-
         Optional<Throwable> thrown = throwableThrownByRunning(expression);
 
         assertThat(thrown, is(present()));
         assertThat(thrown.get(), instanceOf(AssertionError.class));
-        assertThat(thrown.get().getMessage(), is(expectedMessage));
+        assertThat(thrown.get().getMessage(), is(Diagnosis.of(Named.condition(subject, function, matcher))));
     }
-
 }
