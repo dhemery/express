@@ -3,8 +3,6 @@ package com.dhemery.express.expressions;
 import com.dhemery.express.Expressions;
 import org.junit.Test;
 
-import java.util.function.BooleanSupplier;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

@@ -4,8 +4,6 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-import static java.lang.String.format;
-
 public class SubjectSatisfiesPredicate<T> implements Diagnosable, BooleanSupplier {
     private final T subject;
     private final Predicate<? super T> predicate;

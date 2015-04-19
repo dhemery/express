@@ -6,8 +6,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.dhemery.express.Named.booleanSupplier;
-
 /**
  * Polled composable methods to
  * evaluate boolean expressions,
@@ -24,7 +22,7 @@ public interface PolledExpressions extends Poller {
      * @param schedule the schedule that governs the polling
      * @param condition the condition to satisfy
      * @throws AssertionError if the schedule's duration expires before the condition is satisfied
-     * @see Named#booleanSupplier(String, BooleanSupplier)
+     * @see Named#condition(String, BooleanSupplier)
      * @see NamedBooleanSupplier
      */
     default void assertThat(PollingSchedule schedule, BooleanSupplier condition) {
@@ -42,7 +40,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedPredicate
      */
     default <T> void assertThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        BooleanSupplier condition = booleanSupplier(subject, predicate);
+        BooleanSupplier condition = new SubjectSatisfiesPredicate<>(subject, predicate);
         if(!poll(condition, schedule)) throw new AssertionError(Diagnosis.of(condition, schedule));
     }
 
@@ -58,7 +56,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedFunction
      */
     default <T,V> void assertThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
-        BooleanSupplier condition = booleanSupplier(subject, function, matcher);
+        BooleanSupplier condition = new FunctionOfSubjectSatisfiesMatcher<>(subject, function, matcher);
         if(!poll(condition, schedule)) throw new AssertionError(Diagnosis.of(condition, schedule));
     }
 
@@ -68,7 +66,7 @@ public interface PolledExpressions extends Poller {
      * @param condition the condition to satisfy
      * @return {@code true} if the condition is satisfied with the schedule's duration,
      * and {@code false} otherwise.
-     * @see Named#booleanSupplier(String, BooleanSupplier)
+     * @see Named#condition(String, BooleanSupplier)
      * @see NamedBooleanSupplier
      */
     default boolean satisfiedThat(PollingSchedule schedule, BooleanSupplier condition) {
@@ -87,7 +85,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedPredicate
      */
     default <T> boolean satisfiedThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        return poll(booleanSupplier(subject, predicate), schedule);
+        return poll(new SubjectSatisfiesPredicate<>(subject, predicate), schedule);
     }
 
     /**
@@ -103,14 +101,14 @@ public interface PolledExpressions extends Poller {
      * @see NamedFunction
      */
     default <T,V> boolean satisfiedThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
-        return poll(booleanSupplier(subject, function, matcher), schedule);
+        return poll(new FunctionOfSubjectSatisfiesMatcher<>(subject, function, matcher), schedule);
     }
 
     /**
      * Wait until the condition is satisfied.
      * @param condition the condition to satisfy
      * @throws PollTimeoutException if the default polling schedule's duration expires before the condition is satisfied
-     * @see Named#booleanSupplier(String, BooleanSupplier)
+     * @see Named#condition(String, BooleanSupplier)
      * @see NamedBooleanSupplier
      */
     default void waitUntil(BooleanSupplier condition) {
@@ -123,7 +121,7 @@ public interface PolledExpressions extends Poller {
      * @param schedule the schedule that governs the polling
      * @param condition the condition to satisfy
      * @throws PollTimeoutException if the schedule's duration expires before the condition is satisfied
-     * @see Named#booleanSupplier(String, BooleanSupplier)
+     * @see Named#condition(String, BooleanSupplier)
      * @see NamedBooleanSupplier
      */
     default void waitUntil(PollingSchedule schedule, BooleanSupplier condition) {
@@ -140,7 +138,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedPredicate
      */
     default <T> void waitUntil(T subject, Predicate<? super T> predicate) {
-        BooleanSupplier condition = booleanSupplier(subject, predicate);
+        BooleanSupplier condition = new SubjectSatisfiesPredicate<>(subject, predicate);
         PollingSchedule schedule = eventually();
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
@@ -156,7 +154,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedPredicate
      */
     default <T> void waitUntil(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        BooleanSupplier condition = booleanSupplier(subject, predicate);
+        BooleanSupplier condition = new SubjectSatisfiesPredicate<>(subject, predicate);
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
@@ -171,7 +169,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedFunction
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        BooleanSupplier condition = booleanSupplier(subject, function, matcher);
+        BooleanSupplier condition = new FunctionOfSubjectSatisfiesMatcher<>(subject, function, matcher);
         PollingSchedule schedule = eventually();
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
@@ -188,7 +186,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedFunction
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = booleanSupplier(subject, function, matcher);
+        BooleanSupplier condition = new FunctionOfSubjectSatisfiesMatcher<>(subject, function, matcher);
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
     }
 
@@ -202,7 +200,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedPredicate
      */
     default <T> T when(T subject, Predicate<? super T> predicate) {
-        BooleanSupplier condition = booleanSupplier(subject, predicate);
+        BooleanSupplier condition = new SubjectSatisfiesPredicate<>(subject, predicate);
         PollingSchedule schedule = eventually();
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
@@ -219,7 +217,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedPredicate
      */
     default <T> T when(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        BooleanSupplier condition = booleanSupplier(subject, predicate);
+        BooleanSupplier condition = new SubjectSatisfiesPredicate<>(subject, predicate);
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
     }
@@ -235,7 +233,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedFunction
      */
     default <T, R> T when(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        BooleanSupplier condition = booleanSupplier(subject, function, matcher);
+        BooleanSupplier condition = new FunctionOfSubjectSatisfiesMatcher<>(subject, function, matcher);
         PollingSchedule schedule = eventually();
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
@@ -253,7 +251,7 @@ public interface PolledExpressions extends Poller {
      * @see NamedFunction
      */
     default <T, R> T when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = booleanSupplier(subject, function, matcher);
+        BooleanSupplier condition = new FunctionOfSubjectSatisfiesMatcher<>(subject, function, matcher);
         if(!poll(condition, schedule)) throw new PollTimeoutException(condition, schedule);
         return subject;
     }

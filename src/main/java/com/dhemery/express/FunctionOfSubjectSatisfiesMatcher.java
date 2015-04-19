@@ -9,8 +9,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import static java.lang.String.format;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class FunctionOfSubjectSatisfiesMatcher<T, R> implements Diagnosable, BooleanSupplier {
     private final T subject;

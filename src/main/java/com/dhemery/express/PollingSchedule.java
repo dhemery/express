@@ -3,7 +3,6 @@ package com.dhemery.express;
 import java.time.Duration;
 
 import static java.lang.String.format;
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class PollingSchedule {
     private final Duration interval;

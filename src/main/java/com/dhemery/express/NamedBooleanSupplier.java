@@ -7,7 +7,7 @@ import java.util.function.BooleanSupplier;
  * The {@code toString()} method
  * returns the fixed name.
  */
-public class NamedBooleanSupplier extends Named implements Diagnosable, BooleanSupplier {
+public class NamedBooleanSupplier extends Named implements BooleanSupplier {
     private final BooleanSupplier supplier;
 
     /**
@@ -27,10 +27,4 @@ public class NamedBooleanSupplier extends Named implements Diagnosable, BooleanS
     public boolean getAsBoolean() {
         return supplier.getAsBoolean();
     }
-
-    /**
-     * @return the condition's name
-     */
-    @Override
-    public String expectation() { return toString(); }
 }
