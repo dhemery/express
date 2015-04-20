@@ -6,7 +6,7 @@ import static java.lang.String.format;
 
 
 /**
- * A {@link Function} with a fixed name.
+ * A function with a fixed name.
  * The {@code toString()} method
  * returns the fixed name.
  * Each composed function
@@ -19,9 +19,9 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
     private final Function<? super T, ? extends R> function;
 
     /**
-     * Create a {@link Function}
-     * with the given name
-     * and underlying function.
+     * Create a named function.
+     * @param name the name of this function
+     * @param function the underlying function.
      */
     public NamedFunction(String name, Function<? super T, ? extends R> function) {
         super(name);
@@ -29,6 +29,7 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
     }
 
     /**
+     * {@inheritDoc}
      * @return the value returned by the underlying function
      */
     @Override

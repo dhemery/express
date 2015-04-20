@@ -22,7 +22,7 @@ public interface Diagnosable {
 
     /**
      * Describe the operation's most recent failure.
-     * If the most recent operation succeeded, the description is empty.
+     * If the most recent operation succeeded, the description is meaningless.
      * Not every diagnosable operation describes its failures.
      * @return a description of the failure of the most recent operation
      */

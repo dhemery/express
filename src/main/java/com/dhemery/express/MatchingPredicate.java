@@ -7,10 +7,10 @@ import org.hamcrest.StringDescription;
 import java.util.Optional;
 
 /**
- * A {@link DiagnosingPredicate} that delegates to a {@link Matcher}.
+ * A named diagnosing predicate that delegates to a {@link Matcher}.
  * @param <T> the type of input to the predicate
  */
-public class MatchingPredicate<T> extends DiagnosingPredicate<T> {
+public class MatchingPredicate<T> extends NamedDiagnosingPredicate<T> {
     private final Matcher<? super T> matcher;
 
     public MatchingPredicate(Matcher<? super T> matcher) {
