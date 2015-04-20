@@ -1,7 +1,5 @@
 package com.dhemery.express;
 
-import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 import java.util.Optional;
@@ -28,6 +26,7 @@ public class DiagnosingPredicate<T> extends Named implements Predicate<T> {
         super(name);
         this.predicate = predicate;
     }
+
     /**
      * @return the value returned by the underlying predicate
      */
