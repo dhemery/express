@@ -1,19 +1,22 @@
 package com.dhemery.express;
 
+import org.hamcrest.Description;
+import org.hamcrest.SelfDescribing;
+import org.hamcrest.StringDescription;
+
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
 
 /**
- * A {@link Predicate} with a fixed name.
- * The {@code toString()} method
- * returns the fixed name.
+ * A {@link Predicate} that can diagnose a mismatch.
  * Each composed predicate
  * created by this predicate
  * is named to describe the composition.
  * @param <T> the type of the input to the predicate
  */
-public class NamedPredicate<T> extends Named implements Predicate<T> {
+public class DiagnosingPredicate<T> extends Named implements Predicate<T> {
     private final Predicate<? super T> predicate;
 
     /**
@@ -21,11 +24,10 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
      * with the given name`
      * and underlying predicate.
      */
-    public NamedPredicate(String name, Predicate<? super T> predicate) {
+    public DiagnosingPredicate(String name, Predicate<? super T> predicate) {
         super(name);
         this.predicate = predicate;
     }
-
     /**
      * @return the value returned by the underlying predicate
      */
@@ -45,7 +47,7 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
      */
     @Override
     public Predicate<T> and(Predicate<? super T> other) {
-        return new NamedPredicate<>(format("(%s and %s)", this, other), Predicate.super.and(other));
+        return new DiagnosingPredicate<>(format("(%s and %s)", this, other), Predicate.super.and(other));
     }
 
     /**
@@ -59,7 +61,7 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
      */
     @Override
     public Predicate<T> or(Predicate<? super T> other) {
-        return new NamedPredicate<>(format("(%s or %s)", this, other), Predicate.super.or(other));
+        return new DiagnosingPredicate<>(format("(%s or %s)", this, other), Predicate.super.or(other));
     }
 
     /**
@@ -72,6 +74,10 @@ public class NamedPredicate<T> extends Named implements Predicate<T> {
      */
     @Override
     public Predicate<T> negate() {
-        return new NamedPredicate<>(format("(not %s)", this), predicate.negate());
+        return new DiagnosingPredicate<>(format("(not %s)", this), predicate.negate());
+    }
+
+    public Optional<String> diagnose(T result) {
+        return Optional.of("was " + new StringDescription().appendValue(result));
     }
 }

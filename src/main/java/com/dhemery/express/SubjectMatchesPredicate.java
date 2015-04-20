@@ -4,11 +4,11 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-public class SubjectSatisfiesPredicate<T> implements Diagnosable, BooleanSupplier {
+public class SubjectMatchesPredicate<T> implements Diagnosable, BooleanSupplier {
     private final T subject;
     private final Predicate<? super T> predicate;
 
-    public SubjectSatisfiesPredicate(T subject, Predicate<? super T> predicate) {
+    public SubjectMatchesPredicate(T subject, Predicate<? super T> predicate) {
         this.subject = subject;
         this.predicate = predicate;
     }

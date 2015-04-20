@@ -85,4 +85,30 @@ public class AssertThatTests {
                 .toString();
         assertThat(thrown.get().getMessage(), is(detail));
     }
+
+    @Test
+    public void returnsWithoutThrowingIfTheFunctionOfTheSubjectMatchesThePredicate() {
+        Function<? super String, String> toUpperCase = String::toUpperCase;
+        Predicate<String> isFOO = "FOO"::equals;
+        Expressions.assertThat("foo", toUpperCase, isFOO);
+    }
+
+    @Test
+    public void throwsADiagnosticAssertionErrorIfTheFunctionOfTheSubjectMismatchesThePredicate() {
+        String subject = "subject";
+        Function<String, String> function = String::toUpperCase;
+        Predicate<String> predicate = "bar"::equals;
+        Runnable expression = () -> Expressions.assertThat(subject, function, predicate);
+
+        Optional<Throwable> thrown = throwableThrownByRunning(expression);
+
+        assertThat(thrown, is(present()));
+        assertThat(thrown.get(), instanceOf(AssertionError.class));
+        String detail = new StringJoiner(System.lineSeparator())
+                .add("subject")
+                .add("Expected: " + function + " " + predicate)
+                .add("     but: was \"SUBJECT\"")
+                .toString();
+        assertThat(thrown.get().getMessage(), is(detail));
+    }
 }

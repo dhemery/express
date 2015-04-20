@@ -1,5 +1,7 @@
 package com.dhemery.express;
 
+import org.hamcrest.Matcher;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -42,7 +44,7 @@ public class Named {
      * and underlying function.
      * @see NamedFunction
      */
-    public <T,R> Function<T,R> function(String description, Function<? super T, ? extends R> function) {
+    public static <T,R> Function<T,R> function(String description, Function<? super T, ? extends R> function) {
         return new NamedFunction<>(description, function);
     }
 
@@ -50,9 +52,9 @@ public class Named {
      * Create a {@link Predicate}
      * with the given name
      * and underlying predicate.
-     * @see NamedPredicate
+     * @see DiagnosingPredicate
      */
-    public <T> Predicate<T> predicate(String description, Predicate<? super T> predicate) {
-        return new NamedPredicate<>(description, predicate);
+    public static <T> Predicate<T> predicate(String description, Predicate<? super T> predicate) {
+        return new DiagnosingPredicate<>(description, predicate);
     }
 }
