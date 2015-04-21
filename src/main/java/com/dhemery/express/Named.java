@@ -5,9 +5,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * An object with a fixed name.
- * The {@code toString()} method
- * returns the fixed name.
+ * An object with a fixed name. The {@code toString()} method returns the fixed
+ * name.
  */
 public class Named {
     private final String name;
@@ -28,28 +27,25 @@ public class Named {
     }
 
     /**
-     * Create a {@link BooleanSupplier}
-     * with the given name
-     * and underlying supplier.
+     * Create a {@link BooleanSupplier} with the given name and underlying
+     * supplier.
      */
     public static BooleanSupplier condition(String name, BooleanSupplier condition) {
         return new NamedBooleanSupplier(name, condition);
     }
 
     /**
-     * Create a {@link Function}
-     * with the given name
-     * and underlying function.
+     * Create a {@link Function} with the given name and underlying function.
+     *
      * @see NamedFunction
      */
-    public static <T,R> Function<T,R> function(String description, Function<? super T, ? extends R> function) {
+    public static <T, R> Function<T, R> function(String description, Function<? super T, ? extends R> function) {
         return new NamedFunction<>(description, function);
     }
 
     /**
-     * Create a {@link Predicate}
-     * with the given name
-     * and underlying predicate.
+     * Create a {@link Predicate} with the given name and underlying predicate.
+     *
      * @see NamedDiagnosingPredicate
      */
     public static <T> Predicate<T> predicate(String description, Predicate<? super T> predicate) {

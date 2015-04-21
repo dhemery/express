@@ -85,7 +85,7 @@ public class DiagnosisTests {
                 .add("Expected: " + object)
                 .add(" polling: every PT3S for PT9H")
                 .toString();
-        assertThat(Diagnosis.of(object, schedule), is(formattedDiagnosis));
+        assertThat(Diagnosis.of(schedule, object), is(formattedDiagnosis));
     }
 
     @Test

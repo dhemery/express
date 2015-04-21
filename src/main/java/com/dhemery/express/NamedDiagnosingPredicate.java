@@ -5,19 +5,22 @@ import java.util.function.Predicate;
 import static java.lang.String.format;
 
 /**
- * A named predicate that can diagnose a rejection.
- * Each composed predicate
- * created by this predicate
- * is named to describe the composition.
- * @param <T> the type of the input to the predicate
+ * A named predicate that can diagnose a rejection. Each composed predicate
+ * created by this predicate is named to describe the composition.
+ *
+ * @param <T>
+ *         the type of the input to the predicate
  */
 public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPredicate<T> {
     private final Predicate<? super T> predicate;
 
     /**
      * Create a named diagnosing predicate.
-     * @param name the name of the predicate
-     * @param predicate the underlying predicate
+     *
+     * @param name
+     *         the name of the predicate
+     * @param predicate
+     *         the underlying predicate
      */
     public NamedDiagnosingPredicate(String name, Predicate<? super T> predicate) {
         super(name);
@@ -26,6 +29,7 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
 
     /**
      * {@inheritDoc}
+     *
      * @return the value returned by the underlying predicate
      */
     @Override
@@ -34,13 +38,8 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * The composed predicate is named to describe
-     * this predicate,
-     * the other predicate,
-     * and their composition.
-     * </p>
+     * {@inheritDoc} <p> The composed predicate is named to describe this
+     * predicate, the other predicate, and their composition. </p>
      */
     @Override
     public Predicate<T> and(Predicate<? super T> other) {
@@ -48,13 +47,8 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * The composed predicate is named to describe
-     * this predicate,
-     * the other predicate,
-     * and their composition.
-     * </p>
+     * {@inheritDoc} <p> The composed predicate is named to describe this
+     * predicate, the other predicate, and their composition. </p>
      */
     @Override
     public Predicate<T> or(Predicate<? super T> other) {
@@ -62,12 +56,8 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * The composed predicate is named to describe
-     * this predicate,
-     * with the word "not" prepended.
-     * </p>
+     * {@inheritDoc} <p> The composed predicate is named to describe this
+     * predicate, with the word "not" prepended. </p>
      */
     @Override
     public Predicate<T> negate() {

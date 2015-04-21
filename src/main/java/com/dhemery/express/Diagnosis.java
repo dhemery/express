@@ -6,17 +6,20 @@ import java.util.StringJoiner;
 import static java.lang.String.format;
 
 /**
- * Diagnoses operations in a format suitable for use
- * in detail messages for {@link Throwable Throwables}.
+ * Diagnoses operations in a format suitable for use in detail messages for
+ * {@link Throwable Throwables}.
  */
 public class Diagnosis {
     private static final String EXPECTATION = "Expected: %s";
-    private static final String FAILURE =     "     but: %s";
-    private static final String POLLING =     " polling: %s";
+    private static final String FAILURE = "     but: %s";
+    private static final String POLLING = " polling: %s";
 
     /**
      * Diagnose the operation.
-     * @param operation the operation to diagnose
+     *
+     * @param operation
+     *         the operation to diagnose
+     *
      * @return a formatted diagnosis of the operation
      */
     public static String of(Diagnosable operation) {
@@ -24,10 +27,13 @@ public class Diagnosis {
     }
 
     /**
-     * Diagnose the polled operation.
-     * and the polling schedule.
-     * @param operation the operation to diagnose
-     * @param schedule the schedule on which the operation was polled
+     * Diagnose the polled operation. and the polling schedule.
+     *
+     * @param operation
+     *         the operation to diagnose
+     * @param schedule
+     *         the schedule on which the operation was polled
+     *
      * @return a formatted diagnosis of the operation
      */
     public static String of(Diagnosable operation, PollingSchedule schedule) {
@@ -35,10 +41,12 @@ public class Diagnosis {
     }
 
     /**
-     * Diagnose the operation.
-     * The diagnosis includes neither subject nor failure.
-     * The string value of the operation is used as the explanation.
-     * @param operation the operation to diagnose
+     * Diagnose the operation. The diagnosis includes neither subject nor
+     * failure. The string value of the operation is used as the explanation.
+     *
+     * @param operation
+     *         the operation to diagnose
+     *
      * @return a formatted diagnosis of the operation
      */
     public static String of(Object operation) {
@@ -46,14 +54,17 @@ public class Diagnosis {
     }
 
     /**
-     * Diagnose the polled operation.
-     * The diagnosis includes neither subject nor failure.
-     * The string value of the operation is used as the explanation.
-     * @param operation the operation to diagnose
-     * @param schedule the schedule on which the operation was polled
+     * Diagnose the polled operation. The diagnosis includes neither subject nor
+     * failure. The string value of the operation is used as the explanation.
+     *
+     * @param schedule
+     *         the schedule on which the operation was polled
+     * @param operation
+     *         the operation to diagnose
+     *
      * @return a formatted diagnosis of the operation
      */
-    public static String of(Object operation, PollingSchedule schedule) {
+    public static String of(PollingSchedule schedule, Object operation) {
         return of(diagnosable(operation), schedule);
     }
 

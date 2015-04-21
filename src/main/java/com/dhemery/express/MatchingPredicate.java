@@ -8,7 +8,9 @@ import java.util.Optional;
 
 /**
  * A named diagnosing predicate that delegates to a {@link Matcher}.
- * @param <T> the type of input to the predicate
+ *
+ * @param <T>
+ *         the type of input to the predicate
  */
 public class MatchingPredicate<T> extends NamedDiagnosingPredicate<T> {
     private final Matcher<? super T> matcher;
@@ -19,9 +21,9 @@ public class MatchingPredicate<T> extends NamedDiagnosingPredicate<T> {
     }
 
     @Override
-    public Optional<String> diagnose(T result) {
+    public Optional<String> diagnose(T input) {
         Description mismatch = new StringDescription();
-        matcher.describeMismatch(result, mismatch);
+        matcher.describeMismatch(input, mismatch);
         return Optional.of(mismatch.toString());
     }
 }

@@ -9,13 +9,15 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * A diagnosable boolean supplier
- * that indicates whether
- * a predicate matches
- * the value that a function extracts from a subject.
- * satisfies a predicate.
- * @param <T> the type of the subject
- * @param <R> the type of the value to evaluate
+ * A diagnosable boolean supplier that indicates whether a predicate matches the
+ * value that a function derives from a subject. satisfies a predicate.
+ *
+ * @param <T>
+ *         the type of the subject
+ * @param <R>
+ *         the type of the value to evaluate
+ *
+ * @see Named#condition(String, BooleanSupplier)
  */
 public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, BooleanSupplier {
     protected final T subject;
@@ -24,16 +26,17 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
     private DiagnosingPredicate<? super R> predicate;
 
     /**
-     * Create a diagnosable boolean supplier
-     * that indicates whether
-     * the predicate accepts
-     * the value that the function extracts from the subject.
-     * This constructor adapts the predicate
-     * to the {@link DiagnosingPredicate} interface
-     * if it is not already an instance.
-     * @param subject the subject to evaluate
-     * @param function the function that extracts the value of interest
-     * @param predicate the predicate that evaluates the extracted value
+     * Create a diagnosable boolean supplier that indicates whether the
+     * predicate accepts the value that the function derives from the subject.
+     * This constructor adapts the predicate to the {@link DiagnosingPredicate}
+     * interface if it is not already an instance.
+     *
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param predicate
+     *         the predicate that evaluates the derived value
      */
     public PredicateAcceptsFunctionOfSubject(T subject, Function<? super T, ? extends R> function, Predicate<? super R> predicate) {
         this.subject = subject;
@@ -42,23 +45,25 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
     }
 
     /**
-     * Create a diagnosable boolean supplier
-     * that indicates whether
-     * the matcher accepts
-     * the value that the function extracts from the subject.
-     * This constructor adapts the matcher
-     * to the {@link DiagnosingPredicate} interface.
-     * @param subject the subject to evaluate
-     * @param function the function that extracts the value of interest
-     * @param matcher the matcher that evaluates the extracted value
+     * Create a diagnosable boolean supplier that indicates whether the matcher
+     * accepts the value that the function derives from the subject. This
+     * constructor adapts the matcher to the {@link DiagnosingPredicate}
+     * interface.
+     *
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param matcher
+     *         the matcher that evaluates the derived value
      */
     public PredicateAcceptsFunctionOfSubject(T subject, Function<? super T, ? extends R> function, Matcher<? super R> matcher) {
         this(subject, function, new MatchingPredicate<>(matcher));
     }
 
     /**
-     * {@inheritDoc}
-     * @return whether the predicate matches the value extracted from the subject by the function
+     * @return whether the predicate matches the value that the function derives
+     * from the subject
      */
     @Override
     public boolean getAsBoolean() {
@@ -67,7 +72,6 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
     }
 
     /**
-     * {@inheritDoc}
      * @return the subject passed to the constructor
      */
     @Override
@@ -76,7 +80,6 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
     }
 
     /**
-     * {@inheritDoc}
      * @return a description of this supplier's function and predicate
      */
     @Override
@@ -85,8 +88,7 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
     }
 
     /**
-     * {@inheritDoc}
-     * @return the predicate's reason for rejecting the last extracted value
+     * @return the predicate's reason for rejecting the last derived value
      */
     @Override
     public Optional<String> failure() {
@@ -95,7 +97,8 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
 
     @SuppressWarnings("unchecked")
     private static <R> DiagnosingPredicate<R> diagnosing(Predicate<R> predicate) {
-        if(predicate instanceof DiagnosingPredicate) return DiagnosingPredicate.class.cast(predicate);
+        if (predicate instanceof DiagnosingPredicate)
+            return DiagnosingPredicate.class.cast(predicate);
         return new NamedDiagnosingPredicate<>(predicate.toString(), predicate);
     }
 }

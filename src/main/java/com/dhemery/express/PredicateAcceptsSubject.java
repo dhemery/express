@@ -6,6 +6,13 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
+/**
+ * A diagnosable boolean supplier that indicates whether a predicate matches a
+ * subject.
+ *
+ * @param <T>
+ *         the type of the subject
+ */
 public class PredicateAcceptsSubject<T> implements Diagnosable, BooleanSupplier {
     private final T subject;
     private final DiagnosingPredicate<? super T> predicate;
@@ -37,7 +44,8 @@ public class PredicateAcceptsSubject<T> implements Diagnosable, BooleanSupplier 
 
     @SuppressWarnings("unchecked")
     private static <R> DiagnosingPredicate<R> diagnosing(Predicate<R> predicate) {
-        if(predicate instanceof DiagnosingPredicate) return DiagnosingPredicate.class.cast(predicate);
+        if (predicate instanceof DiagnosingPredicate)
+            return DiagnosingPredicate.class.cast(predicate);
         return new NamedDiagnosingPredicate<>(predicate.toString(), predicate);
     }
 }

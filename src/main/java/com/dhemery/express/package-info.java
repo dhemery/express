@@ -1,5 +1,4 @@
 /**
- * Composable methods to evaluate conditions,
- * either immediately or by polling.
+ * Expressive methods to evaluate and poll composed conditions.
  */
 package com.dhemery.express;
