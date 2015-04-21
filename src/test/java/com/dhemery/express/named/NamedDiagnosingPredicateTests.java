@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class NamedPredicateTests {
+public class NamedDiagnosingPredicateTests {
     private static final String IGNORED_DESCRIPTION = null;
     private static final Predicate<String> IGNORED_PREDICATE = t -> false;
 
@@ -30,11 +30,10 @@ public class NamedPredicateTests {
     public void or_yieldsAPredicateThatPerformsALogical_OR_OfThisPredicateAndAnother() {
         Predicate<String> startsWithF = new NamedDiagnosingPredicate<>(IGNORED_DESCRIPTION, s -> s.startsWith("f"));
         Predicate<String> endsWithO = new NamedDiagnosingPredicate<>(IGNORED_DESCRIPTION, s -> s.endsWith("o"));
-        Predicate<String> startsWithFOrEndsWithO = startsWithF.or(endsWithO);
-        assertThat(startsWithFOrEndsWithO.test("foo"), is(true));
-        assertThat(startsWithFOrEndsWithO.test("fog"), is(true));
-        assertThat(startsWithFOrEndsWithO.test("bog"), is(false));
-        assertThat(startsWithFOrEndsWithO.test("boo"), is(true));
+        assertThat(startsWithF.or(endsWithO).test("foo"), is(true));
+        assertThat(startsWithF.or(endsWithO).test("fog"), is(true));
+        assertThat(startsWithF.or(endsWithO).test("bog"), is(false));
+        assertThat(startsWithF.or(endsWithO).test("boo"), is(true));
     }
 
     @Test
@@ -48,11 +47,10 @@ public class NamedPredicateTests {
     public void and_yieldsAPredicateThatPerformsALogical_AND_OfThisPredicateAndAnother() {
         Predicate<String> startsWithF = new NamedDiagnosingPredicate<>(IGNORED_DESCRIPTION, s -> s.startsWith("f"));
         Predicate<String> endsWithO = new NamedDiagnosingPredicate<>(IGNORED_DESCRIPTION, s -> s.endsWith("o"));
-        Predicate<String> startsWithFAandEndsWithO = startsWithF.and(endsWithO);
-        assertThat(startsWithFAandEndsWithO.test("foo"), is(true));
-        assertThat(startsWithFAandEndsWithO.test("fog"), is(false));
-        assertThat(startsWithFAandEndsWithO.test("bog"), is(false));
-        assertThat(startsWithFAandEndsWithO.test("boo"), is(false));
+        assertThat(startsWithF.and(endsWithO).test("foo"), is(true));
+        assertThat(startsWithF.and(endsWithO).test("fog"), is(false));
+        assertThat(startsWithF.and(endsWithO).test("bog"), is(false));
+        assertThat(startsWithF.and(endsWithO).test("boo"), is(false));
     }
 
     @Test
@@ -65,9 +63,8 @@ public class NamedPredicateTests {
     @Test
     public void negate_yieldsAPredicateThatPerformsALogical_NOT_OfThisPredicate() {
         Predicate<String> startsWithF = new NamedDiagnosingPredicate<>(IGNORED_DESCRIPTION, s -> s.startsWith("f"));
-        Predicate<String> doesNotStartWithF = startsWithF.negate();
-        assertThat(doesNotStartWithF.test("foo"), is(false));
-        assertThat(doesNotStartWithF.test("boo"), is(true));
+        assertThat(startsWithF.negate().test("foo"), is(false));
+        assertThat(startsWithF.negate().test("boo"), is(true));
     }
 
     @Test
