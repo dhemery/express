@@ -39,12 +39,12 @@ public class AssertThatTests {
     }
 
     @Test
-    public void returnsWithoutThrowingIfTheSubjectMatchesThePredicate() {
+    public void returnsWithoutThrowingIfThePredicateAcceptsTheSubject() {
         Expressions.assertThat("", String::isEmpty);
     }
 
     @Test
-    public void throwsADiagnosticAssertionErrorIfTheSubjectMismatchesThePredicate() {
+    public void throwsADiagnosticAssertionErrorIfThePredicateRejectsTheSubject() {
         Predicate<String> predicate = String::isEmpty;
         String subject = "subject";
         Runnable expression = () -> Expressions.assertThat(subject, predicate);
@@ -61,14 +61,14 @@ public class AssertThatTests {
     }
 
     @Test
-    public void returnsWithoutThrowingIfTheFunctionOfTheSubjectMatchesTheMatcher() {
+    public void returnsWithoutThrowingIfTheMatcherAcceptsTheFunctionOfTheSubject() {
         Function<? super String, String> toUpperCase = String::toUpperCase;
         Matcher<String> isFOO = is("FOO");
         Expressions.assertThat("foo", toUpperCase, isFOO);
     }
 
     @Test
-    public void throwsADiagnosticAssertionErrorIfTheFunctionOfTheSubjectMismatchesTheMatcher() {
+    public void throwsADiagnosticAssertionErrorIfTheMatcherRejectsTheFunctionOfTheSubject() {
         String subject = "subject";
         Function<String, String> function = String::toUpperCase;
         Matcher<String> matcher = is("bar");
@@ -87,14 +87,14 @@ public class AssertThatTests {
     }
 
     @Test
-    public void returnsWithoutThrowingIfTheFunctionOfTheSubjectMatchesThePredicate() {
+    public void returnsWithoutThrowingIfPredicateAcceptsTheFunctionOfTheSubject() {
         Function<? super String, String> toUpperCase = String::toUpperCase;
         Predicate<String> isFOO = "FOO"::equals;
         Expressions.assertThat("foo", toUpperCase, isFOO);
     }
 
     @Test
-    public void throwsADiagnosticAssertionErrorIfTheFunctionOfTheSubjectMismatchesThePredicate() {
+    public void throwsADiagnosticAssertionErrorIfThePredicateRejectsTheFunctionOfTheSubject() {
         String subject = "subject";
         Function<String, String> function = String::toUpperCase;
         Predicate<String> predicate = "bar"::equals;

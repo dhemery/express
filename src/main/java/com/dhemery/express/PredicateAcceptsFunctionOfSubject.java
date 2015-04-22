@@ -9,8 +9,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * A diagnosable boolean supplier that indicates whether a predicate matches the
- * value that a function derives from a subject. satisfies a predicate.
+ * A diagnosable boolean supplier that indicates whether its predicate accepts
+ * the value that its function derives from its subject.
  *
  * @param <T>
  *         the type of the subject
@@ -62,7 +62,7 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
     }
 
     /**
-     * @return whether the predicate matches the value that the function derives
+     * @return whether the predicate accepts the value that the function derives
      * from the subject
      */
     @Override
@@ -72,7 +72,7 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
     }
 
     /**
-     * @return the subject passed to the constructor
+     * @return this predicate's subject
      */
     @Override
     public Optional<String> subject() {

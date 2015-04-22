@@ -42,8 +42,10 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
     }
 
     /**
-     * {@inheritDoc} <p> The composed function is named to describe this
-     * function, the {@code after} function, and their composition. </p>
+     * {@inheritDoc}
+     * <p>
+     * The composed function is named to describe this function, the {@code
+     * after} function, and their composition.
      */
     @Override
     public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
@@ -51,8 +53,10 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
     }
 
     /**
-     * {@inheritDoc} <p> The composed function is named to describe this
-     * function, the {@code before} function, and their composition. </p>
+     * {@inheritDoc}
+     * <p>
+     * The composed function is named to describe this function, the {@code
+     * before} function, and their composition.
      */
     @Override
     public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {

@@ -7,7 +7,7 @@ import org.hamcrest.StringDescription;
 import java.util.Optional;
 
 /**
- * A named diagnosing predicate that delegates to a {@link Matcher}.
+ * A named diagnosing predicate that delegates to its {@link Matcher}.
  *
  * @param <T>
  *         the type of input to the predicate

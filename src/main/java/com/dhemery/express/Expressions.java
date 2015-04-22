@@ -11,9 +11,6 @@ import java.util.function.Predicate;
  *
  * @see PolledExpressions
  * @see Named
- * @see NamedBooleanSupplier
- * @see NamedDiagnosingPredicate
- * @see NamedFunction
  */
 
 public interface Expressions {

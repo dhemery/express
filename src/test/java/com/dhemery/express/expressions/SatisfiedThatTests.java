@@ -20,49 +20,49 @@ public class SatisfiedThatTests {
     }
 
     @Test
-    public void returnsTrueIfTheSubjectMatchesThePredicate() {
+    public void returnsTrueIfThePredicateAcceptsTheSubject() {
         boolean result = Expressions.satisfiedThat("", String::isEmpty);
         assertThat(result, is(true));
     }
 
     @Test
-    public void returnsFalseIfTheSubjectMismatchesThePredicate() {
+    public void returnsFalseIfThePredicateRejectsTheSubject() {
         boolean result = Expressions.satisfiedThat("foo", String::isEmpty);
         assertThat(result, is(false));
     }
 
     @Test
-    public void returnsTrueIfTheMatcherMatchesTheSubject() {
+    public void returnsTrueIfTheMatcherAcceptsTheSubject() {
         boolean result = Expressions.satisfiedThat("foo", is("foo"));
         assertThat(result, is(true));
     }
 
     @Test
-    public void returnsFalseIfTheMatcherMismatchesTheSubject() {
+    public void returnsFalseIfTheMatcherRejectsTheSubject() {
         boolean result = Expressions.satisfiedThat("foo", is("food"));
         assertThat(result, is(false));
     }
 
     @Test
-    public void returnsTrueIfTheFunctionOfTheSubjectMatchesTheMatcher() {
+    public void returnsTrueIfTheMatcherAcceptsTheFunctionOfTheSubject() {
         boolean result = Expressions.satisfiedThat("foo", String::toUpperCase, is("FOO"));
         assertThat(result, is(true));
     }
 
     @Test
-    public void returnsFalseIfTheFunctionOfTheSubjectMismatchesTheMatcher() {
+    public void returnsFalseIfTheMatcherRejectsTheFunctionOfTheSubject() {
         boolean result = Expressions.satisfiedThat("foo", String::toUpperCase, is("foo"));
         assertThat(result, is(false));
     }
 
     @Test
-    public void returnsTrueIfTheFunctionOfTheSubjectMatchesThePredicate() {
+    public void returnsTrueIfThePredicateAcceptsTheFunctionOfTheSubject() {
         boolean result = Expressions.satisfiedThat("foo", String::toUpperCase, is("FOO"));
         assertThat(result, is(true));
     }
 
     @Test
-    public void returnsFalseIfTheFunctionOfTheSubjectMismatchesThePredicate() {
+    public void returnsFalseIfThePredicateRejectsTheFunctionOfTheSubject() {
         boolean result = Expressions.satisfiedThat("foo", String::toUpperCase, is("foo"));
         assertThat(result, is(false));
     }
