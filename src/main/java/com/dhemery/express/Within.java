@@ -4,8 +4,7 @@ import java.time.Duration;
 import java.time.temporal.TemporalUnit;
 
 /**
- * A polling schedule that can generate another with the same duration and a
- * different interval.
+ * A polling schedule with a given duration and a default interval.
  * <p>
  * This class is not intended for direct use. Instead, call {@link
  * Poller#within(Duration)} or {@link Poller#within(int, TemporalUnit)}.
