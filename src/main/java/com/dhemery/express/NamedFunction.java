@@ -13,10 +13,10 @@ import static java.lang.String.format;
  * @param <T>
  *         the type of the input to the function
  * @param <R>
- *         the type of the function result
+ *         the type of the result of the function
  */
 public class NamedFunction<T, R> extends Named implements Function<T, R> {
-    private final Function<? super T, ? extends R> function;
+    private final Function<T, R> function;
 
     /**
      * Create a named function.
@@ -26,7 +26,7 @@ public class NamedFunction<T, R> extends Named implements Function<T, R> {
      * @param function
      *         the underlying function.
      */
-    public NamedFunction(String name, Function<? super T, ? extends R> function) {
+    public NamedFunction(String name, Function<T, R> function) {
         super(name);
         this.function = function;
     }

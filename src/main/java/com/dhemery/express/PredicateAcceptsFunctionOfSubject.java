@@ -15,7 +15,7 @@ import java.util.function.Predicate;
  * @param <T>
  *         the type of the subject
  * @param <R>
- *         the type of the value to evaluate
+ *         the type of the result of the function
  *
  * @see Named#condition(String, BooleanSupplier)
  */
@@ -38,7 +38,7 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
      * @param predicate
      *         the predicate that evaluates the derived value
      */
-    public PredicateAcceptsFunctionOfSubject(T subject, Function<? super T, ? extends R> function, Predicate<? super R> predicate) {
+    public PredicateAcceptsFunctionOfSubject(T subject, Function<? super T, R> function, Predicate<? super R> predicate) {
         this.subject = subject;
         this.function = function;
         this.predicate = diagnosing(predicate);
@@ -57,7 +57,7 @@ public class PredicateAcceptsFunctionOfSubject<T, R> implements Diagnosable, Boo
      * @param matcher
      *         the matcher that evaluates the derived value
      */
-    public PredicateAcceptsFunctionOfSubject(T subject, Function<? super T, ? extends R> function, Matcher<? super R> matcher) {
+    public PredicateAcceptsFunctionOfSubject(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
         this(subject, function, new MatchingPredicate<>(matcher));
     }
 

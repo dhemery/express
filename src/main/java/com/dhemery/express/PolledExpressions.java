@@ -50,42 +50,46 @@ public interface PolledExpressions extends Poller {
     }
 
     /**
-     * Assert that the matcher accepts the value that the function extracts from
+     * Assert that the matcher accepts the value that the function derives from
      * the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param matcher
-     *         the matcher that evaluates the extracted value
+     *         the matcher that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      */
-    default <T, V> void assertThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
+    default <T, R> void assertThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
         BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher);
         if (!poll(schedule, condition))
             throw new AssertionError(Diagnosis.of(schedule, condition));
     }
 
     /**
-     * Assert that the predicate accepts the value that the function extracts
+     * Assert that the predicate accepts the value that the function derives
      * from the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param predicate
-     *         the predicate that evaluates the extracted value
+     *         the predicate that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      */
-    default <T, V> void assertThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Predicate<? super V> predicate) {
+    default <T, R> void assertThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Predicate<? super R> predicate) {
         BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
         if (!poll(schedule, condition))
             throw new AssertionError(Diagnosis.of(schedule, condition));
@@ -128,46 +132,50 @@ public interface PolledExpressions extends Poller {
     }
 
     /**
-     * Indicate whether the matcher accepts the value that the function extracts
+     * Indicate whether the matcher accepts the value that the function derives
      * from the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param matcher
-     *         the matcher that evaluates the extracted value
+     *         the matcher that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      *
      * @return {@code true} if the condition is satisfied within the schedule's
      * duration, and {@code false} otherwise.
      */
-    default <T, V> boolean satisfiedThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Matcher<? super V> matcher) {
+    default <T, R> boolean satisfiedThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
         return poll(schedule, new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher));
     }
 
     /**
      * Indicate whether the predicate accepts the value that the function
-     * extracts from the subject within the schedule's duration.
+     * derives from the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param predicate
-     *         the predicate that evaluates the extracted value
+     *         the predicate that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      *
      * @return {@code true} if the condition is satisfied within the schedule's
      * duration, and {@code false} otherwise.
      */
-    default <T, V> boolean satisfiedThat(T subject, Function<? super T, V> function, PollingSchedule schedule, Predicate<? super V> predicate) {
+    default <T, R> boolean satisfiedThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Predicate<? super R> predicate) {
         return poll(schedule, new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate));
     }
 
@@ -244,17 +252,19 @@ public interface PolledExpressions extends Poller {
     }
 
     /**
-     * Wait until the matcher accepts the value that the function extracts from
+     * Wait until the matcher accepts the value that the function derives from
      * the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param matcher
-     *         the matcher that evaluates the extracted value
+     *         the matcher that evaluates the derived value
      *
      * @throws PollTimeoutException
      *         if the default polling schedule's duration expires before the
@@ -266,17 +276,19 @@ public interface PolledExpressions extends Poller {
     }
 
     /**
-     * Wait until the predicate accepts the value that the function extracts
+     * Wait until the predicate accepts the value that the function derives
      * from the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param predicate
-     *         the predicate that evaluates the extracted value
+     *         the predicate that evaluates the derived value
      *
      * @throws PollTimeoutException
      *         if the default polling schedule's duration expires before the
@@ -288,17 +300,19 @@ public interface PolledExpressions extends Poller {
     }
 
     /**
-     * Wait until the matcher accepts the value that the function extracts from
+     * Wait until the matcher accepts the value that the function derives from
      * the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param matcher
-     *         the matcher that evaluates the extracted value
+     *         the matcher that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      *
@@ -313,17 +327,19 @@ public interface PolledExpressions extends Poller {
     }
 
     /**
-     * Wait until the predicate accepts the value that the function extracts
+     * Wait until the predicate accepts the value that the function derives
      * from the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param predicate
-     *         the predicate that evaluates the extracted value
+     *         the predicate that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      *
@@ -382,16 +398,18 @@ public interface PolledExpressions extends Poller {
 
     /**
      * Return the subject when the matcher accepts the value that the function
-     * extracts from the subject.
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param matcher
-     *         the matcher that evaluates the extracted value
+     *         the matcher that evaluates the derived value
      *
      * @throws PollTimeoutException
      *         if the default polling schedule's duration expires before the
@@ -405,16 +423,18 @@ public interface PolledExpressions extends Poller {
 
     /**
      * Return the subject when the predicate accepts the value that the function
-     * extracts from the subject.
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param predicate
-     *         the predicate that evaluates the extracted value
+     *         the predicate that evaluates the derived value
      *
      * @throws PollTimeoutException
      *         if the default polling schedule's duration expires before the
@@ -428,16 +448,18 @@ public interface PolledExpressions extends Poller {
 
     /**
      * Return the subject when the matcher accepts the value that the function
-     * extracts from the subject.
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param matcher
-     *         the matcher that evaluates the extracted value
+     *         the matcher that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      *
@@ -454,16 +476,18 @@ public interface PolledExpressions extends Poller {
 
     /**
      * Return the subject when the predicate accepts the value that the function
-     * extracts from the subject.
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that extracts the value of interest
+     *         the function that derives the value of interest
      * @param predicate
-     *         the predicate that evaluates the extracted value
+     *         the predicate that evaluates the derived value
      * @param schedule
      *         the schedule that governs the polling
      *

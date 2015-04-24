@@ -12,7 +12,7 @@ import static java.lang.String.format;
  *         the type of the input to the predicate
  */
 public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPredicate<T> {
-    private final Predicate<? super T> predicate;
+    private final Predicate<T> predicate;
 
     /**
      * Create a named diagnosing predicate.
@@ -22,7 +22,7 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
      * @param predicate
      *         the underlying predicate
      */
-    public NamedDiagnosingPredicate(String name, Predicate<? super T> predicate) {
+    public NamedDiagnosingPredicate(String name, Predicate<T> predicate) {
         super(name);
         this.predicate = predicate;
     }
@@ -43,7 +43,7 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
      */
     @Override
     public Predicate<T> and(Predicate<? super T> other) {
-        return new NamedDiagnosingPredicate<>(format("(%s and %s)", this, other), DiagnosingPredicate.super.and(other));
+        return new NamedDiagnosingPredicate<>(format("(%s and %s)", this, other), predicate.and(other));
     }
 
     /**
@@ -52,7 +52,7 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
      */
     @Override
     public Predicate<T> or(Predicate<? super T> other) {
-        return new NamedDiagnosingPredicate<>(format("(%s or %s)", this, other), DiagnosingPredicate.super.or(other));
+        return new NamedDiagnosingPredicate<>(format("(%s or %s)", this, other), predicate.or(other));
     }
 
     /**
