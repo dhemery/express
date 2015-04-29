@@ -1,32 +1,18 @@
 package com.dhemery.express.helpers;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-
-import java.util.Optional;
-
 public class Throwables {
-    public static Optional<Throwable> throwableThrownByRunning(Runnable expression) {
+    public static AssertionError assertionErrorThrownBy(Runnable expression) {
         try {
             expression.run();
-            return Optional.empty();
-        } catch (AssertionError thrown1) {
-            return Optional.of(thrown1);
+        } catch (AssertionError thrown) {
+            return thrown;
         }
+        throw new AssertionError("The assertion did not throw an AssertionError");
     }
 
-    public static Matcher<? super Optional<?>> present() {
-        return new TypeSafeMatcher<Optional<?>>() {
-            @Override
-            protected boolean matchesSafely(Optional<?> item) {
-                return item.isPresent();
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("present");
-            }
-        };
+    public static String[] messageOfAssertionErrorThrownBy(Runnable runnable) {
+        AssertionError thrown = assertionErrorThrownBy(runnable);
+        String message = thrown.getMessage();
+        return message.split(System.lineSeparator());
     }
 }
