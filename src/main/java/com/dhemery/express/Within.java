@@ -1,20 +1,19 @@
 package com.dhemery.express;
 
 import java.time.Duration;
-import java.time.temporal.TemporalUnit;
 
 /**
  * A polling schedule with a given duration and a default interval.
  * <p>
  * This class is not intended for direct use. Instead, call {@link
- * Poller#within(Duration)} or {@link Poller#within(int, TemporalUnit)}.
+ * Timeframes#within}.
  */
 public class Within extends PollingSchedule {
     /**
-     * Create a polling schedule with the given interval and duration.
+     * Creates a polling schedule with the given interval and duration.
      * <p>
      * This constructor is not intended for direct use. Instead, call {@link
-     * Poller#within(Duration)} or {@link Poller#within(int, TemporalUnit)}.
+     * Timeframes#within}.
      *
      * @param interval
      *         the interval on which to poll
@@ -26,7 +25,7 @@ public class Within extends PollingSchedule {
     }
 
     /**
-     * Create a polling schedule with the given interval and this schedule's
+     * Creates a polling schedule with the given interval and this schedule's
      * duration.
      *
      * @param interval

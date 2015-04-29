@@ -3,7 +3,10 @@ package com.dhemery.express;
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
 
-
+/**
+ * Factory methods for polling schedules.
+ * Each method is named to read like a timeframe in a polled expression.
+ */
 public interface Timeframes {
     /**
      * Returns the default polling schedule.
@@ -14,7 +17,7 @@ public interface Timeframes {
      * assertThat(eventually(), jethro, is(swimmingInTheCementPond()));
      * </pre>
      *
-     * @return the default polling schedule
+     * @return a polling schedule with the default interval and duration
      *
      * @implNote
      * The interval for the default polling schedule is defined by the system property:
@@ -56,7 +59,7 @@ public interface Timeframes {
      * @param unit
      *         the unit that the duration is measured in
      *
-     * @return the polling schedule
+     * @return a polling schedule with the given duration and default interval
      *
      * @implNote delegates to {@link #within(Duration)}.
      */
@@ -85,7 +88,7 @@ public interface Timeframes {
      * @param duration
      *         the duration to poll
      *
-     * @return the polling schedule
+     * @return a polling schedule with the given duration and default interval
      *
      * @implNote retrieves the default polling interval by calling {@link
      * #eventually()}.
@@ -116,7 +119,7 @@ public interface Timeframes {
      * @param unit
      *         the unit that the polling interval is measured in
      *
-     * @return the polling schedule
+     * @return a polling schedule with the given interval and default duration
      *
      * @implNote delegates to {@link #checkingEvery(Duration)}.
      */
@@ -146,7 +149,7 @@ public interface Timeframes {
      * @param interval
      *         the interval on which to poll
      *
-     * @return the polling schedule
+     * @return a polling schedule with the given interval and default duration
      *
      * @implNote retrieves the default polling duration by calling {@link
      * #eventually()}.
