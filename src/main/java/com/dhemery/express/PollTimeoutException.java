@@ -7,6 +7,8 @@ import java.util.function.BooleanSupplier;
  * satisfied.
  */
 public class PollTimeoutException extends RuntimeException {
+    // TODO: Remove this
+    public PollTimeoutException() {}
     public PollTimeoutException(PollingSchedule schedule, BooleanSupplier condition) {
         super(schedule.toString() + condition);
     }

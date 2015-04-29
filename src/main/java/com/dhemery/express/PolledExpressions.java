@@ -1,6 +1,7 @@
 package com.dhemery.express;
 
 import org.hamcrest.Matcher;
+import org.hamcrest.SelfDescribing;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -16,7 +17,7 @@ import java.util.function.Predicate;
  * @see NamedPredicate
  * @see NamedFunction
  */
-public interface PolledExpressions extends Poller {
+public interface PolledExpressions extends Poller, Timeframes {
     /**
      * Assert that the condition is satisfied within the schedule's duration.
      *
@@ -25,14 +26,14 @@ public interface PolledExpressions extends Poller {
      * @param condition
      *         the condition to satisfy
      */
-    default void assertThat(PollingSchedule schedule, BooleanSupplier condition) {
-        if (!poll(schedule, condition))
-            throw new AssertionError(schedule.toString() + condition);
+    default <C extends SelfDescribing & BooleanSupplier>
+    void assertThat(PollingSchedule schedule, C condition) {
+        if (poll(schedule, condition)) return;
+        throw new AssertionError();
     }
 
     /**
-     * Assert that the predicate accepts the subject within the schedule's
-     * duration.
+     * Assert that the predicate accepts the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
@@ -43,38 +44,15 @@ public interface PolledExpressions extends Poller {
      * @param schedule
      *         the schedule that governs the polling
      */
-    default <T> void assertThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, predicate);
-        if (!poll(schedule, condition))
-            throw new AssertionError(schedule.toString() + condition);
+    default <T, P extends SelfDescribing & Predicate<? super T>>
+    void assertThat(PollingSchedule schedule, T subject, P predicate) {
+        if (poll(schedule, subject, predicate)) return;
+        throw new AssertionError();
     }
 
     /**
-     * Assert that the matcher accepts the value that the function derives from
-     * the subject within the schedule's duration.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
-     * @param subject
-     *         the subject to evaluate
-     * @param function
-     *         the function that derives the value of interest
-     * @param matcher
-     *         the matcher that evaluates the derived value
-     * @param schedule
-     *         the schedule that governs the polling
-     */
-    default <T, R> void assertThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
-        if (!poll(schedule, condition))
-            throw new AssertionError(schedule.toString() + condition);
-    }
-
-    /**
-     * Assert that the predicate accepts the value that the function derives
-     * from the subject within the schedule's duration.
+     * Assert that the predicate accepts the value that the function derives from the subject within the schedule's
+     * duration.
      *
      * @param <T>
      *         the type of the subject
@@ -89,94 +67,115 @@ public interface PolledExpressions extends Poller {
      * @param schedule
      *         the schedule that governs the polling
      */
-    default <T, R> void assertThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Predicate<? super R> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
-        if (!poll(schedule, condition))
-            throw new AssertionError(schedule.toString() + condition);
+    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+    void assertThat(PollingSchedule schedule, T subject, F function, P predicate) {
+        if (poll(schedule, subject, function, predicate).isSatisfied()) return;
+        throw new AssertionError();
     }
 
     /**
-     * Indicate whether the condition is satisfied within the schedule's
+     * Assert that the matcher accepts the value that the function derives from the subject within the schedule's
      * duration.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param matcher
+     *         the matcher that evaluates the derived value
+     * @param schedule
+     *         the schedule that governs the polling
+     */
+    default <T, R, F extends SelfDescribing & Function<? super T, R>>
+    void assertThat(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+        if (poll(schedule, subject, function, matcher).isSatisfied()) return;
+        throw new AssertionError();
+    }
+
+    /**
+     * Indicate whether the condition is satisfied within the schedule's duration.
      *
      * @param schedule
      *         the schedule that governs the polling
      * @param condition
      *         the condition to satisfy
      *
-     * @return {@code true} if the condition is satisfied with the schedule's
-     * duration, and {@code false} otherwise.
+     * @return {@code true} if the condition is satisfied with the schedule's duration, and {@code false} otherwise.
      */
-    default boolean satisfiedThat(PollingSchedule schedule, BooleanSupplier condition) {
+    default <C extends SelfDescribing & BooleanSupplier>
+    boolean satisfiedThat(PollingSchedule schedule, C condition) {
         return poll(schedule, condition);
     }
 
     /**
-     * Indicate whether the predicate accepts the subject within the schedule's
+     * Indicate whether the predicate accepts the subject within the schedule's duration.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param subject
+     *         the subject to evaluate
+     * @param predicate
+     *         the predicate that evaluates the subject
+     * @param schedule
+     *         the schedule that governs the polling
+     *
+     * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
+     */
+    default <T, P extends SelfDescribing & Predicate<? super T>>
+    boolean satisfiedThat(PollingSchedule schedule, T subject, P predicate) {
+        return poll(schedule, subject, predicate);
+    }
+
+    /**
+     * Indicate whether the predicate accepts the value that the function derives from the subject within the schedule's
      * duration.
      *
      * @param <T>
      *         the type of the subject
-     * @param subject
-     *         the subject to evaluate
-     * @param predicate
-     *         the predicate that evaluates the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
      *
-     * @return {@code true} if the condition is satisfied within the schedule's
-     * duration, and {@code false} otherwise.
-     */
-    default <T> boolean satisfiedThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        return poll(schedule, new PredicateAcceptsSubject<>(subject, predicate));
-    }
-
-    /**
-     * Indicate whether the matcher accepts the value that the function derives
-     * from the subject within the schedule's duration.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
-     * @param subject
-     *         the subject to evaluate
-     * @param function
-     *         the function that derives the value of interest
-     * @param matcher
-     *         the matcher that evaluates the derived value
-     * @param schedule
-     *         the schedule that governs the polling
-     *
-     * @return {@code true} if the condition is satisfied within the schedule's
-     * duration, and {@code false} otherwise.
-     */
-    default <T, R> boolean satisfiedThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        return poll(schedule, new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher));
-    }
-
-    /**
-     * Indicate whether the predicate accepts the value that the function
-     * derives from the subject within the schedule's duration.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param predicate
      *         the predicate that evaluates the derived value
+     * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
+     */
+    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+    boolean satisfiedThat(PollingSchedule schedule, T subject, F function, P predicate) {
+        return poll(schedule, subject, function, predicate).isSatisfied();
+    }
+
+    /**
+     * Indicate whether the matcher accepts the value that the function derives from the subject within the schedule's
+     * duration.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
      *
-     * @return {@code true} if the condition is satisfied within the schedule's
-     * duration, and {@code false} otherwise.
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param matcher
+     *         the matcher that evaluates the derived value
+     * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
      */
-    default <T, R> boolean satisfiedThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Predicate<? super R> predicate) {
-        return poll(schedule, new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate));
+    default <T, R, F extends SelfDescribing & Function<? super T, R>>
+    boolean satisfiedThat(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+        return poll(schedule, subject, function, matcher).isSatisfied();
     }
 
     /**
@@ -186,28 +185,12 @@ public interface PolledExpressions extends Poller {
      *         the condition to satisfy
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the
-     *         condition is satisfied
+     *         if the default polling schedule's duration expires before the condition is satisfied
      */
-    default void waitUntil(BooleanSupplier condition) {
-        if (!poll(condition)) throw new PollTimeoutException(condition);
-    }
-
-    /**
-     * Wait until the condition is satisfied.
-     *
-     * @param schedule
-     *         the schedule that governs the polling
-     * @param condition
-     *         the condition to satisfy
-     *
-     * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is
-     *         satisfied
-     */
-    default void waitUntil(PollingSchedule schedule, BooleanSupplier condition) {
-        if (!poll(schedule, condition))
-            throw new PollTimeoutException(schedule, condition);
+    default <C extends SelfDescribing & BooleanSupplier>
+    void waitUntil(C condition) {
+        if (poll(eventually(), condition)) return;
+        throw new PollTimeoutException(condition);
     }
 
     /**
@@ -221,12 +204,75 @@ public interface PolledExpressions extends Poller {
      *         the predicate that evaluates the subject
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the
-     *         condition is satisfied
+     *         if the default polling schedule's duration expires before the condition is satisfied
      */
-    default <T> void waitUntil(T subject, Predicate<? super T> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, predicate);
-        if (!poll(condition)) throw new PollTimeoutException(condition);
+    default <T, P extends SelfDescribing & Predicate<? super T>>
+    void waitUntil(T subject, P predicate) {
+        if (poll(eventually(), subject, predicate)) return;
+        throw new PollTimeoutException();
+    }
+
+    /**
+     * Wait until the predicate accepts the value that the function derives from the subject.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param predicate
+     *         the predicate that evaluates the derived value
+     *
+     * @throws PollTimeoutException
+     *         if the default polling schedule's duration expires before the condition is satisfied
+     */
+    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+    void waitUntil(T subject, F function, P predicate) {
+        if (poll(eventually(), subject, function, predicate).isSatisfied()) return;
+        throw new PollTimeoutException();
+    }
+
+    /**
+     * Wait until the matcher accepts the value that the function derives from the subject.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param matcher
+     *         the matcher that evaluates the derived value
+     *
+     * @throws PollTimeoutException
+     *         if the default polling schedule's duration expires before the condition is satisfied
+     */
+    default <T, R, F extends SelfDescribing & Function<? super T, R>>
+    void waitUntil(T subject, F function, Matcher<? super R> matcher) {
+        if (poll(eventually(), subject, function, matcher).isSatisfied()) return;
+        throw new PollTimeoutException();
+    }
+
+    /**
+     * Wait until the condition is satisfied.
+     *
+     * @param schedule
+     *         the schedule that governs the polling
+     * @param condition
+     *         the condition to satisfy
+     *
+     * @throws PollTimeoutException
+     *         if the schedule's duration expires before the condition is satisfied
+     */
+    default <C extends SelfDescribing & BooleanSupplier>
+    void waitUntil(PollingSchedule schedule, C condition) {
+        if (poll(schedule, condition)) return;
+        throw new PollTimeoutException(schedule, condition);
     }
 
     /**
@@ -234,123 +280,70 @@ public interface PolledExpressions extends Poller {
      *
      * @param <T>
      *         the type of the subject
+     * @param schedule
+     *         the schedule that governs the polling
+     *
      * @param subject
      *         the subject to evaluate
      * @param predicate
      *         the predicate that evaluates the subject
+     * @throws PollTimeoutException
+     *         if the schedule's duration expires before the condition is satisfied
+     */
+    default <T, P extends SelfDescribing & Predicate<? super T>>
+    void waitUntil(PollingSchedule schedule, T subject, P predicate) {
+        if (poll(schedule, subject, predicate)) return;
+        throw new PollTimeoutException();
+    }
+
+    /**
+     * Wait until the predicate accepts the value that the function derives from the subject.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
      *
-     * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is
-     *         satisfied
-     */
-    default <T> void waitUntil(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, predicate);
-        if (!poll(schedule, condition))
-            throw new PollTimeoutException(schedule, condition);
-    }
-
-    /**
-     * Wait until the matcher accepts the value that the function derives from
-     * the subject.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
-     * @param subject
-     *         the subject to evaluate
-     * @param function
-     *         the function that derives the value of interest
-     * @param matcher
-     *         the matcher that evaluates the derived value
-     *
-     * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the
-     *         condition is satisfied
-     */
-    default <T, R> void waitUntil(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
-        if (!poll(condition)) throw new PollTimeoutException(condition);
-    }
-
-    /**
-     * Wait until the predicate accepts the value that the function derives
-     * from the subject.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param predicate
      *         the predicate that evaluates the derived value
-     *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the
-     *         condition is satisfied
+     *         if the schedule's duration expires before the condition is satisfied
      */
-    default <T, R> void waitUntil(T subject, Function<? super T, R> function, Predicate<? super R> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
-        if (!poll(condition)) throw new PollTimeoutException(condition);
+    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+    void waitUntil(PollingSchedule schedule, T subject, F function, P predicate) {
+        if (poll(schedule, subject, function, predicate).isSatisfied()) return;
+        throw new PollTimeoutException();
     }
 
     /**
-     * Wait until the matcher accepts the value that the function derives from
-     * the subject.
+     * Wait until the matcher accepts the value that the function derives from the subject.
      *
      * @param <T>
      *         the type of the subject
      * @param <R>
      *         the type of the result of the function
+     * @param schedule
+     *         the schedule that governs the polling
+     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param matcher
      *         the matcher that evaluates the derived value
-     * @param schedule
-     *         the schedule that governs the polling
-     *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is
-     *         satisfied
+     *         if the schedule's duration expires before the condition is satisfied
      */
-    default <T, R> void waitUntil(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
-        if (!poll(schedule, condition))
-            throw new PollTimeoutException(schedule, condition);
-    }
-
-    /**
-     * Wait until the predicate accepts the value that the function derives
-     * from the subject.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
-     * @param subject
-     *         the subject to evaluate
-     * @param function
-     *         the function that derives the value of interest
-     * @param predicate
-     *         the predicate that evaluates the derived value
-     * @param schedule
-     *         the schedule that governs the polling
-     *
-     * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is
-     *         satisfied
-     */
-    default <T, R> void waitUntil(T subject, Function<? super T, R> function, PollingSchedule schedule, Predicate<? super R> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
-        if (!poll(schedule, condition))
-            throw new PollTimeoutException(schedule, condition);
+    default <T, R, F extends SelfDescribing & Function<? super T, R>>
+    void waitUntil(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+        if (poll(schedule, subject, function, matcher).isSatisfied())
+        throw new PollTimeoutException();
     }
 
     /**
@@ -364,13 +357,58 @@ public interface PolledExpressions extends Poller {
      *         the predicate that evaluates the subject
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the
-     *         condition is satisfied
+     *         if the default polling schedule's duration expires before the condition is satisfied
      */
-    default <T> T when(T subject, Predicate<? super T> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, predicate);
-        if (!poll(condition)) throw new PollTimeoutException(condition);
-        return subject;
+    default <T, R, P extends SelfDescribing & Predicate<? super T>>
+    T when(T subject, P predicate) {
+        if (poll(eventually(), subject, predicate)) return subject;
+        throw new PollTimeoutException();
+    }
+
+    /**
+     * Return the subject when the predicate accepts the value that the function derives from the subject.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param predicate
+     *         the predicate that evaluates the derived value
+     *
+     * @throws PollTimeoutException
+     *         if the default polling schedule's duration expires before the condition is satisfied
+     */
+    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+    T when(T subject, F function, P predicate) {
+        if (poll(eventually(), subject, function, predicate).isSatisfied()) return subject;
+        throw new PollTimeoutException();
+    }
+
+    /**
+     * Return the subject when the matcher accepts the value that the function derives from the subject.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         the function that derives the value of interest
+     * @param matcher
+     *         the matcher that evaluates the derived value
+     *
+     * @throws PollTimeoutException
+     *         if the default polling schedule's duration expires before the condition is satisfied
+     */
+    default <T, R, F extends SelfDescribing & Function<? super T, R>>
+    T when(T subject, F function, Matcher<? super R> matcher) {
+        if (poll(eventually(), subject, function, matcher).isSatisfied()) return subject;
+        throw new PollTimeoutException();
     }
 
     /**
@@ -378,127 +416,69 @@ public interface PolledExpressions extends Poller {
      *
      * @param <T>
      *         the type of the subject
+     * @param schedule
+     *         the schedule that governs the polling
+     *
      * @param subject
      *         the subject to evaluate
      * @param predicate
      *         the predicate that evaluates the subject
+     * @throws PollTimeoutException
+     *         if the schedule's duration expires before the condition is satisfied
+     */
+    default <T, P extends SelfDescribing & Predicate<? super T>>
+    T when(PollingSchedule schedule, T subject, P predicate) {
+        if (poll(schedule, subject, predicate)) return subject;
+        throw new PollTimeoutException();
+    }
+
+    /**
+     * Return the subject when the predicate accepts the value that the function derives from the subject.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <R>
+     *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
      *
-     * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is
-     *         satisfied
-     */
-    default <T> T when(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, predicate);
-        if (!poll(schedule, condition))
-            throw new PollTimeoutException(schedule, condition);
-        return subject;
-    }
-
-    /**
-     * Return the subject when the matcher accepts the value that the function
-     * derives from the subject.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
-     * @param subject
-     *         the subject to evaluate
-     * @param function
-     *         the function that derives the value of interest
-     * @param matcher
-     *         the matcher that evaluates the derived value
-     *
-     * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the
-     *         condition is satisfied
-     */
-    default <T, R> T when(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
-        if (!poll(condition)) throw new PollTimeoutException(condition);
-        return subject;
-    }
-
-    /**
-     * Return the subject when the predicate accepts the value that the function
-     * derives from the subject.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param predicate
      *         the predicate that evaluates the derived value
-     *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the
-     *         condition is satisfied
+     *         if the schedule's duration expires before the condition is satisfied
      */
-    default <T, R> T when(T subject, Function<? super T, R> function, Predicate<? super R> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
-        if (!poll(condition)) throw new PollTimeoutException(condition);
-        return subject;
+    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+    T when(PollingSchedule schedule, T subject, F function, P predicate) {
+        if (poll(schedule, subject, function, predicate).isSatisfied()) return subject;
+        throw new PollTimeoutException();
     }
 
     /**
-     * Return the subject when the matcher accepts the value that the function
-     * derives from the subject.
+     * Return the subject when the matcher accepts the value that the function derives from the subject.
      *
      * @param <T>
      *         the type of the subject
      * @param <R>
      *         the type of the result of the function
+     * @param schedule
+     *         the schedule that governs the polling
+     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param matcher
      *         the matcher that evaluates the derived value
-     * @param schedule
-     *         the schedule that governs the polling
-     *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is
-     *         satisfied
+     *         if the schedule's duration expires before the condition is satisfied
      */
-    default <T, R> T when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
-        if (!poll(schedule, condition))
-            throw new PollTimeoutException(schedule, condition);
-        return subject;
-    }
-
-    /**
-     * Return the subject when the predicate accepts the value that the function
-     * derives from the subject.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
-     * @param subject
-     *         the subject to evaluate
-     * @param function
-     *         the function that derives the value of interest
-     * @param predicate
-     *         the predicate that evaluates the derived value
-     * @param schedule
-     *         the schedule that governs the polling
-     *
-     * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is
-     *         satisfied
-     */
-    default <T, R> T when(T subject, Function<? super T, R> function, PollingSchedule schedule, Predicate<? super R> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
-        if (!poll(schedule, condition))
-            throw new PollTimeoutException(schedule, condition);
-        return subject;
+    default <T, R, F extends SelfDescribing & Function<? super T, R>>
+    T when(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+        if (poll(schedule, subject, function, matcher).isSatisfied()) return subject;
+        throw new PollTimeoutException();
     }
 }
