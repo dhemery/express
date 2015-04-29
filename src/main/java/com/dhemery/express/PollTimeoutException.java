@@ -8,10 +8,10 @@ import java.util.function.BooleanSupplier;
  */
 public class PollTimeoutException extends RuntimeException {
     public PollTimeoutException(PollingSchedule schedule, BooleanSupplier condition) {
-        super(Diagnosis.of(schedule, condition));
+        super(schedule.toString() + condition);
     }
 
     public PollTimeoutException(BooleanSupplier condition) {
-        super(Diagnosis.of(condition));
+        super(condition.toString());
     }
 }

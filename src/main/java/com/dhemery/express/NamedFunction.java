@@ -15,7 +15,7 @@ import static java.lang.String.format;
  * @param <R>
  *         the type of the result of the function
  */
-public class NamedFunction<T, R> extends Named implements Function<T, R> {
+public class NamedFunction<T, R> extends Named implements SelfDescribingFunction<T, R> {
     private final Function<T, R> function;
 
     /**

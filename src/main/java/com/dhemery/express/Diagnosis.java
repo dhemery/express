@@ -1,83 +1,57 @@
 package com.dhemery.express;
 
-import java.util.Optional;
-import java.util.StringJoiner;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.SelfDescribing;
+import org.hamcrest.StringDescription;
 
-import static java.lang.String.format;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
-/**
- * Diagnoses operations in a format suitable for use in detail messages for
- * {@link Throwable Throwables}.
- */
 public class Diagnosis {
-    private static final String EXPECTATION = "Expected: %s";
-    private static final String FAILURE = "     but: %s";
-    private static final String POLLING = " polling: %s";
-
-    /**
-     * Diagnose the operation.
-     *
-     * @param operation
-     *         the operation to diagnose
-     *
-     * @return a formatted diagnosis of the operation
-     */
-    public static String of(Diagnosable operation) {
-        return diagnose(operation.subject(), operation.expectation(), operation.failure(), Optional.empty());
+    public static String of(SelfDescribing condition) {
+        Description description = new StringDescription();
+        description
+                .appendText(System.lineSeparator())
+                .appendText("Expected: ").appendDescriptionOf(condition);
+        return description.toString();
     }
 
-    /**
-     * Diagnose the polled operation. and the polling schedule.
-     *
-     * @param operation
-     *         the operation to diagnose
-     * @param schedule
-     *         the schedule on which the operation was polled
-     *
-     * @return a formatted diagnosis of the operation
-     */
-    public static String of(Diagnosable operation, PollingSchedule schedule) {
-        return diagnose(operation.subject(), operation.expectation(), operation.failure(), Optional.of(schedule));
+    public static String of(Object subject, SelfDescribing predicate) {
+        Description description = new StringDescription();
+        description
+                .appendText(System.lineSeparator())
+                .appendText("Expected: ").appendDescriptionOf(predicate).appendText(System.lineSeparator())
+                .appendText("     but: was ").appendValue(subject);
+        return description.toString();
     }
 
-    /**
-     * Diagnose the operation. The diagnosis includes neither subject nor
-     * failure. The string value of the operation is used as the explanation.
-     *
-     * @param operation
-     *         the operation to diagnose
-     *
-     * @return a formatted diagnosis of the operation
-     */
-    public static String of(Object operation) {
-        return of(diagnosable(operation));
+    public static <T>  String of(T subject, Matcher<? super T> matcher) {
+        Description description = new StringDescription();
+        description
+                .appendText(System.lineSeparator())
+                .appendText("Expected: ").appendDescriptionOf(matcher).appendText(System.lineSeparator())
+                .appendText("     but: ");
+        matcher.describeMismatch(subject, description);
+        return description.toString();
     }
 
-    /**
-     * Diagnose the polled operation. The diagnosis includes neither subject nor
-     * failure. The string value of the operation is used as the explanation.
-     *
-     * @param schedule
-     *         the schedule on which the operation was polled
-     * @param operation
-     *         the operation to diagnose
-     *
-     * @return a formatted diagnosis of the operation
-     */
-    public static String of(PollingSchedule schedule, Object operation) {
-        return of(diagnosable(operation), schedule);
+    public static <R> String of(Object subject, R value, SelfDescribing function, Matcher<? super R> matcher) {
+        Description description = new StringDescription();
+        description
+                .appendText(String.valueOf(subject)).appendText(System.lineSeparator())
+                .appendText("Expected: ").appendDescriptionOf(function).appendText(" ").appendDescriptionOf(matcher).appendText(System.lineSeparator())
+                .appendText("     but: ");
+        matcher.describeMismatch(value, description);
+        return description.toString();
     }
 
-    private static String diagnose(Optional<String> subject, String expectation, Optional<String> failure, Optional<PollingSchedule> schedule) {
-        StringJoiner diagnosis = new StringJoiner(System.lineSeparator());
-        diagnosis.add(subject.orElse(""));
-        diagnosis.add(format(EXPECTATION, expectation));
-        schedule.ifPresent(s -> diagnosis.add(format(POLLING, s)));
-        failure.ifPresent(d -> diagnosis.add(format(FAILURE, d)));
-        return diagnosis.toString();
-    }
-
-    private static Diagnosable diagnosable(Object object) {
-        return object instanceof Diagnosable ? (Diagnosable) object : object::toString;
+    public static <R> String of(Object subject, R value, SelfDescribing function, SelfDescribing predicate) {
+        Description description = new StringDescription();
+        description
+                .appendText(String.valueOf(subject)).appendText(System.lineSeparator())
+                .appendText("Expected: ").appendDescriptionOf(function).appendText(" ").appendDescriptionOf(predicate).appendText(System.lineSeparator())
+                .appendText("     but: was ").appendValue(value);
+        return description.toString();
     }
 }

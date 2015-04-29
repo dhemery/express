@@ -11,7 +11,7 @@ import static java.lang.String.format;
  * @param <T>
  *         the type of the input to the predicate
  */
-public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPredicate<T> {
+public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<T> {
     private final Predicate<T> predicate;
 
     /**
@@ -22,7 +22,7 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
      * @param predicate
      *         the underlying predicate
      */
-    public NamedDiagnosingPredicate(String name, Predicate<T> predicate) {
+    public NamedPredicate(String name, Predicate<T> predicate) {
         super(name);
         this.predicate = predicate;
     }
@@ -43,7 +43,7 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
      */
     @Override
     public Predicate<T> and(Predicate<? super T> other) {
-        return new NamedDiagnosingPredicate<>(format("(%s and %s)", this, other), predicate.and(other));
+        return new NamedPredicate<>(format("(%s and %s)", this, other), predicate.and(other));
     }
 
     /**
@@ -52,7 +52,7 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
      */
     @Override
     public Predicate<T> or(Predicate<? super T> other) {
-        return new NamedDiagnosingPredicate<>(format("(%s or %s)", this, other), predicate.or(other));
+        return new NamedPredicate<>(format("(%s or %s)", this, other), predicate.or(other));
     }
 
     /**
@@ -61,6 +61,6 @@ public class NamedDiagnosingPredicate<T> extends Named implements DiagnosingPred
      */
     @Override
     public Predicate<T> negate() {
-        return new NamedDiagnosingPredicate<>(format("(not %s)", this), predicate.negate());
+        return new NamedPredicate<>(format("(not %s)", this), predicate.negate());
     }
 }

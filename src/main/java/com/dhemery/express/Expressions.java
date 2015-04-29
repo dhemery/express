@@ -1,6 +1,7 @@
 package com.dhemery.express;
 
 import org.hamcrest.Matcher;
+import org.hamcrest.SelfDescribing;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -20,9 +21,8 @@ public interface Expressions {
      * @param condition
      *         the condition to evaluate
      */
-    static void assertThat(BooleanSupplier condition) {
-        if (!condition.getAsBoolean())
-            throw new AssertionError(Diagnosis.of(condition));
+    static <C extends BooleanSupplier & SelfDescribing> void assertThat(C condition) {
+        if (!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
     }
 
     /**
@@ -35,10 +35,8 @@ public interface Expressions {
      * @param predicate
      *         the predicate that evaluates the subject
      */
-    static <T> void assertThat(T subject, Predicate<? super T> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, predicate);
-        if (!condition.getAsBoolean())
-            throw new AssertionError(Diagnosis.of(condition));
+    static <T, P extends Predicate<? super T> & SelfDescribing> void assertThat(T subject, P predicate) {
+        if (!predicate.test(subject)) throw new AssertionError(Diagnosis.of(subject, predicate));
     }
 
     /**
@@ -52,9 +50,8 @@ public interface Expressions {
      *         the matcher that evaluates the subject
      */
     static <T> void assertThat(T subject, Matcher<? super T> matcher) {
-        BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, matcher);
-        if (!condition.getAsBoolean())
-            throw new AssertionError(Diagnosis.of(condition));
+        BooleanSupplier condition = new MatcherAcceptsSubject<>(subject, matcher);
+        if (!matcher.matches(subject)) throw new AssertionError(Diagnosis.of(subject, matcher));
     }
 
     /**
@@ -72,10 +69,9 @@ public interface Expressions {
      * @param matcher
      *         the matcher that evaluates the derived value
      */
-    static <T, R> void assertThat(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher);
-        if (!condition.getAsBoolean())
-            throw new AssertionError(Diagnosis.of(condition));
+    static <T, F extends Function<? super T, R> & SelfDescribing, R> void assertThat(T subject, F function, Matcher<? super R> matcher) {
+        R value = function.apply(subject);
+        if (!matcher.matches(value)) throw new AssertionError(Diagnosis.of(subject, value, function, matcher));
     }
 
     /**
@@ -93,10 +89,9 @@ public interface Expressions {
      * @param predicate
      *         the predicate that evaluates the derived value
      */
-    static <T, R> void assertThat(T subject, Function<? super T, R> function, Predicate<? super R> predicate) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
-        if (!condition.getAsBoolean())
-            throw new AssertionError(Diagnosis.of(condition));
+    static <T, R, F extends Function<? super T, R> & SelfDescribing, P extends Predicate<? super R> & SelfDescribing> void assertThat(T subject, F function, P predicate) {
+        R value = function.apply(subject);
+        if (!predicate.test(value))  throw new AssertionError(Diagnosis.of(subject, value, function, predicate));
     }
 
     /**

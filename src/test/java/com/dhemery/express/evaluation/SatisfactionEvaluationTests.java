@@ -1,4 +1,4 @@
-package com.dhemery.express.expressions;
+package com.dhemery.express.evaluation;
 
 import com.dhemery.express.Expressions;
 import org.junit.Test;
@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class SatisfiedThatTests {
+public class SatisfactionEvaluationTests {
     @Test
     public void returnsTrueIfTheConditionIsSatisfied() {
         boolean result = Expressions.satisfiedThat(() -> true);

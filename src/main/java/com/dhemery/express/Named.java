@@ -1,54 +1,57 @@
 package com.dhemery.express;
 
+import org.hamcrest.Description;
+import org.hamcrest.SelfDescribing;
+
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * An object with a fixed name. The {@code toString()} method returns the fixed
- * name.
+ * An object with a fixed name.
  */
-public class Named {
+public class Named implements SelfDescribing {
     private final String name;
 
     /**
-     * Create an object with the given name.
+     * Creates an object with the given name.
      */
     public Named(String name) {
         this.name = name;
     }
 
     /**
-     * Return this object's name
+     * Returns this object's name
      */
     @Override
-    public String toString() {
+    public final String toString() {
         return name;
     }
 
     /**
-     * Create a {@link BooleanSupplier} with the given name and underlying
-     * supplier.
-     */
-    public static BooleanSupplier condition(String name, BooleanSupplier condition) {
-        return new NamedBooleanSupplier(name, condition);
-    }
-
-    /**
-     * Create a {@link Function} with the given name and underlying function.
+     * Creates a {@link Function} with the given name and underlying function.
      *
      * @see NamedFunction
      */
-    public static <T, R> Function<T, R> function(String description, Function<T, R> function) {
+    public static <T, R> SelfDescribingFunction<T, R> function(String description, Function<T, R> function) {
         return new NamedFunction<>(description, function);
     }
 
     /**
-     * Create a {@link Predicate} with the given name and underlying predicate.
+     * Creates a {@link Predicate} with the given name and underlying predicate.
      *
-     * @see NamedDiagnosingPredicate
+     * @see NamedPredicate
      */
-    public static <T> Predicate<T> predicate(String description, Predicate<T> predicate) {
-        return new NamedDiagnosingPredicate<>(description, predicate);
+    public static <T> SelfDescribingPredicate<T> predicate(String description, Predicate<T> predicate) {
+        return new NamedPredicate<>(description, predicate);
+    }
+
+    public static SelfDescribingBooleanSupplier booleanSupplier(String name, BooleanSupplier supplier) {
+        return new NamedBooleanSupplier(name, supplier);
+    }
+
+    @Override
+    public final void describeTo(Description description) {
+        description.appendText(name);
     }
 }

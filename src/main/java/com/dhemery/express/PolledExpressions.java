@@ -13,7 +13,7 @@ import java.util.function.Predicate;
  * @see Poller
  * @see Named
  * @see NamedBooleanSupplier
- * @see NamedDiagnosingPredicate
+ * @see NamedPredicate
  * @see NamedFunction
  */
 public interface PolledExpressions extends Poller {
@@ -27,7 +27,7 @@ public interface PolledExpressions extends Poller {
      */
     default void assertThat(PollingSchedule schedule, BooleanSupplier condition) {
         if (!poll(schedule, condition))
-            throw new AssertionError(Diagnosis.of(schedule, condition));
+            throw new AssertionError(schedule.toString() + condition);
     }
 
     /**
@@ -46,7 +46,7 @@ public interface PolledExpressions extends Poller {
     default <T> void assertThat(T subject, PollingSchedule schedule, Predicate<? super T> predicate) {
         BooleanSupplier condition = new PredicateAcceptsSubject<>(subject, predicate);
         if (!poll(schedule, condition))
-            throw new AssertionError(Diagnosis.of(schedule, condition));
+            throw new AssertionError(schedule.toString() + condition);
     }
 
     /**
@@ -67,9 +67,9 @@ public interface PolledExpressions extends Poller {
      *         the schedule that governs the polling
      */
     default <T, R> void assertThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher);
+        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
         if (!poll(schedule, condition))
-            throw new AssertionError(Diagnosis.of(schedule, condition));
+            throw new AssertionError(schedule.toString() + condition);
     }
 
     /**
@@ -92,7 +92,7 @@ public interface PolledExpressions extends Poller {
     default <T, R> void assertThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Predicate<? super R> predicate) {
         BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, predicate);
         if (!poll(schedule, condition))
-            throw new AssertionError(Diagnosis.of(schedule, condition));
+            throw new AssertionError(schedule.toString() + condition);
     }
 
     /**
@@ -152,7 +152,7 @@ public interface PolledExpressions extends Poller {
      * duration, and {@code false} otherwise.
      */
     default <T, R> boolean satisfiedThat(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        return poll(schedule, new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher));
+        return poll(schedule, new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher));
     }
 
     /**
@@ -271,7 +271,7 @@ public interface PolledExpressions extends Poller {
      *         condition is satisfied
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher);
+        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
         if (!poll(condition)) throw new PollTimeoutException(condition);
     }
 
@@ -321,7 +321,7 @@ public interface PolledExpressions extends Poller {
      *         satisfied
      */
     default <T, R> void waitUntil(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher);
+        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
         if (!poll(schedule, condition))
             throw new PollTimeoutException(schedule, condition);
     }
@@ -416,7 +416,7 @@ public interface PolledExpressions extends Poller {
      *         condition is satisfied
      */
     default <T, R> T when(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher);
+        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
         if (!poll(condition)) throw new PollTimeoutException(condition);
         return subject;
     }
@@ -468,7 +468,7 @@ public interface PolledExpressions extends Poller {
      *         satisfied
      */
     default <T, R> T when(T subject, Function<? super T, R> function, PollingSchedule schedule, Matcher<? super R> matcher) {
-        BooleanSupplier condition = new PredicateAcceptsFunctionOfSubject<>(subject, function, matcher);
+        BooleanSupplier condition = new MatcherAcceptsFunctionOfSubject<>(subject, function, matcher);
         if (!poll(schedule, condition))
             throw new PollTimeoutException(schedule, condition);
         return subject;
