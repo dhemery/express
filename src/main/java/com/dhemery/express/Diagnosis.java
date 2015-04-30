@@ -91,7 +91,7 @@ public class Diagnosis {
                 .appendText(String.valueOf(subject)).appendText(System.lineSeparator())
                 .appendText("Expected: ").appendDescriptionOf(function).appendText(" ").appendDescriptionOf(matcher).appendText(System.lineSeparator())
                 .appendText(" polling: ").appendText(String.valueOf(schedule)).appendText(System.lineSeparator())
-                .appendText("     but: final ").appendDescriptionOf(function);
+                .appendText("     but: final ").appendDescriptionOf(function).appendText(" ");
         matcher.describeMismatch(finalFunctionValue, description);
         return description.toString();
     }

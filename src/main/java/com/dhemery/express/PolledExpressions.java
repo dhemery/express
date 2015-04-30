@@ -191,8 +191,9 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <C extends SelfDescribing & BooleanSupplier>
     void waitUntil(C condition) {
-        if (poll(eventually(), condition)) return;
-        throw new PollTimeoutException(condition);
+        PollingSchedule schedule = eventually();
+        if (poll(schedule, condition)) return;
+        throw new PollTimeoutException(schedule, condition);
     }
 
     /**
@@ -210,8 +211,9 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <T, P extends SelfDescribing & Predicate<? super T>>
     void waitUntil(T subject, P predicate) {
-        if (poll(eventually(), subject, predicate)) return;
-        throw new PollTimeoutException();
+        PollingSchedule schedule = eventually();
+        if (poll(schedule, subject, predicate)) return;
+        throw new PollTimeoutException(schedule, subject, predicate);
     }
 
     /**
@@ -233,8 +235,10 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     void waitUntil(T subject, F function, P predicate) {
-        if (poll(eventually(), subject, function, predicate).isSatisfied()) return;
-        throw new PollTimeoutException();
+        PollingSchedule schedule = eventually();
+        PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
+        if (result.isSatisfied()) return;
+        throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
     }
 
     /**
@@ -256,8 +260,10 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     void waitUntil(T subject, F function, Matcher<? super R> matcher) {
-        if (poll(eventually(), subject, function, matcher).isSatisfied()) return;
-        throw new PollTimeoutException();
+        PollingSchedule schedule = eventually();
+        PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
+        if (result.isSatisfied()) return;
+        throw new PollTimeoutException(schedule, subject, function, matcher, result.value());
     }
 
     /**
@@ -295,7 +301,7 @@ public interface PolledExpressions extends Poller, Timeframes {
     default <T, P extends SelfDescribing & Predicate<? super T>>
     void waitUntil(PollingSchedule schedule, T subject, P predicate) {
         if (poll(schedule, subject, predicate)) return;
-        throw new PollTimeoutException();
+        throw new PollTimeoutException(schedule, subject, predicate);
     }
 
     /**
@@ -319,8 +325,9 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     void waitUntil(PollingSchedule schedule, T subject, F function, P predicate) {
-        if (poll(schedule, subject, function, predicate).isSatisfied()) return;
-        throw new PollTimeoutException();
+        PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
+        if (result.isSatisfied()) return;
+        throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
     }
 
     /**
@@ -344,8 +351,9 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     void waitUntil(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
-        if (poll(schedule, subject, function, matcher).isSatisfied())
-        throw new PollTimeoutException();
+        PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
+        if (result.isSatisfied()) return;
+        throw new PollTimeoutException(schedule, subject, function, matcher, result.value());
     }
 
     /**

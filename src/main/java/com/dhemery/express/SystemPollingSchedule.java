@@ -29,7 +29,7 @@ class SystemPollingSchedule extends PollingSchedule {
     private static Optional<Duration> durationFromProperty(String name) {
         String value = System.getProperty(name);
         try {
-            return Optional.of(value)
+            return Optional.ofNullable(value)
                     .map(Integer::valueOf)
                     .map(i -> Duration.of(i, ChronoUnit.MILLIS));
         } catch (NumberFormatException cause) {

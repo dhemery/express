@@ -4,7 +4,7 @@ public class Throwables {
     public static Throwable throwableThrownBy(Runnable expression) {
         try {
             expression.run();
-        } catch (AssertionError thrown) {
+        } catch (Throwable thrown) {
             return thrown;
         }
         throw new AssertionError("The assertion did not throw an AssertionError");
