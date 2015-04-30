@@ -2,9 +2,7 @@ package com.dhemery.express;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.IllegalFormatException;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static java.lang.String.format;
 

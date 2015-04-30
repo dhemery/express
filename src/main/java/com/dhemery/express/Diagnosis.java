@@ -5,9 +5,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 public class Diagnosis {
     public static String of(SelfDescribing supplier) {
         Description description = new StringDescription();

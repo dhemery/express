@@ -3,7 +3,6 @@ package com.dhemery.express;
 import com.dhemery.express.helpers.TestablePolledExpressions;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.Duration;

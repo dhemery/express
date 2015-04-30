@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import com.dhemery.express.NamedFunction;
 import org.junit.Assert;
 import org.junit.Test;
 

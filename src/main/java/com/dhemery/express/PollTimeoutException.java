@@ -4,7 +4,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 
 /**
  * Indicates that a polling schedule expired before the polled condition was

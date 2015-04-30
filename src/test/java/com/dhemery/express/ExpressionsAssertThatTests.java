@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import com.dhemery.express.*;
 import com.dhemery.express.helpers.Throwables;
 import org.hamcrest.Matcher;
 import org.junit.Test;

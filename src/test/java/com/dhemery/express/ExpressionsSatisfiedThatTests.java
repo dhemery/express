@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import com.dhemery.express.Expressions;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

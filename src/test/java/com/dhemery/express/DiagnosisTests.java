@@ -1,7 +1,6 @@
 package com.dhemery.express;
 
 
-import com.dhemery.express.*;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;

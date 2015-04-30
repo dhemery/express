@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import com.dhemery.express.NamedBooleanSupplier;
 import org.junit.Test;
 
 import java.util.function.BooleanSupplier;

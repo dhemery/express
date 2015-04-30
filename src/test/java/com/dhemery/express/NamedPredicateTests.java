@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import com.dhemery.express.NamedPredicate;
 import org.junit.Test;
 
 import java.util.function.Predicate;

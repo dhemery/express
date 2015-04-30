@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import com.dhemery.express.*;
 import com.dhemery.express.helpers.TestablePolledExpressions;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
