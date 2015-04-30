@@ -21,7 +21,7 @@ public class ExpressionsAssertThatTests {
     }
 
     @Test
-    public void withBooleanSupplier_assertionErrorIncludesDiagnosis() {
+    public void withBooleanSupplier_errorMessageIncludesDiagnosis() {
         SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("supplier name", () -> false);
 
         String message = messageThrownBy(() -> Expressions.assertThat(supplier));
@@ -40,7 +40,7 @@ public class ExpressionsAssertThatTests {
     }
 
     @Test
-    public void withSubjectPredicate_assertionErrorIncludesDiagnosis() {
+    public void withSubjectPredicate_errorMessageIncludesDiagnosis() {
         SelfDescribingPredicate<String> predicate = Named.predicate("an empty string", String::isEmpty);
         String subject = "subject";
 

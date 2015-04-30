@@ -61,7 +61,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void defaultScheduleWithBooleanSupplier_includesDiagnosis() {
+    public void defaultScheduleWithBooleanSupplier_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(3), Duration.ofSeconds(5));
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
@@ -119,7 +119,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void defaultScheduleWithSubjectPredicate_includesDiagnosis() {
+    public void defaultScheduleWithSubjectPredicate_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(13), Duration.ofSeconds(21));
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
@@ -178,7 +178,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void defaultScheduleWithSubjectFunctionPredicate_includesDiagnosis() {
+    public void defaultScheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(55), Duration.ofSeconds(89));
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
@@ -239,7 +239,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void defaultScheduleWithSubjectFunctionMatcher_includesDiagnosis() {
+    public void defaultScheduleWithSubjectFunctionMatcher_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(233), Duration.ofSeconds(337));
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
@@ -288,7 +288,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void scheduleWithBooleanSupplier_includesDiagnosis() {
+    public void scheduleWithBooleanSupplier_exceptionMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
@@ -329,7 +329,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void scheduleWithSubjectPredicate_includesDiagnosis() {
+    public void scheduleWithSubjectPredicate_exceptionMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
@@ -371,7 +371,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void scheduleWithSubjectFunctionPredicate_includesDiagnosis() {
+    public void scheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
@@ -415,7 +415,7 @@ public class PolledExpressionsWaitUntilTests {
     }
 
     @Test
-    public void scheduleWithSubjectFunctionMatcher_includesDiagnosis() {
+    public void scheduleWithSubjectFunctionMatcher_exceptionMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>

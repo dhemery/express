@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import com.dhemery.express.*;
 import com.dhemery.express.helpers.TestablePolledExpressions;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
@@ -49,7 +48,7 @@ public class PolledExpressionsAssertThatTests {
     }
 
     @Test
-    public void withBooleanSupplier_includesDiagnosis() {
+    public void withBooleanSupplier_errorMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
@@ -90,7 +89,7 @@ public class PolledExpressionsAssertThatTests {
     }
 
     @Test
-    public void withSubjectPredicate_includesDiagnosis() {
+    public void withSubjectPredicate_errorMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
@@ -132,7 +131,7 @@ public class PolledExpressionsAssertThatTests {
     }
 
     @Test
-    public void withSubjectFunctionPredicate_includesDiagnosis() {
+    public void withSubjectFunctionPredicate_errorMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
@@ -176,7 +175,7 @@ public class PolledExpressionsAssertThatTests {
     }
 
     @Test
-    public void withSubjectFunctionMatcher_includesDiagnosis() {
+    public void withSubjectFunctionMatcher_errorMessageIncludesDiagnosis() {
         PolledExpressions expressions = new TestablePolledExpressions() {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
