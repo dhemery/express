@@ -10,13 +10,6 @@ import java.util.function.BooleanSupplier;
  * satisfied.
  */
 public class PollTimeoutException extends RuntimeException {
-    public PollTimeoutException() {
-    }
-
-    public PollTimeoutException(BooleanSupplier condition) {
-        super(condition.toString());
-    }
-
     public PollTimeoutException(PollingSchedule schedule, SelfDescribing condition) {
         super(Diagnosis.of(schedule, condition));
     }
@@ -25,11 +18,11 @@ public class PollTimeoutException extends RuntimeException {
         super(Diagnosis.of(schedule, subject, predicate));
     }
 
-    public PollTimeoutException(PollingSchedule schedule, Object subject, SelfDescribing function, SelfDescribing predicate, Object value) {
-        super(Diagnosis.of(schedule, subject, function, predicate, value));
+    public PollTimeoutException(PollingSchedule schedule, Object subject, SelfDescribing function, SelfDescribing predicate, Object finalFunctionValue) {
+        super(Diagnosis.of(schedule, subject, function, predicate, finalFunctionValue));
     }
 
-    public PollTimeoutException(PollingSchedule schedule, Object subject, SelfDescribing function, Matcher<?> matcher, Object value) {
-        super(Diagnosis.of(schedule, subject, function, matcher, value));
+    public PollTimeoutException(PollingSchedule schedule, Object subject, SelfDescribing function, Matcher<?> matcher, Object finalFunctionValue) {
+        super(Diagnosis.of(schedule, subject, function, matcher, finalFunctionValue));
     }
 }
