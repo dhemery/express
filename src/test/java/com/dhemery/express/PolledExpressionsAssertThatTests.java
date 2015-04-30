@@ -1,4 +1,4 @@
-package com.dhemery.express.polling;
+package com.dhemery.express;
 
 import com.dhemery.express.*;
 import org.hamcrest.Matcher;
@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 
-public class PolledAssertThatExpressionTests {
+public class PolledExpressionsAssertThatTests {
     private static final SelfDescribingBooleanSupplier A_BOOLEAN_SUPPLIER = Named.booleanSupplier("boolean supplier", () -> false);
     private static final SelfDescribingFunction<String,String> A_FUNCTION = Named.function("function", Function.identity());
     private static final Matcher<String> A_MATCHER = isEmptyString();

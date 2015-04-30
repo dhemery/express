@@ -1,4 +1,4 @@
-package com.dhemery.express.named;
+package com.dhemery.express;
 
 import com.dhemery.express.NamedPredicate;
 import org.junit.Test;

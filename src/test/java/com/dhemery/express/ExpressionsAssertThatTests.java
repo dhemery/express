@@ -1,4 +1,4 @@
-package com.dhemery.express.expressions;
+package com.dhemery.express;
 
 import com.dhemery.express.*;
 import com.dhemery.express.helpers.Throwables;
@@ -9,7 +9,7 @@ import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class AssertThatExpressionTests {
+public class ExpressionsAssertThatTests {
     @Test
     public void withBooleanSupplier_returnsWithoutThrowing_ifSupplierReturnsTrue() {
         Expressions.assertThat(Named.booleanSupplier("supplier", () -> true));

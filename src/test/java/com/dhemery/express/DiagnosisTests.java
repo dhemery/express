@@ -1,4 +1,4 @@
-package com.dhemery.express.diagnosis;
+package com.dhemery.express;
 
 
 import com.dhemery.express.*;
