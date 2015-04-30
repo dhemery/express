@@ -2,13 +2,11 @@ package com.dhemery.express.expressions;
 
 import com.dhemery.express.*;
 import com.dhemery.express.helpers.Throwables;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.junit.Test;
 
+import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.is;
 
 public class AssertThatExpressionTests {
@@ -23,17 +21,12 @@ public class AssertThatExpressionTests {
     }
 
     @Test
-    public void withBooleanSupplier_diagnosisDescribes_supplier() {
+    public void withBooleanSupplier_assertionErrorIncludesDiagnosis() {
         SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("supplier name", () -> false);
 
-        String[] expectedLines = new String[]{
-                "",
-                "Expected: " + StringDescription.toString(supplier)
-        };
+        String message = messageThrownBy(() -> Expressions.assertThat(supplier));
 
-        String[] lines = Throwables.messageOfAssertionErrorThrownBy(() -> Expressions.assertThat(supplier));
-
-        assertThat(lines, is(arrayContaining(expectedLines)));
+        assertThat(message, is(Diagnosis.of(supplier)));
     }
 
     @Test
@@ -47,19 +40,13 @@ public class AssertThatExpressionTests {
     }
 
     @Test
-    public void withSubjectPredicate_diagnosisDescribes_predicate_subject() {
+    public void withSubjectPredicate_assertionErrorIncludesDiagnosis() {
         SelfDescribingPredicate<String> predicate = Named.predicate("an empty string", String::isEmpty);
         String subject = "subject";
 
-        String[] expectedLines = new String[]{
-                "",
-                "Expected: " + StringDescription.toString(predicate),
-                "     but: was " + new StringDescription().appendValue(subject)
-        };
+        String message = messageThrownBy(() -> Expressions.assertThat(subject, predicate));
 
-        String[] lines = Throwables.messageOfAssertionErrorThrownBy(() -> Expressions.assertThat(subject, predicate));
-
-        assertThat(lines, is(arrayContaining(expectedLines)));
+        assertThat(message, is(Diagnosis.of(subject, predicate)));
     }
 
     @Test
@@ -77,17 +64,9 @@ public class AssertThatExpressionTests {
         String subject = "subject";
         Matcher<String> matcher = is("foo");
 
-        Description mismatchDescription = new StringDescription();
-        matcher.describeMismatch(subject, mismatchDescription);
-        String[] expectedLines = new String[]{
-                "",
-                "Expected: " + StringDescription.toString(matcher),
-                "     but: " + mismatchDescription
-        };
+        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(subject, matcher));
 
-        String[] lines = Throwables.messageOfAssertionErrorThrownBy(() -> Expressions.assertThat(subject, matcher));
-
-        assertThat(lines, is(arrayContaining(expectedLines)));
+        assertThat(message, is(Diagnosis.of(subject, matcher)));
     }
 
     @Test
@@ -105,19 +84,11 @@ public class AssertThatExpressionTests {
         String subject = "subject";
         SelfDescribingFunction<String, String> function = Named.function("upper case", String::toUpperCase);
         Matcher<String> matcher = is("bar");
-
         String functionValue = function.apply(subject);
-        Description mismatchDescription = new StringDescription();
-        matcher.describeMismatch(functionValue, mismatchDescription);
 
-        String[] expectedLines = new String[]{
-                subject,
-                "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(matcher),
-                "     but: " + mismatchDescription
-        };
+        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(subject, function, matcher));
 
-        String[] lines = Throwables.messageOfAssertionErrorThrownBy(() -> Expressions.assertThat(subject, function, matcher));
-        assertThat(lines, is(arrayContaining(expectedLines)));
+        assertThat(message, is(Diagnosis.of(subject, function, matcher, functionValue)));
     }
 
     @Test
@@ -135,17 +106,10 @@ public class AssertThatExpressionTests {
         String subject = "subject";
         SelfDescribingFunction<String, String> function = Named.function("upper case", String::toUpperCase);
         SelfDescribingPredicate<String> predicate = Named.predicate("equals \"bar\"", "bar"::equals);
-
         String functionValue = function.apply(subject);
 
-        String[] expectedLines = new String[]{
-                subject,
-                "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(predicate),
-                "     but: was " + new StringDescription().appendValue(functionValue)
-        };
+        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(subject, function, predicate));
 
-        String[] lines = Throwables.messageOfAssertionErrorThrownBy(() -> Expressions.assertThat(subject, function, predicate));
-        assertThat(lines, is(arrayContaining(expectedLines)));
+        assertThat(message, is(Diagnosis.of(subject, function, predicate, functionValue)));
     }
-
 }

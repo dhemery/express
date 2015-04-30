@@ -29,7 +29,7 @@ public interface PolledExpressions extends Poller, Timeframes {
     default <C extends SelfDescribing & BooleanSupplier>
     void assertThat(PollingSchedule schedule, C condition) {
         if (poll(schedule, condition)) return;
-        throw new AssertionError();
+        throw new AssertionError(Diagnosis.of(schedule, condition));
     }
 
     /**
@@ -47,7 +47,7 @@ public interface PolledExpressions extends Poller, Timeframes {
     default <T, P extends SelfDescribing & Predicate<? super T>>
     void assertThat(PollingSchedule schedule, T subject, P predicate) {
         if (poll(schedule, subject, predicate)) return;
-        throw new AssertionError();
+        throw new AssertionError(Diagnosis.of(schedule, subject, predicate));
     }
 
     /**
@@ -69,8 +69,9 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     void assertThat(PollingSchedule schedule, T subject, F function, P predicate) {
-        if (poll(schedule, subject, function, predicate).isSatisfied()) return;
-        throw new AssertionError();
+        PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
+        if (result.isSatisfied()) return;
+        throw new AssertionError(Diagnosis.of(schedule, subject, function, predicate, result.value()));
     }
 
     /**
@@ -92,8 +93,9 @@ public interface PolledExpressions extends Poller, Timeframes {
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     void assertThat(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
-        if (poll(schedule, subject, function, matcher).isSatisfied()) return;
-        throw new AssertionError();
+        PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
+        if (result.isSatisfied()) return;
+        throw new AssertionError(Diagnosis.of(schedule, subject, function, matcher, result.value()));
     }
 
     /**

@@ -6,61 +6,118 @@ import com.dhemery.express.helpers.SatisfiedPolledExpressions;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 
+import java.time.Duration;
 import java.util.function.Function;
 
+import static com.dhemery.express.helpers.Throwables.messageThrownBy;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.isEmptyString;
+
 public class PolledAssertThatExpressionTests {
-    private static final PollingSchedule IGNORED_POLLING_SCHEDULE = null;
-    private static final String IGNORED_SUBJECT = null;
-    private static final SelfDescribingBooleanSupplier IGNORED_SUPPLIER = null;
-    private static final SelfDescribingPredicate<String> IGNORED_PREDICATE = null;
-    private static final SelfDescribingFunction<String,String> IDENTITY = Named.function("identity", Function.identity());
-    private static final Matcher<String> IGNORED_MATCHER = null;
+    private static final SelfDescribingBooleanSupplier A_BOOLEAN_SUPPLIER = Named.booleanSupplier("boolean supplier", () -> false);
+    private static final SelfDescribingFunction<String,String> A_FUNCTION = Named.function("function", Function.identity());
+    private static final Matcher<String> A_MATCHER = isEmptyString();
+    private static final PollingSchedule A_POLLING_SCHEDULE = new PollingSchedule(Duration.ofMillis(1000), Duration.ofSeconds(60));
+    private static final SelfDescribingPredicate<String> A_PREDICATE = Named.predicate("predicate", t -> true);
+    private static final String A_SUBJECT = "";
 
     @Test
-    public void withBooleanSupplier_returnsWithoutThrowing_ifThePollReturnsTrue() {
+    public void withBooleanSupplier_returnsWithoutThrowing_ifPollReturnsTrue() {
         PolledExpressions expressions = new SatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, IGNORED_SUPPLIER);
+        expressions.assertThat(A_POLLING_SCHEDULE, A_BOOLEAN_SUPPLIER);
     }
 
     @Test(expected = AssertionError.class)
-    public void withBooleanSupplier_throwsAssertionError_ifThePollReturnsFalse() {
+    public void withBooleanSupplier_throwsAssertionError_ifPollReturnsFalse() {
         PolledExpressions expressions = new DissatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, IGNORED_SUPPLIER);
+        expressions.assertThat(A_POLLING_SCHEDULE, A_BOOLEAN_SUPPLIER);
     }
 
     @Test
-    public void withSubjectPredicate_returnsWithoutThrowing_ifThePollReturnsTrue() {
-        PolledExpressions expressions = new SatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, IGNORED_SUBJECT, IGNORED_PREDICATE);
-    }
-
-    @Test(expected = AssertionError.class)
-    public void withSubjectPredicate_throwsAssertionError_ifThePollReturnsFalse() {
+    public void withBooleanSupplier_includesDiagnosis() {
         PolledExpressions expressions = new DissatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, IGNORED_SUBJECT, IGNORED_PREDICATE);
+        PollingSchedule schedule = A_POLLING_SCHEDULE;
+        SelfDescribingBooleanSupplier supplier = A_BOOLEAN_SUPPLIER;
+
+        String message = messageThrownBy(() -> expressions.assertThat(schedule, supplier));
+
+        assertThat(message, is(Diagnosis.of(schedule, supplier)));
     }
 
     @Test
-    public void withSubjectFunctionPredicate_returnsWithoutThrowing_ifThePollEvaluationResultIsSatisfied() {
+    public void withSubjectPredicate_returnsWithoutThrowing_ifPollReturnsTrue() {
         PolledExpressions expressions = new SatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, "", IDENTITY, IGNORED_PREDICATE);
+        expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_PREDICATE);
     }
 
     @Test(expected = AssertionError.class)
-    public void withSubjectFunctionPredicate_throwsAssertionError_ifThePollEvaluationResultIsDissatisfied() {
+    public void withSubjectPredicate_throwsAssertionError_ifPollReturnsFalse() {
         PolledExpressions expressions = new DissatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, "", IDENTITY, IGNORED_PREDICATE);
+        expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_PREDICATE);
     }
 
     @Test
-    public void withSubjectFunctionMatcher_returnsWithoutThrowing_ifThePollEvaluationResultIsSatisfied() {
+    public void withSubjectPredicate_includesDiagnosis() {
+        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PollingSchedule schedule = A_POLLING_SCHEDULE;
+        String subject = A_SUBJECT;
+        SelfDescribingPredicate<String> predicate = A_PREDICATE;
+
+        String message = messageThrownBy(() -> expressions.assertThat(schedule, subject, predicate));
+
+        assertThat(message, is(Diagnosis.of(schedule, subject, predicate)));
+    }
+
+    @Test
+    public void withSubjectFunctionPredicate_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
         PolledExpressions expressions = new SatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, "", IDENTITY, IGNORED_MATCHER);
+        expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_PREDICATE);
     }
 
     @Test(expected = AssertionError.class)
-    public void withSubjectFunctionMatcher_throwsAssertionError_ifThePollEvaluationResultIsDissatisfied() {
+    public void withSubjectFunctionPredicate_throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
         PolledExpressions expressions = new DissatisfiedPolledExpressions();
-        expressions.assertThat(IGNORED_POLLING_SCHEDULE, "", IDENTITY, IGNORED_MATCHER);
+        expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_PREDICATE);
+    }
+
+    @Test
+    public void withSubjectFunctionPredicate_includesDiagnosis() {
+        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PollingSchedule schedule = A_POLLING_SCHEDULE;
+        String subject = A_SUBJECT;
+        SelfDescribingFunction<String, String> function = A_FUNCTION;
+        SelfDescribingPredicate<String> predicate = A_PREDICATE;
+        String functionValue = function.apply(subject);
+
+        String message = messageThrownBy(() -> expressions.assertThat(schedule, subject, function, predicate));
+
+        assertThat(message, is(Diagnosis.of(schedule, subject, function, predicate, functionValue)));
+    }
+
+    @Test
+    public void withSubjectFunctionMatcher_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
+        PolledExpressions expressions = new SatisfiedPolledExpressions();
+        expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_MATCHER);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void withSubjectFunctionMatcher_throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
+        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_MATCHER);
+    }
+
+    @Test
+    public void withSubjectFunctionMatcher_includesDiagnosis() {
+        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PollingSchedule schedule = A_POLLING_SCHEDULE;
+        String subject = A_SUBJECT;
+        SelfDescribingFunction<String, String> function = A_FUNCTION;
+        Matcher<String> matcher = A_MATCHER;
+        String functionValue = function.apply(subject);
+
+        String message = messageThrownBy(() -> expressions.assertThat(schedule, subject, function, matcher));
+
+        assertThat(message, is(Diagnosis.of(schedule, subject, function, matcher, functionValue)));
     }
 }

@@ -74,7 +74,7 @@ public interface Expressions {
     static <T, R, F extends Function<? super T, R> & SelfDescribing, P extends Predicate<? super R> & SelfDescribing>
     void assertThat(T subject, F function, P predicate) {
         R value = function.apply(subject);
-        if (!predicate.test(value))  throw new AssertionError(Diagnosis.of(subject, value, function, predicate));
+        if (!predicate.test(value))  throw new AssertionError(Diagnosis.of(subject, function, predicate, value));
     }
 
     /**
@@ -95,7 +95,7 @@ public interface Expressions {
     static <T, F extends Function<? super T, R> & SelfDescribing, R>
     void assertThat(T subject, F function, Matcher<? super R> matcher) {
         R value = function.apply(subject);
-        if (!matcher.matches(value)) throw new AssertionError(Diagnosis.of(subject, value, function, matcher));
+        if (!matcher.matches(value)) throw new AssertionError(Diagnosis.of(subject, function, matcher, value));
     }
 
     /**
