@@ -1,13 +1,14 @@
 package com.dhemery.express.polling;
 
 import com.dhemery.express.*;
-import com.dhemery.express.helpers.DissatisfiedPolledExpressions;
-import com.dhemery.express.helpers.SatisfiedPolledExpressions;
 import org.hamcrest.Matcher;
+import org.hamcrest.SelfDescribing;
 import org.junit.Test;
 
 import java.time.Duration;
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,19 +25,37 @@ public class PolledAssertThatExpressionTests {
 
     @Test
     public void withBooleanSupplier_returnsWithoutThrowing_ifPollReturnsTrue() {
-        PolledExpressions expressions = new SatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions() {
+            @Override
+            public <C extends SelfDescribing & BooleanSupplier>
+            boolean poll(PollingSchedule schedule, C supplier) {
+                return true;
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_BOOLEAN_SUPPLIER);
     }
 
     @Test(expected = AssertionError.class)
     public void withBooleanSupplier_throwsAssertionError_ifPollReturnsFalse() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions() {
+            @Override
+            public <C extends SelfDescribing & BooleanSupplier>
+            boolean poll(PollingSchedule schedule, C supplier) {
+                return false;
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_BOOLEAN_SUPPLIER);
     }
 
     @Test
     public void withBooleanSupplier_includesDiagnosis() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions() {
+            @Override
+            public <C extends SelfDescribing & BooleanSupplier>
+            boolean poll(PollingSchedule schedule, C supplier) {
+                return false;
+            }
+        };
         PollingSchedule schedule = A_POLLING_SCHEDULE;
         SelfDescribingBooleanSupplier supplier = A_BOOLEAN_SUPPLIER;
 
@@ -47,19 +66,37 @@ public class PolledAssertThatExpressionTests {
 
     @Test
     public void withSubjectPredicate_returnsWithoutThrowing_ifPollReturnsTrue() {
-        PolledExpressions expressions = new SatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions() {
+            @Override
+            public <T, P extends SelfDescribing & Predicate<? super T>>
+            boolean poll(PollingSchedule schedule, T subject, P predicate) {
+                return true;
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_PREDICATE);
     }
 
     @Test(expected = AssertionError.class)
     public void withSubjectPredicate_throwsAssertionError_ifPollReturnsFalse() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions() {
+            @Override
+            public <T, P extends SelfDescribing & Predicate<? super T>>
+            boolean poll(PollingSchedule schedule, T subject, P predicate) {
+                return false;
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_PREDICATE);
     }
 
     @Test
     public void withSubjectPredicate_includesDiagnosis() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions() {
+            @Override
+            public <T, P extends SelfDescribing & Predicate<? super T>>
+            boolean poll(PollingSchedule schedule, T subject, P predicate) {
+                return false;
+            }
+        };
         PollingSchedule schedule = A_POLLING_SCHEDULE;
         String subject = A_SUBJECT;
         SelfDescribingPredicate<String> predicate = A_PREDICATE;
@@ -71,19 +108,37 @@ public class PolledAssertThatExpressionTests {
 
     @Test
     public void withSubjectFunctionPredicate_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
-        PolledExpressions expressions = new SatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions(){
+            @Override
+            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
+                return new PollEvaluationResult<>(null, true);
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_PREDICATE);
     }
 
     @Test(expected = AssertionError.class)
     public void withSubjectFunctionPredicate_throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions(){
+            @Override
+            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
+                return new PollEvaluationResult<>(null, false);
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_PREDICATE);
     }
 
     @Test
     public void withSubjectFunctionPredicate_includesDiagnosis() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions(){
+            @Override
+            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
+                return new PollEvaluationResult<>(function.apply(subject), false);
+            }
+        };
         PollingSchedule schedule = A_POLLING_SCHEDULE;
         String subject = A_SUBJECT;
         SelfDescribingFunction<String, String> function = A_FUNCTION;
@@ -97,19 +152,37 @@ public class PolledAssertThatExpressionTests {
 
     @Test
     public void withSubjectFunctionMatcher_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
-        PolledExpressions expressions = new SatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions(){
+            @Override
+            public <T, R, F extends SelfDescribing & Function<? super T, R>>
+            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+                return new PollEvaluationResult<>(null, true);
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_MATCHER);
     }
 
     @Test(expected = AssertionError.class)
     public void withSubjectFunctionMatcher_throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions(){
+            @Override
+            public <T, R, F extends SelfDescribing & Function<? super T, R>>
+            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+                return new PollEvaluationResult<>(null, false);
+            }
+        };
         expressions.assertThat(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_MATCHER);
     }
 
     @Test
     public void withSubjectFunctionMatcher_includesDiagnosis() {
-        PolledExpressions expressions = new DissatisfiedPolledExpressions();
+        PolledExpressions expressions = new PolledExpressions(){
+            @Override
+            public <T, R, F extends SelfDescribing & Function<? super T, R>>
+            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+                return new PollEvaluationResult<>(function.apply(subject), false);
+            }
+        };
         PollingSchedule schedule = A_POLLING_SCHEDULE;
         String subject = A_SUBJECT;
         SelfDescribingFunction<String, String> function = A_FUNCTION;
