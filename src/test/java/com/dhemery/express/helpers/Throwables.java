@@ -15,6 +15,7 @@ public class Throwables {
     }
 
     public static String messageThrownBy(Runnable runnable) {
+        //noinspection ThrowableResultOfMethodCallIgnored
         return throwableThrownBy(runnable).getMessage();
     }
 }

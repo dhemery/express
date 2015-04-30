@@ -25,10 +25,8 @@ public interface Poller {
      * @return {@code true} if the supplier returns {@code true} before the
      * schedule expires, otherwise {@code false}
      */
-    default <C extends SelfDescribing & BooleanSupplier>
-    boolean poll(PollingSchedule schedule, C supplier) {
-        return true;
-    }
+    <C extends SelfDescribing & BooleanSupplier>
+    boolean poll(PollingSchedule schedule, C supplier);
 
     /**
      * Polls the predicate's acceptance of the subject. Repeatedly evaluates the
@@ -47,10 +45,8 @@ public interface Poller {
      * @return {@code true} if the subject satisfies the predicate before the
      * schedule expires, otherwise {@code false}
      */
-    default <T, P extends SelfDescribing & Predicate<? super T>>
-    boolean poll(PollingSchedule schedule, T subject, P predicate) {
-        return true;
-    }
+    <T, P extends SelfDescribing & Predicate<? super T>>
+    boolean poll(PollingSchedule schedule, T subject, P predicate);
 
     /**
      * Polls the matcher's acceptance of the value that the function derives
@@ -78,10 +74,8 @@ public interface Poller {
      *
      * @return the result of the final evaluation performed by this poll
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
-        return new PollEvaluationResult<>(null, true);
-    }
+    <T, R, F extends SelfDescribing & Function<? super T, R>>
+    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher);
 
     /**
      * Polls the matcher's acceptance of the value that the function derives
@@ -109,8 +103,6 @@ public interface Poller {
      *
      * @return the result of the final evaluation performed by this poll
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
-        return new PollEvaluationResult<>(null, true);
-    }
+    <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
+    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate);
 }
