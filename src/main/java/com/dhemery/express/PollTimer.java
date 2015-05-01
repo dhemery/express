@@ -1,8 +1,8 @@
 package com.dhemery.express;
 
 public interface PollTimer {
-    void start();
-    boolean isExpired();
-
+    void start(PollingSchedule schedule);
     void tick();
+
+    boolean isExpired();
 }
