@@ -7,11 +7,12 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public interface ClockPoller extends Poller {
+public interface PollTimerPoller extends Poller {
     @Override
     default <C extends SelfDescribing & BooleanSupplier>
     boolean poll(PollingSchedule schedule, C supplier) {
-        return supplier.getAsBoolean();
+        while (!supplier.getAsBoolean()) ;
+        return true;
     }
 
     @Override
