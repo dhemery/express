@@ -12,10 +12,12 @@ public interface PollTimerPoller extends Poller {
     default <C extends SelfDescribing & BooleanSupplier>
     boolean poll(PollingSchedule schedule, C supplier) {
         PollTimer timer = pollTimer();
-        while (!supplier.getAsBoolean()) {
-            if (timer.isExpired()) return false;
+        timer.start();
+        while (!timer.isExpired()) {
+            if (supplier.getAsBoolean()) return true;
+            timer.tick();
         }
-        return true;
+        return false;
     }
 
     PollTimer pollTimer();
