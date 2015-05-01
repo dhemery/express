@@ -18,6 +18,10 @@ public class PollTimerPollerTests {
         private final SelfDescribingBooleanSupplier supplier = context.mock(SelfDescribingBooleanSupplier.class);
         private final PollTimer timer = context.mock(PollTimer.class);
         private final Poller poller = new PollTimerPoller() {
+            @Override
+            public PollTimer pollTimer() {
+                return timer;
+            }
         };
 
         @Test
@@ -45,6 +49,23 @@ public class PollTimerPollerTests {
             }});
 
             assertThat(poller.poll(null, supplier), is(true));
+        }
+
+        @Test
+        public void returnsFalse_ifTimerExpires_beforeSupplierReturnsTrue() {
+            context.checking(new Expectations() {{
+                allowing(supplier).getAsBoolean();
+                will(returnValue(false));
+                atLeast(1).of(timer).isExpired();
+                will(onConsecutiveCalls(
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(true)
+                ));
+            }});
+
+            assertThat(poller.poll(null, supplier), is(false));
         }
     }
 }

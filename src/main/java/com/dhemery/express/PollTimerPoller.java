@@ -11,9 +11,14 @@ public interface PollTimerPoller extends Poller {
     @Override
     default <C extends SelfDescribing & BooleanSupplier>
     boolean poll(PollingSchedule schedule, C supplier) {
-        while (!supplier.getAsBoolean()) ;
+        PollTimer timer = pollTimer();
+        while (!supplier.getAsBoolean()) {
+            if (timer.isExpired()) return false;
+        }
         return true;
     }
+
+    PollTimer pollTimer();
 
     @Override
     default <T, P extends SelfDescribing & Predicate<? super T>>
