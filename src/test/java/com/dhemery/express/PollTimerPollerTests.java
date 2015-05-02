@@ -33,8 +33,11 @@ public class PollTimerPollerTests {
             Sequence polling = context.sequence("polling");
 
             context.checking(new Expectations() {{ // @formatter:off
-                oneOf(timer).start(schedule); inSequence(polling);
-                allowing(timer).isExpired(); will(returnValue(true)); inSequence(polling);
+                oneOf(timer).start(schedule);
+                    inSequence(polling);
+                allowing(timer).isExpired();
+                    inSequence(polling);
+                    will(returnValue(true));
             }}); // @formatter:on
 
             poller.poll(schedule, supplier);
@@ -42,12 +45,12 @@ public class PollTimerPollerTests {
 
         @Test
         public void returnsFalse_withoutEvaluatingSupplier_ifTimerIsAlreadyExpiredAtStartOfPoll() {
-            context.checking(new Expectations() {{
-                oneOf(timer).isExpired();
-                will(returnValue(true));
+            context.checking(new Expectations() {{ // @formatter:off
+                allowing(timer).isExpired();
+                    will(returnValue(true));
                 never(supplier);
                 allowing(timer);
-            }});
+            }}); // @formatter:on
 
             poller.poll(schedule, supplier);
         }
@@ -55,13 +58,14 @@ public class PollTimerPollerTests {
         @Test
         public void returnsTrue_ifSupplierReturnsTrue_beforeTimerExpires() {
             context.checking(new Expectations() {{ // @formatter:off
-                atLeast(4).of(supplier).getAsBoolean(); will(onConsecutiveCalls(
-                                                                returnValue(false),
-                                                                returnValue(false),
-                                                                returnValue(false),
-                                                                returnValue(true)
-                ));
-                allowing(timer).isExpired(); will(returnValue(false));
+                allowing(supplier).getAsBoolean();
+                    will(onConsecutiveCalls(
+                            returnValue(false),
+                            returnValue(false),
+                            returnValue(false),
+                            returnValue(true)));
+                allowing(timer).isExpired();
+                    will(returnValue(false));
                 allowing(timer);
             }}); // @formatter:on
 
@@ -71,13 +75,14 @@ public class PollTimerPollerTests {
         @Test
         public void returnsFalse_ifTimerExpires_beforeSupplierReturnsTrue() {
             context.checking(new Expectations() {{ // @formatter:off
-                allowing(supplier).getAsBoolean(); will(returnValue(false));
-                atLeast(4).of(timer).isExpired(); will(onConsecutiveCalls(
-                                                            returnValue(false),
-                                                            returnValue(false),
-                                                            returnValue(false),
-                                                            returnValue(true)
-                ));
+                allowing(supplier).getAsBoolean();
+                    will(returnValue(false));
+                allowing(timer).isExpired();
+                    will(onConsecutiveCalls(
+                            returnValue(false),
+                            returnValue(false),
+                            returnValue(false),
+                            returnValue(true)));
                 allowing(timer);
             }}); // @formatter:on
 
@@ -89,14 +94,26 @@ public class PollTimerPollerTests {
             Sequence polling = context.sequence("polling");
 
             context.checking(new Expectations() {{ // @formatter:off
-                oneOf(supplier).getAsBoolean(); inSequence(polling); will(returnValue(false));
-                oneOf(timer).tick(); inSequence(polling);
-                oneOf(supplier).getAsBoolean(); inSequence(polling); will(returnValue(false));
-                oneOf(timer).tick(); inSequence(polling);
-                oneOf(supplier).getAsBoolean(); inSequence(polling); will(returnValue(false));
-                oneOf(timer).tick(); inSequence(polling);
-                oneOf(supplier).getAsBoolean(); inSequence(polling); will(returnValue(true));
-                allowing(timer).isExpired(); will(returnValue(false));
+                oneOf(supplier).getAsBoolean();
+                    inSequence(polling);
+                    will(returnValue(false));
+                oneOf(timer).tick();
+                    inSequence(polling);
+                oneOf(supplier).getAsBoolean();
+                    inSequence(polling);
+                    will(returnValue(false));
+                oneOf(timer).tick();
+                    inSequence(polling);
+                oneOf(supplier).getAsBoolean();
+                    inSequence(polling);
+                    will(returnValue(false));
+                oneOf(timer).tick();
+                    inSequence(polling);
+                oneOf(supplier).getAsBoolean();
+                    inSequence(polling);
+                    will(returnValue(true));
+                allowing(timer).isExpired();
+                    will(returnValue(false));
                 allowing(timer);
             }}); // @formatter:on
 

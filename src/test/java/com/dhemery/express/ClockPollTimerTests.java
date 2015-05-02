@@ -1,7 +1,10 @@
 package com.dhemery.express;
 
+import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.States;
+import org.jmock.api.Action;
+import org.jmock.api.Invocation;
 import org.jmock.auto.Auto;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -33,11 +36,11 @@ public class ClockPollTimerTests {
     public void setup() {
         timer = new ClockPollTimer(clock, sleeper);
         sleeperType.become("default");
-        context.checking(new Expectations() {{
+        context.checking(new Expectations() {{ // @formatter:off
             allowing(sleeper).sleep(with(any(Duration.class)));
-            when(sleeperType.is("default"));
-            will(perform("clock.advance($0)").where("clock", clock));
-        }});
+                when(sleeperType.is("default"));
+                will(advanceTheClockByTheDuration());
+        }}); // @formatter:on
         sleeperType.become("default");
     }
 
@@ -116,10 +119,10 @@ public class ClockPollTimerTests {
         Duration expectedSleepDuration = pollingInterval.minus(delayBetweenStartAndTick);
 
         sleeperType.become("special");
-        context.checking(new Expectations() {{
-            allowing(sleeper).sleep(expectedSleepDuration);
-            will(perform("clock.advance($0)").where("clock", clock));
-        }});
+        context.checking(new Expectations() {{ // @formatter:off
+            oneOf(sleeper).sleep(expectedSleepDuration);
+                will(advanceTheClockByTheDuration());
+        }}); // @formatter:off
 
         timer.start(schedule);
         clock.advance(delayBetweenStartAndTick);
@@ -127,8 +130,8 @@ public class ClockPollTimerTests {
     }
 
     public static class ManualClock extends Clock {
-        private Instant now = Instant.now();
 
+        private Instant now = Instant.now();
         @Override
         public ZoneId getZone() {
             return null;
@@ -147,5 +150,21 @@ public class ClockPollTimerTests {
         public void advance(Duration amountToAdvance) {
             now = now.plus(amountToAdvance);
         }
+    }
+
+    private Action advanceTheClockByTheDuration() {
+        return new Action() {
+            @Override
+            public Object invoke(Invocation invocation) throws Throwable {
+                Duration sleepDuration = (Duration)invocation.getParameter(0);
+                clock.advance(sleepDuration);
+                return null;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("advance the clock by the sleep duration");
+            }
+        };
     }
 }
