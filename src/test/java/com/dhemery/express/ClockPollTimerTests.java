@@ -122,7 +122,7 @@ public class ClockPollTimerTests {
         context.checking(new Expectations() {{ // @formatter:off
             oneOf(sleeper).sleep(expectedSleepDuration);
                 will(advanceTheClockByTheDuration());
-        }}); // @formatter:off
+        }}); // @formatter:on
 
         timer.start(schedule);
         clock.advance(delayBetweenStartAndTick);
