@@ -7,7 +7,7 @@ public class Throwables {
         } catch (Throwable thrown) {
             return thrown;
         }
-        throw new AssertionError("The assertion did not throw an AssertionError");
+        throw new AssertionError("The assertion did not throw anything");
     }
 
     public static String[] linesOfMessageThrownBy(Runnable runnable) {
