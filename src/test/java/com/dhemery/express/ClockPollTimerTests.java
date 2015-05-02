@@ -1,6 +1,8 @@
 package com.dhemery.express;
 
 import org.jmock.Expectations;
+import org.jmock.States;
+import org.jmock.auto.Auto;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
@@ -24,10 +26,19 @@ public class ClockPollTimerTests {
 
     @Mock
     Sleeper sleeper;
+    @Auto
+    States sleeperType;
 
     @Before
     public void setup() {
         timer = new ClockPollTimer(clock, sleeper);
+        sleeperType.become("default");
+        context.checking(new Expectations() {{
+            allowing(sleeper).sleep(with(any(Duration.class)));
+            when(sleeperType.is("default"));
+            will(perform("clock.advance($0)").where("clock", clock));
+        }});
+        sleeperType.become("default");
     }
 
     @Test
@@ -54,7 +65,6 @@ public class ClockPollTimerTests {
     @Test
     public void isNotExpired_ifTimeElapsedSinceStart_isLessThanPollDuration() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3).plus(Duration.ofNanos(1)));
-        givenThat(sleepingAdvancesTheClock());
         timer.start(schedule);
         timer.tick();
         timer.tick();
@@ -65,7 +75,6 @@ public class ClockPollTimerTests {
     @Test
     public void isExpired_ifTimeElapsedSinceStart_isExactlyPollDuration() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3));
-        givenThat(sleepingAdvancesTheClock());
         timer.start(schedule);
         timer.tick();
         timer.tick();
@@ -75,7 +84,6 @@ public class ClockPollTimerTests {
 
     @Test
     public void isExpired_ifTimeElapsedSinceStart_exceedsPollDuration() {
-        givenThat(sleepingAdvancesTheClock());
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3).minus(Duration.ofNanos(1)));
         timer.start(schedule);
         timer.tick();
@@ -89,6 +97,7 @@ public class ClockPollTimerTests {
         final Duration pollingInterval = Duration.ofSeconds(1);
         PollingSchedule schedule = new PollingSchedule(pollingInterval, Duration.ofSeconds(3));
 
+        sleeperType.become("special");
         context.checking(new Expectations() {{
             exactly(3).of(sleeper).sleep(with(any(Duration.class)));
         }});
@@ -106,6 +115,7 @@ public class ClockPollTimerTests {
         Duration delayBetweenStartAndTick = Duration.ofMillis(123);
         Duration expectedSleepDuration = pollingInterval.minus(delayBetweenStartAndTick);
 
+        sleeperType.become("special");
         context.checking(new Expectations() {{
             allowing(sleeper).sleep(expectedSleepDuration);
             will(perform("clock.advance($0)").where("clock", clock));
@@ -117,7 +127,6 @@ public class ClockPollTimerTests {
     }
 
     public static class ManualClock extends Clock {
-
         private Instant now = Instant.now();
 
         @Override
@@ -138,17 +147,5 @@ public class ClockPollTimerTests {
         public void advance(Duration amountToAdvance) {
             now = now.plus(amountToAdvance);
         }
-
-    }
-
-    private void givenThat(Expectations expectations) {
-        context.checking(expectations);
-    }
-
-    private Expectations sleepingAdvancesTheClock() {
-        return new Expectations() {{
-            allowing(sleeper).sleep(with(any(Duration.class)));
-            will(perform("clock.advance($0)").where("clock", clock));
-        }};
     }
 }
