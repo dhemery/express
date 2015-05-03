@@ -41,63 +41,6 @@ public class PolledExpressionsWaitUntilTests {
 
 
     @Test
-    public void defaultScheduleWithSubjectFunctionPredicate_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
-        PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(21), Duration.ofSeconds(34));
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
-                return new PollEvaluationResult<>(null, true);
-            }
-
-            @Override
-            public PollingSchedule eventually() {
-                return defaultSchedule;
-            }
-        };
-        expressions.waitUntil("subject", FUNCTION, PREDICATE);
-    }
-
-    @Test(expected = PollTimeoutException.class)
-    public void defaultScheduleWithSubjectFunctionPredicate_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
-        PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(34), Duration.ofSeconds(55));
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
-                return new PollEvaluationResult<>(null, false);
-            }
-
-            @Override
-            public PollingSchedule eventually() {
-                return defaultSchedule;
-            }
-        };
-        expressions.waitUntil("subject", FUNCTION, PREDICATE);
-    }
-
-    @Test
-    public void defaultScheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
-        PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(55), Duration.ofSeconds(89));
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
-                return new PollEvaluationResult<>(function.apply(subject), false);
-            }
-
-            @Override
-            public PollingSchedule eventually() {
-                return defaultSchedule;
-            }
-        };
-
-        String message = messageThrownBy(() -> expressions.waitUntil("subject", FUNCTION, PREDICATE));
-
-        assertThat(message, is(Diagnosis.of(defaultSchedule, "subject", FUNCTION, PREDICATE, FUNCTION.apply("subject"))));
-    }
-
-    @Test
     public void defaultScheduleWithSubjectFunctionMatcher_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(89), Duration.ofSeconds(144));
         PolledExpressions expressions = new ExpressionsPolledBy(poller) {
@@ -152,45 +95,6 @@ public class PolledExpressionsWaitUntilTests {
         String message = messageThrownBy(() -> expressions.waitUntil("subject", FUNCTION, MATCHER));
 
         assertThat(message, is(Diagnosis.of(defaultSchedule, "subject", FUNCTION, MATCHER, FUNCTION.apply("subject"))));
-    }
-
-    @Test
-    public void scheduleWithSubjectFunctionPredicate_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
-                return new PollEvaluationResult<>(null, true);
-            }
-        };
-        expressions.waitUntil(schedule, "subject", FUNCTION, PREDICATE);
-    }
-
-    @Test(expected = PollTimeoutException.class)
-    public void scheduleWithSubjectFunctionPredicate_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
-                return new PollEvaluationResult<>(null, false);
-            }
-        };
-        expressions.waitUntil(schedule, "subject", FUNCTION, PREDICATE);
-    }
-
-    @Test
-    public void scheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-            PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
-                return new PollEvaluationResult<>(function.apply(subject), false);
-            }
-        };
-
-        String message = messageThrownBy(() -> expressions.waitUntil(schedule, "subject", FUNCTION, PREDICATE));
-
-        assertThat(message, is(Diagnosis.of(schedule, "subject", FUNCTION, PREDICATE, FUNCTION.apply("subject"))));
     }
 
     @Test

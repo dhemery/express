@@ -5,6 +5,7 @@ import com.dhemery.express.helpers.PolledExpressionTestSetup;
 import com.dhemery.express.helpers.PollingSchedules;
 import org.hamcrest.SelfDescribing;
 import org.jmock.Expectations;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -85,10 +86,17 @@ public class SubjectPredicatePolledExpressionTests {
     }
 
     public static class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
+        private PollingSchedule defaultSchedule;
+
+        @Before
+        public void setUp() {
+            defaultSchedule = expressions.eventually();
+        }
+
         @Test
         public void returnsWithoutThrowing_ifPollReturnsTrue() {
             context.checking(new Expectations() {{
-                allowing(poller).poll(expressions.eventually(), "subject", PREDICATE);
+                allowing(poller).poll(defaultSchedule, "subject", PREDICATE);
                 will(returnValue(true));
             }});
 
@@ -98,7 +106,7 @@ public class SubjectPredicatePolledExpressionTests {
         @Test(expected = PollTimeoutException.class)
         public void throwsPollTimeoutException_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
-                allowing(poller).poll(expressions.eventually(), "subject", PREDICATE);
+                allowing(poller).poll(defaultSchedule, "subject", PREDICATE);
                 will(returnValue(false));
             }});
 
