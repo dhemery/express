@@ -7,9 +7,9 @@ import java.util.Optional;
 import static java.lang.String.format;
 
 /**
- * A polling schedule with interval and duration defined by system properties.
- * If the system properties omit the interval property, the default interval is 1 second.
- * If the system properties omit the duration property, the default duration is 1 minute.
+ * A polling schedule with interval and duration defined by system properties. If the system properties omit the
+ * interval property, the default interval is 1 second. If the system properties omit the duration property, the default
+ * duration is 1 minute.
  */
 // This class is protected to prevent populating the instance before
 // Poller.eventually() asks for it.

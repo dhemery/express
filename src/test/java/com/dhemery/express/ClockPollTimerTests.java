@@ -19,7 +19,6 @@ import java.time.ZoneId;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.jmock.lib.script.ScriptedAction.perform;
 
 public class ClockPollTimerTests {
     @Rule
@@ -132,6 +131,7 @@ public class ClockPollTimerTests {
     public static class ManualClock extends Clock {
 
         private Instant now = Instant.now();
+
         @Override
         public ZoneId getZone() {
             return null;
@@ -156,7 +156,7 @@ public class ClockPollTimerTests {
         return new Action() {
             @Override
             public Object invoke(Invocation invocation) throws Throwable {
-                Duration sleepDuration = (Duration)invocation.getParameter(0);
+                Duration sleepDuration = (Duration) invocation.getParameter(0);
                 clock.advance(sleepDuration);
                 return null;
             }

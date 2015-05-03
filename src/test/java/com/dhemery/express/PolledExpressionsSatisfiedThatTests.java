@@ -1,8 +1,12 @@
 package com.dhemery.express;
 
-import com.dhemery.express.helpers.TestablePolledExpressions;
+import com.dhemery.express.helpers.ExpressionsPolledBy;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
+import org.jmock.auto.Mock;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -22,9 +26,22 @@ public class PolledExpressionsSatisfiedThatTests {
     private static final SelfDescribingPredicate<String> A_PREDICATE = Named.predicate("predicate", t -> true);
     private static final String A_SUBJECT = "";
 
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
+    @Mock
+    Poller poller;
+
+    PolledExpressions expressions;
+
+    @Before
+    public void setup() {
+        expressions = new ExpressionsPolledBy(poller);
+    }
+
     @Test
     public void withBooleanSupplier_returnTrue_ifPollReturnsTrue() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -37,7 +54,7 @@ public class PolledExpressionsSatisfiedThatTests {
 
     @Test
     public void withBooleanSupplier_returnsFalse_ifPollReturnsFalse() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -50,7 +67,7 @@ public class PolledExpressionsSatisfiedThatTests {
 
     @Test
     public void withSubjectPredicate_returnsTrue_ifPollReturnsTrue() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -63,7 +80,7 @@ public class PolledExpressionsSatisfiedThatTests {
 
     @Test
     public void withSubjectPredicate_returnsFalse_ifPollReturnsFalse() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -76,7 +93,7 @@ public class PolledExpressionsSatisfiedThatTests {
 
     @Test
     public void withSubjectFunctionPredicate_returnsTrue_ifPollEvaluationResultIsSatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -89,7 +106,7 @@ public class PolledExpressionsSatisfiedThatTests {
 
     @Test
     public void withSubjectFunctionPredicate_returnsFalse_ifPollEvaluationResultIsDissatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -103,7 +120,7 @@ public class PolledExpressionsSatisfiedThatTests {
 
     @Test
     public void withSubjectFunctionMatcher_returnsTrue_ifPollEvaluationResultIsSatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -116,7 +133,7 @@ public class PolledExpressionsSatisfiedThatTests {
 
     @Test
     public void withSubjectFunctionMatcher_returnsFalse_ifPollEvaluationResultIsDissatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {

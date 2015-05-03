@@ -13,41 +13,41 @@ public class NamedFunctionTests {
 
     @Test
     public void apply_delegatesToTheUnderlyingConsumer() {
-        Function<String,String> function = new NamedFunction<>(IGNORED_DESCRIPTION, String::toUpperCase);
+        Function<String, String> function = new NamedFunction<>(IGNORED_DESCRIPTION, String::toUpperCase);
         assertThat(function.apply("foo"), is("FOO"));
     }
 
     @Test
     public void describesItselfWithTheGivenName() {
-        Function<String,Integer> length = new NamedFunction<>("length", String::length);
+        Function<String, Integer> length = new NamedFunction<>("length", String::length);
         assertThat(length.toString(), is("length"));
     }
 
     @Test
     public void andThen_yieldsAConsumerThatAppliesAnotherFunctionToTheResultOfThisFunction() {
-        Function<String,Integer> length = new NamedFunction<>(IGNORED_DESCRIPTION, String::length);
-        Function<Integer,Integer> negated = new NamedFunction<>(IGNORED_DESCRIPTION, i -> -i);
+        Function<String, Integer> length = new NamedFunction<>(IGNORED_DESCRIPTION, String::length);
+        Function<Integer, Integer> negated = new NamedFunction<>(IGNORED_DESCRIPTION, i -> -i);
         Assert.assertThat(length.andThen(negated).apply("foo"), is(-3));
     }
 
     @Test
     public void andThen_yieldsAConsumerNamedToDescribeItsComposition() {
-        Function<String,Integer> length = new NamedFunction<>("length", String::length);
-        Function<Integer,Integer> negation = new NamedFunction<>("negation", i -> -i);
+        Function<String, Integer> length = new NamedFunction<>("length", String::length);
+        Function<Integer, Integer> negation = new NamedFunction<>("negation", i -> -i);
         Assert.assertThat(length.andThen(negation).toString(), is("(negation of length)"));
     }
 
     @Test
     public void compose_yieldsAConsumerThatAppliesThisFunctionToTheResultOfAnotherFunction() {
-        Function<String,Integer> length = new NamedFunction<>(IGNORED_DESCRIPTION, String::length);
-        Function<Integer,Integer> negation = new NamedFunction<>(IGNORED_DESCRIPTION, i -> -i);
+        Function<String, Integer> length = new NamedFunction<>(IGNORED_DESCRIPTION, String::length);
+        Function<Integer, Integer> negation = new NamedFunction<>(IGNORED_DESCRIPTION, i -> -i);
         Assert.assertThat(negation.compose(length).apply("foo"), is(-3));
     }
 
     @Test
     public void compose_yieldsAConsumerNamedToDescribeItsComposition() {
-        Function<String,Integer> length = new NamedFunction<>("length", String::length);
-        Function<Integer,Integer> negation = new NamedFunction<>("negation", i -> -i);
+        Function<String, Integer> length = new NamedFunction<>("length", String::length);
+        Function<Integer, Integer> negation = new NamedFunction<>("negation", i -> -i);
         Assert.assertThat(negation.compose(length).toString(), is("(negation of length)"));
     }
 }

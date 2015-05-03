@@ -3,8 +3,7 @@ package com.dhemery.express;
 import java.util.function.BooleanSupplier;
 
 /**
- * A boolean supplier with a fixed name. The {@code toString()} method returns
- * the fixed name.
+ * A boolean supplier with a fixed name. The {@code toString()} method returns the fixed name.
  */
 public class NamedBooleanSupplier extends Named implements SelfDescribingBooleanSupplier {
     private final BooleanSupplier supplier;

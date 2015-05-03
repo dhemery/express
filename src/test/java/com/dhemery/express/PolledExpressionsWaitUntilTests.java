@@ -1,8 +1,12 @@
 package com.dhemery.express;
 
-import com.dhemery.express.helpers.TestablePolledExpressions;
+import com.dhemery.express.helpers.ExpressionsPolledBy;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
+import org.jmock.auto.Mock;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Duration;
@@ -23,10 +27,23 @@ public class PolledExpressionsWaitUntilTests {
     private static final SelfDescribingPredicate<String> A_PREDICATE = Named.predicate("predicate", t -> true);
     private static final String A_SUBJECT = "";
 
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
+    @Mock
+    Poller poller;
+
+    PolledExpressions expressions;
+
+    @Before
+    public void setup() {
+        expressions = new ExpressionsPolledBy(poller);
+    }
+
     @Test
     public void defaultScheduleWithBooleanSupplier_returnsWithoutThrowing_ifPollReturnsTrue() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(2));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -44,7 +61,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test(expected = PollTimeoutException.class)
     public void defaultScheduleWithBooleanSupplier_throwsPollTimeoutException_ifPollReturnsFalse() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(2), Duration.ofSeconds(3));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -62,7 +79,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test
     public void defaultScheduleWithBooleanSupplier_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(3), Duration.ofSeconds(5));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -84,7 +101,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test
     public void defaultScheduleWithSubjectPredicate_returnsWithoutThrowing_ifPollReturnsTrue() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(5), Duration.ofSeconds(8));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -102,7 +119,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test(expected = PollTimeoutException.class)
     public void defaultScheduleWithSubjectPredicate_throwsPollTimeoutException_ifPollReturnsFalse() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(8), Duration.ofSeconds(13));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -120,7 +137,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test
     public void defaultScheduleWithSubjectPredicate_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(13), Duration.ofSeconds(21));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -143,7 +160,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test
     public void defaultScheduleWithSubjectFunctionPredicate_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(21), Duration.ofSeconds(34));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -161,7 +178,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test(expected = PollTimeoutException.class)
     public void defaultScheduleWithSubjectFunctionPredicate_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(34), Duration.ofSeconds(55));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -179,7 +196,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test
     public void defaultScheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(55), Duration.ofSeconds(89));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -204,7 +221,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test
     public void defaultScheduleWithSubjectFunctionMatcher_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(89), Duration.ofSeconds(144));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -222,7 +239,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test(expected = PollTimeoutException.class)
     public void defaultScheduleWithSubjectFunctionMatcher_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(144), Duration.ofSeconds(233));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -240,7 +257,7 @@ public class PolledExpressionsWaitUntilTests {
     @Test
     public void defaultScheduleWithSubjectFunctionMatcher_exceptionMessageIncludesDiagnosis() {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(233), Duration.ofSeconds(337));
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -264,7 +281,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithBooleanSupplier_returnsWithoutThrowing_ifPollReturnsTrue() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -276,7 +293,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test(expected = PollTimeoutException.class)
     public void scheduleWithBooleanSupplier_throwsPollTimeoutException_ifPollReturnsFalse() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -288,7 +305,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithBooleanSupplier_exceptionMessageIncludesDiagnosis() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <C extends SelfDescribing & BooleanSupplier>
             boolean poll(PollingSchedule schedule, C supplier) {
@@ -305,7 +322,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithSubjectPredicate_returnsWithoutThrowing_ifPollReturnsTrue() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -317,7 +334,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test(expected = PollTimeoutException.class)
     public void scheduleWithSubjectPredicate_throwsPollTimeoutException_ifPollReturnsFalse() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -329,7 +346,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithSubjectPredicate_exceptionMessageIncludesDiagnosis() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, P extends SelfDescribing & Predicate<? super T>>
             boolean poll(PollingSchedule schedule, T subject, P predicate) {
@@ -347,7 +364,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithSubjectFunctionPredicate_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -359,7 +376,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test(expected = PollTimeoutException.class)
     public void scheduleWithSubjectFunctionPredicate_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -371,7 +388,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -391,7 +408,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithSubjectFunctionMatcher_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -403,7 +420,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test(expected = PollTimeoutException.class)
     public void scheduleWithSubjectFunctionMatcher_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -415,7 +432,7 @@ public class PolledExpressionsWaitUntilTests {
 
     @Test
     public void scheduleWithSubjectFunctionMatcher_exceptionMessageIncludesDiagnosis() {
-        PolledExpressions expressions = new TestablePolledExpressions() {
+        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
             @Override
             public <T, R, F extends SelfDescribing & Function<? super T, R>>
             PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {

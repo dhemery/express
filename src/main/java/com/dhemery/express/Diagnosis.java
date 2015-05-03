@@ -23,7 +23,7 @@ public class Diagnosis {
         return description.toString();
     }
 
-    public static <T>  String of(T subject, Matcher<? super T> matcher) {
+    public static <T> String of(T subject, Matcher<? super T> matcher) {
         Description description = new StringDescription();
         description
                 .appendText(System.lineSeparator())

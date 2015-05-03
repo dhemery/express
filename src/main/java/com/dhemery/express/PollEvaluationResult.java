@@ -11,8 +11,7 @@ public class PollEvaluationResult<T> {
     private final boolean satisfied;
 
     /**
-     * Creates a poll evaluation result indicating whether the given value
-     * satisfied the poll criteria.
+     * Creates a poll evaluation result indicating whether the given value satisfied the poll criteria.
      *
      * @param value
      *         the value evaluated by the poll evaluation
@@ -36,8 +35,7 @@ public class PollEvaluationResult<T> {
     /**
      * Indicates whether the value satisfied the poll criteria
      *
-     * @return {@code true} if the value satisfied the poll criteria, otherwise
-     * {@code false}
+     * @return {@code true} if the value satisfied the poll criteria, otherwise {@code false}
      */
     boolean isSatisfied() {
         return satisfied;

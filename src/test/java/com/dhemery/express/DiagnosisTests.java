@@ -18,7 +18,7 @@ public class DiagnosisTests {
 
     @Test
     public void withBooleanSupplier_diagnosisDescribes_supplier() {
-        SelfDescribingBooleanSupplier supplier =  A_BOOLEAN_SUPPLIER;
+        SelfDescribingBooleanSupplier supplier = A_BOOLEAN_SUPPLIER;
 
         String[] expectedDiagnosis = new String[]{
                 "",
@@ -52,7 +52,7 @@ public class DiagnosisTests {
         String subject = "subject";
         SelfDescribingPredicate<String> predicate = Named.predicate("an empty string", String::isEmpty);
 
-        String[] expectedDiagnosis = new String[] {
+        String[] expectedDiagnosis = new String[]{
                 "",
                 "Expected: " + StringDescription.toString(predicate),
                 "     but: was " + new StringDescription().appendValue(subject)

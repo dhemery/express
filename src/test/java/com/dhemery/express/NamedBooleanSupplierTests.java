@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.is;
 public class NamedBooleanSupplierTests {
     private static final String ARBITRARY_NAME = null;
     private static final BooleanSupplier ALWAYS_SATISFIED = () -> true;
-    private  static final BooleanSupplier NEVER_SATISFIED = () -> false;
+    private static final BooleanSupplier NEVER_SATISFIED = () -> false;
 
     @Test
     public void delegatesIsSatisfiedToTheUnderlyingBooleanSupplier() {

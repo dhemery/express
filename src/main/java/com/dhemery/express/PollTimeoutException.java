@@ -3,11 +3,8 @@ package com.dhemery.express;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 
-import java.util.function.BooleanSupplier;
-
 /**
- * Indicates that a polling schedule expired before the polled condition was
- * satisfied.
+ * Indicates that a polling schedule expired before the polled condition was satisfied.
  */
 public class PollTimeoutException extends RuntimeException {
     public PollTimeoutException(PollingSchedule schedule, SelfDescribing condition) {

@@ -57,8 +57,7 @@ public interface Expressions {
     }
 
     /**
-     * Assert that the predicate accepts the value that the function derives
-     * from the subject.
+     * Assert that the predicate accepts the value that the function derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -74,12 +73,11 @@ public interface Expressions {
     static <T, R, F extends Function<? super T, R> & SelfDescribing, P extends Predicate<? super R> & SelfDescribing>
     void assertThat(T subject, F function, P predicate) {
         R value = function.apply(subject);
-        if (!predicate.test(value))  throw new AssertionError(Diagnosis.of(subject, function, predicate, value));
+        if (!predicate.test(value)) throw new AssertionError(Diagnosis.of(subject, function, predicate, value));
     }
 
     /**
-     * Assert that the matcher accepts the value that the function derives from
-     * the subject.
+     * Assert that the matcher accepts the value that the function derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -104,8 +102,7 @@ public interface Expressions {
      * @param condition
      *         the condition to evaluate
      */
-    static
-    boolean satisfiedThat(BooleanSupplier condition) {
+    static boolean satisfiedThat(BooleanSupplier condition) {
         return condition.getAsBoolean();
     }
 
@@ -140,8 +137,7 @@ public interface Expressions {
     }
 
     /**
-     * Indicate whether the predicate accepts the value that the function
-     * derives from the subject.
+     * Indicate whether the predicate accepts the value that the function derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -160,8 +156,7 @@ public interface Expressions {
     }
 
     /**
-     * Indicate whether the matcher accepts the value that the function derives
-     * from the subject.
+     * Indicate whether the matcher accepts the value that the function derives from the subject.
      *
      * @param <T>
      *         the type of the subject

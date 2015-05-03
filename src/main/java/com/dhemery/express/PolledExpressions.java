@@ -12,12 +12,8 @@ import java.util.function.Predicate;
  *
  * @see Expressions
  * @see Poller
- * @see Named
- * @see NamedBooleanSupplier
- * @see NamedPredicate
- * @see NamedFunction
  */
-public interface PolledExpressions extends Poller, Timeframes {
+public interface PolledExpressions extends Poller, Eventually {
     /**
      * Assert that the condition is satisfied within the schedule's duration.
      *
@@ -142,13 +138,13 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param predicate
      *         the predicate that evaluates the derived value
+     *
      * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
@@ -166,13 +162,13 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param matcher
      *         the matcher that evaluates the derived value
+     *
      * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
@@ -290,11 +286,11 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the subject
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param predicate
      *         the predicate that evaluates the subject
+     *
      * @throws PollTimeoutException
      *         if the schedule's duration expires before the condition is satisfied
      */
@@ -313,13 +309,13 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param predicate
      *         the predicate that evaluates the derived value
+     *
      * @throws PollTimeoutException
      *         if the schedule's duration expires before the condition is satisfied
      */
@@ -339,13 +335,13 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param matcher
      *         the matcher that evaluates the derived value
+     *
      * @throws PollTimeoutException
      *         if the schedule's duration expires before the condition is satisfied
      */
@@ -433,11 +429,11 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the subject
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param predicate
      *         the predicate that evaluates the subject
+     *
      * @throws PollTimeoutException
      *         if the schedule's duration expires before the condition is satisfied
      */
@@ -456,13 +452,13 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param predicate
      *         the predicate that evaluates the derived value
+     *
      * @throws PollTimeoutException
      *         if the schedule's duration expires before the condition is satisfied
      */
@@ -482,13 +478,13 @@ public interface PolledExpressions extends Poller, Timeframes {
      *         the type of the result of the function
      * @param schedule
      *         the schedule that governs the polling
-     *
      * @param subject
      *         the subject to evaluate
      * @param function
      *         the function that derives the value of interest
      * @param matcher
      *         the matcher that evaluates the derived value
+     *
      * @throws PollTimeoutException
      *         if the schedule's duration expires before the condition is satisfied
      */
