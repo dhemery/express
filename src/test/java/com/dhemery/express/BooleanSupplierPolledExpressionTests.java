@@ -81,7 +81,7 @@ public class BooleanSupplierPolledExpressionTests {
         }
     }
 
-    public static class WhenWithDefaultSchedule extends PolledExpressionTestSetup {
+    public static class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule defaultSchedule;
 
         @Before
@@ -122,7 +122,7 @@ public class BooleanSupplierPolledExpressionTests {
         }
     }
 
-    public static class WaitUntilWithExplicitSchedule extends PolledExpressionTestSetup {
+    public static class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule schedule = PollingSchedules.random();
 
         @Test
