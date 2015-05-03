@@ -16,10 +16,12 @@ import static com.dhemery.express.helpers.Actions.appendItsStringValue;
 import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOfTheItem;
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 
 // TODO: Distribute to parameter-based test classes
+// TODO: Mock only poller
 public class PolledExpressionsWhenTests {
     private static final String SUBJECT = "subject";
     private static final String FUNCTION_VALUE = "function value";
@@ -27,9 +29,9 @@ public class PolledExpressionsWhenTests {
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Mock Poller poller;
     @Mock Eventually eventually;
-    @Mock SelfDescribingPredicate<String> predicate;
-    @Mock SelfDescribingFunction<String, String> function;
-    @Mock Matcher<String> matcher;
+    SelfDescribingPredicate<String> predicate = Named.predicate("predicate", t -> true);
+    SelfDescribingFunction<String, String> function = Named.function("function", String::toUpperCase);
+    Matcher<Object> matcher = anything();
 
     PolledExpressions expressions;
     PollingSchedule defaultPollingSchedule;

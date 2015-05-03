@@ -42,7 +42,7 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
      * predicate, the other predicate, and their composition. </p>
      */
     @Override
-    public Predicate<T> and(Predicate<? super T> other) {
+    public SelfDescribingPredicate<T> and(Predicate<? super T> other) {
         return new NamedPredicate<>(format("(%s and %s)", this, other), predicate.and(other));
     }
 
@@ -51,7 +51,7 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
      * predicate, the other predicate, and their composition. </p>
      */
     @Override
-    public Predicate<T> or(Predicate<? super T> other) {
+    public SelfDescribingPredicate<T> or(Predicate<? super T> other) {
         return new NamedPredicate<>(format("(%s or %s)", this, other), predicate.or(other));
     }
 
@@ -60,7 +60,7 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
      * predicate, with the word "not" prepended. </p>
      */
     @Override
-    public Predicate<T> negate() {
+    public SelfDescribingPredicate<T> negate() {
         return new NamedPredicate<>(format("(not %s)", this), predicate.negate());
     }
 }

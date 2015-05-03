@@ -15,6 +15,7 @@ import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+// TODO: Mock only poller
 public class SubjectFunctionPredicatePolledExpressionTests {
     private static final String SUBJECT = "subject";
     private static final String FUNCTION_VALUE = "function value";

@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 // TODO: Distribute to parameter-based test classes
+// TODO: Mock only poller
 public class SubjectPredicatePolledSatisfactionTests {
     private static final String SUBJECT = "subject";
 

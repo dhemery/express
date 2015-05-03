@@ -19,6 +19,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 
+// TODO: Distribute to parameter-based test classes
+// TODO: Mock only poller
 public class PolledExpressionsWaitUntilTests {
     private static final SelfDescribingBooleanSupplier A_BOOLEAN_SUPPLIER = Named.booleanSupplier("boolean supplier", () -> false);
     private static final SelfDescribingFunction<String, String> A_FUNCTION = Named.function("function", Function.identity());
