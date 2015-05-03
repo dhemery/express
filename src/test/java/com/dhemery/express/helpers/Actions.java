@@ -12,34 +12,7 @@ import java.util.function.Predicate;
 
 import static org.hamcrest.Matchers.equalTo;
 
-public class FunctionExpectations {
-    public static Expectations getAsBooleanReturns(final BooleanSupplier supplier, boolean returnValue) {
-        return new Expectations() {{ //@formatter:off
-            allowing(supplier).getAsBoolean();
-                will(returnValue(returnValue));
-        }}; //@formatter:on
-    }
-
-    public static Expectations matchesReturns(Matcher<String> matcher, String input, boolean returnValue) {
-        return new Expectations() {{ //@formatter:off
-            allowing(same(matcher)).method("matches").with(equalTo(input));
-                will(returnValue( returnValue));
-        }}; //@formatter:on
-    }
-
-    public static Expectations testReturns(Predicate<String> predicate, String input, boolean returnValue) {
-        return new Expectations() {{ //@formatter:off
-            allowing(predicate).test(input);
-                will(returnValue( returnValue));
-        }}; //@formatter:on
-    }
-
-    public static Expectations applyReturns(Function<String, String> function, String input, String returnValue) {
-        return new Expectations() {{ //@formatter:off
-            allowing(function).apply(input);
-                will(returnValue( returnValue));
-        }}; //@formatter:on
-    }
+public class Actions {
 
     public static Action appendItsStringValue() {
         return new Action() {
