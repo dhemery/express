@@ -28,9 +28,6 @@ public class BooleanSupplierAssertionTests {
         context.checking(new Expectations() {{
             allowing(any(SelfDescribing.class)).method("describeTo");
             will(appendItsStringValue());
-
-            allowing(any(Matcher.class)).method("describeMismatch").with(any(String.class), any(Description.class));
-            will(appendTheMismatchDescriptionOfTheItem());
         }});
     }
 

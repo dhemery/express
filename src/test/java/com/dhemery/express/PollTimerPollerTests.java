@@ -2,6 +2,7 @@ package com.dhemery.express;
 
 import org.jmock.Expectations;
 import org.jmock.Sequence;
+import org.jmock.States;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,92 +31,97 @@ public class PollTimerPollerTests {
 
         @Test
         public void startsTimerWithSchedule_beforeCheckingForExpiration() {
-            Sequence polling = context.sequence("polling");
+            States poll = context.states("poll").startsAs("new");
 
-            context.checking(new Expectations() {{ // @formatter:off
+            context.checking(new Expectations() {{
                 oneOf(timer).start(schedule);
-                    inSequence(polling);
+                when(poll.is("new"));
+                then(poll.is("running"));
+
                 allowing(timer).isExpired();
-                    inSequence(polling);
-                    will(returnValue(true));
-            }}); // @formatter:on
+                when(poll.is("running"));
+                will(returnValue(true));
+            }});
 
             poller.poll(schedule, supplier);
         }
 
         @Test
         public void returnsFalse_withoutEvaluatingSupplier_ifTimerIsAlreadyExpiredAtStartOfPoll() {
-            context.checking(new Expectations() {{ // @formatter:off
+            context.checking(new Expectations() {{
                 allowing(timer).isExpired();
-                    will(returnValue(true));
+                will(returnValue(true));
+
                 never(supplier);
                 allowing(timer);
-            }}); // @formatter:on
+            }});
 
             poller.poll(schedule, supplier);
         }
 
         @Test
         public void returnsTrue_ifSupplierReturnsTrue_beforeTimerExpires() {
-            context.checking(new Expectations() {{ // @formatter:off
+            context.checking(new Expectations() {{
                 allowing(supplier).getAsBoolean();
-                    will(onConsecutiveCalls(
-                            returnValue(false),
-                            returnValue(false),
-                            returnValue(false),
-                            returnValue(true)));
+                will(onConsecutiveCalls(
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(true)));
+
                 allowing(timer).isExpired();
-                    will(returnValue(false));
+                will(returnValue(false));
+
                 allowing(timer);
-            }}); // @formatter:on
+            }});
 
             assertThat(poller.poll(schedule, supplier), is(true));
         }
 
         @Test
         public void returnsFalse_ifTimerExpires_beforeSupplierReturnsTrue() {
-            context.checking(new Expectations() {{ // @formatter:off
+            context.checking(new Expectations() {{
                 allowing(supplier).getAsBoolean();
-                    will(returnValue(false));
+                will(returnValue(false));
+
                 allowing(timer).isExpired();
-                    will(onConsecutiveCalls(
-                            returnValue(false),
-                            returnValue(false),
-                            returnValue(false),
-                            returnValue(true)));
+                will(onConsecutiveCalls(
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(true)));
+
                 allowing(timer);
-            }}); // @formatter:on
+            }});
 
             assertThat(poller.poll(schedule, supplier), is(false));
         }
 
         @Test
         public void ticksTimer_betweenEvaluations() {
-            Sequence polling = context.sequence("polling");
+            States poll = context.states("poll").startsAs("evaluating");
 
-            context.checking(new Expectations() {{ // @formatter:off
-                oneOf(supplier).getAsBoolean();
-                    inSequence(polling);
-                    will(returnValue(false));
-                oneOf(timer).tick();
-                    inSequence(polling);
-                oneOf(supplier).getAsBoolean();
-                    inSequence(polling);
-                    will(returnValue(false));
-                oneOf(timer).tick();
-                    inSequence(polling);
-                oneOf(supplier).getAsBoolean();
-                    inSequence(polling);
-                    will(returnValue(false));
-                oneOf(timer).tick();
-                    inSequence(polling);
-                oneOf(supplier).getAsBoolean();
-                    inSequence(polling);
-                    will(returnValue(true));
+            context.checking(new Expectations() {{
+                allowing(supplier).getAsBoolean();
+                when(poll.is("evaluating"));
+                will(onConsecutiveCalls(
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(false),
+                        returnValue(true)
+                ));
+                then(poll.is("evaluated"));
+
+                allowing(timer).tick();
+                when(poll.is("evaluated"));
+                then(poll.is("evaluating"));
+
                 allowing(timer).isExpired();
-                    will(returnValue(false));
+                will(returnValue(false));
+
                 allowing(timer);
-            }}); // @formatter:on
+            }});
 
             poller.poll(schedule, supplier);
         }

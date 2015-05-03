@@ -27,11 +27,8 @@ public class PolledExpressionsWaitUntilTests {
     private static final SelfDescribingPredicate<String> A_PREDICATE = Named.predicate("predicate", t -> true);
     private static final String A_SUBJECT = "";
 
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
-
-    @Mock
-    Poller poller;
+    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Mock Poller poller;
 
     PolledExpressions expressions;
 
