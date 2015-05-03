@@ -317,7 +317,6 @@ public class AssertThatTests {
         public void errorMessageIncludesDiagnosis() {
             givenThat(pollReturns(schedule, SUBJECT, function, predicate, new PollEvaluationResult<>(FUNCTION_VALUE, false)));
 
-
             String message = messageThrownBy(() -> expressions.assertThat(schedule, SUBJECT, function, predicate));
 
             assertThat(message, is(Diagnosis.of(schedule, SUBJECT, function, predicate, FUNCTION_VALUE)));
