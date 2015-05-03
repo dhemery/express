@@ -29,7 +29,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Assert that the predicate accepts the subject within the schedule's duration.
+     * Assert that the predicate accepts the subject within the schedule's
+     * duration.
      *
      * @param <T>
      *         the type of the subject
@@ -47,8 +48,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Assert that the predicate accepts the value that the function derives from the subject within the schedule's
-     * duration.
+     * Assert that the predicate accepts the value that the function derives
+     * from the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
@@ -71,8 +72,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Assert that the matcher accepts the value that the function derives from the subject within the schedule's
-     * duration.
+     * Assert that the matcher accepts the value that the function derives from
+     * the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
@@ -95,14 +96,16 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Indicate whether the condition is satisfied within the schedule's duration.
+     * Indicate whether the condition is satisfied within the schedule's
+     * duration.
      *
      * @param schedule
      *         the schedule that governs the polling
      * @param condition
      *         the condition to satisfy
      *
-     * @return {@code true} if the condition is satisfied with the schedule's duration, and {@code false} otherwise.
+     * @return {@code true} if the condition is satisfied with the schedule's
+     * duration, and {@code false} otherwise.
      */
     default <C extends SelfDescribing & BooleanSupplier>
     boolean satisfiedThat(PollingSchedule schedule, C condition) {
@@ -110,7 +113,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Indicate whether the predicate accepts the subject within the schedule's duration.
+     * Indicate whether the predicate accepts the subject within the schedule's
+     * duration.
      *
      * @param <T>
      *         the type of the subject
@@ -121,7 +125,8 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param schedule
      *         the schedule that governs the polling
      *
-     * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
+     * @return {@code true} if the condition is satisfied within the schedule's
+     * duration, and {@code false} otherwise.
      */
     default <T, P extends SelfDescribing & Predicate<? super T>>
     boolean satisfiedThat(PollingSchedule schedule, T subject, P predicate) {
@@ -129,8 +134,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Indicate whether the predicate accepts the value that the function derives from the subject within the schedule's
-     * duration.
+     * Indicate whether the predicate accepts the value that the function
+     * derives from the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
@@ -145,7 +150,8 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param predicate
      *         the predicate that evaluates the derived value
      *
-     * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
+     * @return {@code true} if the condition is satisfied within the schedule's
+     * duration, and {@code false} otherwise.
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     boolean satisfiedThat(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -153,8 +159,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Indicate whether the matcher accepts the value that the function derives from the subject within the schedule's
-     * duration.
+     * Indicate whether the matcher accepts the value that the function derives
+     * from the subject within the schedule's duration.
      *
      * @param <T>
      *         the type of the subject
@@ -169,7 +175,8 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param matcher
      *         the matcher that evaluates the derived value
      *
-     * @return {@code true} if the condition is satisfied within the schedule's duration, and {@code false} otherwise.
+     * @return {@code true} if the condition is satisfied within the schedule's
+     * duration, and {@code false} otherwise.
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     boolean satisfiedThat(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -183,7 +190,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the condition to satisfy
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the condition is satisfied
+     *         if the default polling schedule's duration expires before the
+     *         condition is satisfied
      */
     default <C extends SelfDescribing & BooleanSupplier>
     void waitUntil(C condition) {
@@ -203,7 +211,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the subject
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the condition is satisfied
+     *         if the default polling schedule's duration expires before the
+     *         condition is satisfied
      */
     default <T, P extends SelfDescribing & Predicate<? super T>>
     void waitUntil(T subject, P predicate) {
@@ -213,7 +222,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Wait until the predicate accepts the value that the function derives from the subject.
+     * Wait until the predicate accepts the value that the function derives from
+     * the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -227,7 +237,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the condition is satisfied
+     *         if the default polling schedule's duration expires before the
+     *         condition is satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     void waitUntil(T subject, F function, P predicate) {
@@ -238,7 +249,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Wait until the matcher accepts the value that the function derives from the subject.
+     * Wait until the matcher accepts the value that the function derives from
+     * the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -252,7 +264,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the matcher that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the condition is satisfied
+     *         if the default polling schedule's duration expires before the
+     *         condition is satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     void waitUntil(T subject, F function, Matcher<? super R> matcher) {
@@ -271,7 +284,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the condition to satisfy
      *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is satisfied
+     *         if the schedule's duration expires before the condition is
+     *         satisfied
      */
     default <C extends SelfDescribing & BooleanSupplier>
     void waitUntil(PollingSchedule schedule, C condition) {
@@ -292,7 +306,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the subject
      *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is satisfied
+     *         if the schedule's duration expires before the condition is
+     *         satisfied
      */
     default <T, P extends SelfDescribing & Predicate<? super T>>
     void waitUntil(PollingSchedule schedule, T subject, P predicate) {
@@ -301,7 +316,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Wait until the predicate accepts the value that the function derives from the subject.
+     * Wait until the predicate accepts the value that the function derives from
+     * the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -317,7 +333,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is satisfied
+     *         if the schedule's duration expires before the condition is
+     *         satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     void waitUntil(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -327,7 +344,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Wait until the matcher accepts the value that the function derives from the subject.
+     * Wait until the matcher accepts the value that the function derives from
+     * the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -343,7 +361,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the matcher that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is satisfied
+     *         if the schedule's duration expires before the condition is
+     *         satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     void waitUntil(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
@@ -363,7 +382,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the subject
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the condition is satisfied
+     *         if the default polling schedule's duration expires before the
+     *         condition is satisfied
      */
     default <T, R, P extends SelfDescribing & Predicate<? super T>>
     T when(T subject, P predicate) {
@@ -373,7 +393,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Return the subject when the predicate accepts the value that the function derives from the subject.
+     * Return the subject when the predicate accepts the value that the function
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -387,7 +408,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the condition is satisfied
+     *         if the default polling schedule's duration expires before the
+     *         condition is satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     T when(T subject, F function, P predicate) {
@@ -398,7 +420,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Return the subject when the matcher accepts the value that the function derives from the subject.
+     * Return the subject when the matcher accepts the value that the function
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -412,7 +435,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the matcher that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the default polling schedule's duration expires before the condition is satisfied
+     *         if the default polling schedule's duration expires before the
+     *         condition is satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     T when(T subject, F function, Matcher<? super R> matcher) {
@@ -435,7 +459,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the subject
      *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is satisfied
+     *         if the schedule's duration expires before the condition is
+     *         satisfied
      */
     default <T, P extends SelfDescribing & Predicate<? super T>>
     T when(PollingSchedule schedule, T subject, P predicate) {
@@ -444,7 +469,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Return the subject when the predicate accepts the value that the function derives from the subject.
+     * Return the subject when the predicate accepts the value that the function
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -460,7 +486,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the predicate that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is satisfied
+     *         if the schedule's duration expires before the condition is
+     *         satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
     T when(PollingSchedule schedule, T subject, F function, P predicate) {
@@ -470,7 +497,8 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Return the subject when the matcher accepts the value that the function derives from the subject.
+     * Return the subject when the matcher accepts the value that the function
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -486,7 +514,8 @@ public interface PolledExpressions extends Poller, Eventually {
      *         the matcher that evaluates the derived value
      *
      * @throws PollTimeoutException
-     *         if the schedule's duration expires before the condition is satisfied
+     *         if the schedule's duration expires before the condition is
+     *         satisfied
      */
     default <T, R, F extends SelfDescribing & Function<? super T, R>>
     T when(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {

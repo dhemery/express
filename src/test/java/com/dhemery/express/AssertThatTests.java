@@ -173,6 +173,7 @@ public class AssertThatTests {
 
             Expressions.assertThat(SUBJECT, function, matcher);
         }
+
         @Test
         public void messageIncludesDiagnosis() {
             givenThat(matchesReturns(matcher, FUNCTION_VALUE, false));

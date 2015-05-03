@@ -6,8 +6,9 @@ import static java.lang.String.format;
 
 
 /**
- * A function with a fixed name. The {@code toString()} method returns the fixed name. Each composed function created by
- * this function is named to describe the composition.
+ * A function with a fixed name. The {@code toString()} method returns the fixed
+ * name. Each composed function created by this function is named to describe
+ * the composition.
  *
  * @param <T>
  *         the type of the input to the function
@@ -43,7 +44,8 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
     /**
      * {@inheritDoc}
      * <p>
-     * The composed function is named to describe this function, the {@code after} function, and their composition.
+     * The composed function is named to describe this function, the {@code
+     * after} function, and their composition.
      */
     @Override
     public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
@@ -53,7 +55,8 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
     /**
      * {@inheritDoc}
      * <p>
-     * The composed function is named to describe this function, the {@code before} function, and their composition.
+     * The composed function is named to describe this function, the {@code
+     * before} function, and their composition.
      */
     @Override
     public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {

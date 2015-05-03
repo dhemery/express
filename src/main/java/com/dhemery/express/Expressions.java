@@ -23,7 +23,8 @@ public interface Expressions {
      */
     static <C extends BooleanSupplier & SelfDescribing>
     void assertThat(C condition) {
-        if (!condition.getAsBoolean()) throw new AssertionError(Diagnosis.of(condition));
+        if (!condition.getAsBoolean())
+            throw new AssertionError(Diagnosis.of(condition));
     }
 
     /**
@@ -38,7 +39,8 @@ public interface Expressions {
      */
     static <T, P extends Predicate<? super T> & SelfDescribing>
     void assertThat(T subject, P predicate) {
-        if (!predicate.test(subject)) throw new AssertionError(Diagnosis.of(subject, predicate));
+        if (!predicate.test(subject))
+            throw new AssertionError(Diagnosis.of(subject, predicate));
     }
 
     /**
@@ -53,11 +55,13 @@ public interface Expressions {
      */
     static <T>
     void assertThat(T subject, Matcher<? super T> matcher) {
-        if (!matcher.matches(subject)) throw new AssertionError(Diagnosis.of(subject, matcher));
+        if (!matcher.matches(subject))
+            throw new AssertionError(Diagnosis.of(subject, matcher));
     }
 
     /**
-     * Assert that the predicate accepts the value that the function derives from the subject.
+     * Assert that the predicate accepts the value that the function derives
+     * from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -73,11 +77,13 @@ public interface Expressions {
     static <T, R, F extends Function<? super T, R> & SelfDescribing, P extends Predicate<? super R> & SelfDescribing>
     void assertThat(T subject, F function, P predicate) {
         R value = function.apply(subject);
-        if (!predicate.test(value)) throw new AssertionError(Diagnosis.of(subject, function, predicate, value));
+        if (!predicate.test(value))
+            throw new AssertionError(Diagnosis.of(subject, function, predicate, value));
     }
 
     /**
-     * Assert that the matcher accepts the value that the function derives from the subject.
+     * Assert that the matcher accepts the value that the function derives from
+     * the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -93,7 +99,8 @@ public interface Expressions {
     static <T, F extends Function<? super T, R> & SelfDescribing, R>
     void assertThat(T subject, F function, Matcher<? super R> matcher) {
         R value = function.apply(subject);
-        if (!matcher.matches(value)) throw new AssertionError(Diagnosis.of(subject, function, matcher, value));
+        if (!matcher.matches(value))
+            throw new AssertionError(Diagnosis.of(subject, function, matcher, value));
     }
 
     /**
@@ -137,7 +144,8 @@ public interface Expressions {
     }
 
     /**
-     * Indicate whether the predicate accepts the value that the function derives from the subject.
+     * Indicate whether the predicate accepts the value that the function
+     * derives from the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -156,7 +164,8 @@ public interface Expressions {
     }
 
     /**
-     * Indicate whether the matcher accepts the value that the function derives from the subject.
+     * Indicate whether the matcher accepts the value that the function derives
+     * from the subject.
      *
      * @param <T>
      *         the type of the subject

@@ -38,7 +38,8 @@ public class Named implements SelfDescribing {
     }
 
     /**
-     * Creates a {@link Predicate} with the given name and underlying predicate.
+     * Creates a {@link Predicate} with the given name and underlying
+     * predicate.
      *
      * @see NamedPredicate
      */
