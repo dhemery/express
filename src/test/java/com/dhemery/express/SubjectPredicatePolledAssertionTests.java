@@ -15,6 +15,7 @@ import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+// TODO: Distribute to parameter-based test classes
 public class SubjectPredicatePolledAssertionTests {
     private static final String subject = "subject";
 

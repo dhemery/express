@@ -19,6 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 
+// TODO: Distribute to parameter-based test classes
 public class PolledExpressionsWhenTests {
     private static final String SUBJECT = "subject";
     private static final String FUNCTION_VALUE = "function value";

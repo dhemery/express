@@ -12,6 +12,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+// TODO: Distribute to parameter-based test classes
 public class SubjectPredicatePolledSatisfactionTests {
     private static final String SUBJECT = "subject";
 
