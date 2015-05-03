@@ -33,13 +33,13 @@ public class SubjectPredicateExpressionTests {
 
     public static class SatisfiedThat {
         @Test
-        public void satisfiedThat_returnsTrue_ifPredicateAcceptsSubject() {
+        public void returnsTrue_ifPredicateAcceptsSubject() {
             boolean result = Expressions.satisfiedThat("subject", ANY_VALUE);
             assertThat(result, is(true));
         }
 
         @Test
-        public void satisfiedThat_returnsFalse_ifPredicateRejectsSubject() {
+        public void returnsFalse_ifPredicateRejectsSubject() {
             boolean result = Expressions.satisfiedThat("subject", ANY_VALUE.negate());
             assertThat(result, is(false));
         }
