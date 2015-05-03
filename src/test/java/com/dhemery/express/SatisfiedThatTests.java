@@ -6,7 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class ExpressionsSatisfiedThatTests {
+public class SatisfiedThatTests {
     private static final String SUBJECT = "foo";
     private static final String FUNCTION_VALUE = "bar";
 
