@@ -13,6 +13,7 @@ import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+// TODO: Package into nested classes
 public class BooleanSupplierPolledExpressionTests {
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Mock Poller poller;

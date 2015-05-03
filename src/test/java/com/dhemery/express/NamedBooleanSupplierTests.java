@@ -1,5 +1,6 @@
 package com.dhemery.express;
 
+import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 import java.util.function.BooleanSupplier;
@@ -9,23 +10,28 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 public class NamedBooleanSupplierTests {
-    private static final String ARBITRARY_NAME = null;
-    private static final BooleanSupplier ALWAYS_SATISFIED = () -> true;
-    private static final BooleanSupplier NEVER_SATISFIED = () -> false;
+    @Test
+    public void returnsTrue_ifTheUnderlyingSupplierReturnsTrue() {
+        BooleanSupplier underlyingSupplier = () -> true;
+        BooleanSupplier supplier = new NamedBooleanSupplier("", underlyingSupplier);
+
+        assertThat(supplier.getAsBoolean(), equalTo(underlyingSupplier.getAsBoolean()));
+    }
 
     @Test
-    public void delegatesIsSatisfiedToTheUnderlyingBooleanSupplier() {
-        BooleanSupplier descriptiveCondition = new NamedBooleanSupplier(ARBITRARY_NAME, ALWAYS_SATISFIED);
-        assertThat(descriptiveCondition.getAsBoolean(), equalTo(ALWAYS_SATISFIED.getAsBoolean()));
+    public void returnsFalse_ifTheUnderlyingSupplierReturnsFalse() {
+        BooleanSupplier underlyingSupplier = () -> false;
+        BooleanSupplier supplier = new NamedBooleanSupplier("", underlyingSupplier);
 
-        descriptiveCondition = new NamedBooleanSupplier(ARBITRARY_NAME, NEVER_SATISFIED);
-        assertThat(descriptiveCondition.getAsBoolean(), equalTo(NEVER_SATISFIED.getAsBoolean()));
+        assertThat(supplier.getAsBoolean(), equalTo(underlyingSupplier.getAsBoolean()));
     }
 
     @Test
     public void describesItselfWithTheGivenName() {
         String name = "It was a dark and stormy night";
-        BooleanSupplier condition = new NamedBooleanSupplier(name, () -> true);
-        assertThat(String.valueOf(condition), is(name));
+        SelfDescribingBooleanSupplier supplier = new NamedBooleanSupplier(name, () -> true);
+
+        assertThat(StringDescription.toString(supplier), is(name));
+        assertThat(String.valueOf(supplier), is(name));
     }
 }

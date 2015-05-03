@@ -1,53 +1,47 @@
 package com.dhemery.express;
 
 import com.dhemery.express.helpers.Throwables;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.SelfDescribing;
-import org.jmock.Expectations;
-import org.jmock.auto.Mock;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 
-import java.util.function.Predicate;
-
-import static com.dhemery.express.helpers.Actions.appendItsStringValue;
-import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOfTheItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@RunWith(Enclosed.class)
 public class SubjectPredicateExpressionTests {
-    private static final String SUBJECT = "subject";
-    SelfDescribingPredicate<Object> anyValue = Named.predicate("any value", t -> true);
+    private static final SelfDescribingPredicate<Object> ANY_VALUE = Named.predicate("any value", t -> true);
 
-    @Test
-    public void assertThat_returnsWithoutThrowing_ifMatcherAcceptsSubject() {
-        Expressions.assertThat(SUBJECT, anyValue);
+    public static class AssertThat {
+        @Test
+        public void returnsWithoutThrowing_ifMatcherAcceptsSubject() {
+            Expressions.assertThat("subject", ANY_VALUE);
+        }
+
+        @Test(expected = AssertionError.class)
+        public void throwsAssertionError_ifMatcherRejectsSubject() {
+            Expressions.assertThat("subject", ANY_VALUE.negate());
+        }
+
+        @Test
+        public void errorMessage_describesSubjectPredicate() {
+            String message = Throwables.messageThrownBy(() -> Expressions.assertThat("subject", ANY_VALUE.negate()));
+
+            assertThat(message, is(Diagnosis.of("subject", ANY_VALUE.negate())));
+        }
     }
 
-    @Test(expected = AssertionError.class)
-    public void assertThat_throwsAssertionError_ifMatcherRejectsSubject() {
-        Expressions.assertThat(SUBJECT, anyValue.negate());
-    }
+    public static class SatisfiedThat {
+        @Test
+        public void satisfiedThat_returnsTrue_ifPredicateAcceptsSubject() {
+            boolean result = Expressions.satisfiedThat("subject", ANY_VALUE);
+            assertThat(result, is(true));
+        }
 
-    @Test
-    public void assertThat_errorMessageIncludesDiagnosis() {
-        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, anyValue.negate()));
-
-        assertThat(message, is(Diagnosis.of(SUBJECT, anyValue.negate())));
-    }
-
-    @Test
-    public void satisfiedThat_returnsTrue_ifPredicateAcceptsSubject() {
-        boolean result = Expressions.satisfiedThat(SUBJECT, anyValue);
-        assertThat(result, is(true));
-    }
-
-    @Test
-    public void satisfiedThat_returnsFalse_ifPredicateRejectsSubject() {
-        boolean result = Expressions.satisfiedThat(SUBJECT, anyValue.negate());
-        assertThat(result, is(false));
+        @Test
+        public void satisfiedThat_returnsFalse_ifPredicateRejectsSubject() {
+            boolean result = Expressions.satisfiedThat("subject", ANY_VALUE.negate());
+            assertThat(result, is(false));
+        }
     }
 }

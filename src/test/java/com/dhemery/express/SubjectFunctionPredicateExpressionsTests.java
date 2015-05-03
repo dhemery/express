@@ -24,10 +24,10 @@ public class SubjectFunctionPredicateExpressionsTests {
     }
 
     @Test
-    public void assertThat_errorMessageDiagnoses_subjectFunctionPredicateAndFunctionValue() {
+    public void assertThat_errorMessage_describesSubjectFunctionPredicateDerivedValue() {
         String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, function, anyValue.negate()));
 
-        assertThat(message, is(Diagnosis.of(SUBJECT, function, anyValue, function.apply(SUBJECT))));
+        assertThat(message, is(Diagnosis.of(SUBJECT, function, anyValue.negate(), function.apply(SUBJECT))));
     }
 
     @Test

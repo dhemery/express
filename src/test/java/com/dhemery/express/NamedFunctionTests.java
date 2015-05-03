@@ -1,53 +1,66 @@
 package com.dhemery.express;
 
+import org.hamcrest.StringDescription;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.function.Function;
 
+import static java.lang.String.format;
+import static java.util.function.Function.identity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class NamedFunctionTests {
-    private static final String IGNORED_DESCRIPTION = null;
-
     @Test
     public void apply_delegatesToTheUnderlyingConsumer() {
-        Function<String, String> function = new NamedFunction<>(IGNORED_DESCRIPTION, String::toUpperCase);
+        Function<String, String> function = new NamedFunction<>("", String::toUpperCase);
         assertThat(function.apply("foo"), is("FOO"));
     }
 
     @Test
     public void describesItselfWithTheGivenName() {
-        Function<String, Integer> length = new NamedFunction<>("length", String::length);
-        assertThat(length.toString(), is("length"));
+        SelfDescribingFunction<String, String> function = new NamedFunction<>("function", identity());
+
+        assertThat(StringDescription.toString(function), is("function"));
+        assertThat(String.valueOf(function), is("function"));
     }
 
     @Test
-    public void andThen_yieldsAConsumerThatAppliesAnotherFunctionToTheResultOfThisFunction() {
-        Function<String, Integer> length = new NamedFunction<>(IGNORED_DESCRIPTION, String::length);
-        Function<Integer, Integer> negated = new NamedFunction<>(IGNORED_DESCRIPTION, i -> -i);
+    public void andThen_yieldsAConsumerThatAppliesAnotherFunctionToTheResultOfTheUnderlyingFunction() {
+        Function<String, Integer> length = new NamedFunction<>("", String::length);
+        Function<Integer, Integer> negated = new NamedFunction<>("", i -> -i);
+
         Assert.assertThat(length.andThen(negated).apply("foo"), is(-3));
     }
 
     @Test
-    public void andThen_yieldsAConsumerNamedToDescribeItsComposition() {
-        Function<String, Integer> length = new NamedFunction<>("length", String::length);
-        Function<Integer, Integer> negation = new NamedFunction<>("negation", i -> -i);
-        Assert.assertThat(length.andThen(negation).toString(), is("(negation of length)"));
+    public void andThen_yieldsAConsumerThatDescribesItsComposition() {
+        SelfDescribingFunction<Object, Object> before = new NamedFunction<>("before", identity());
+        Function<Object, Object> after = identity();
+
+        SelfDescribingFunction<Object, Object> composed = before.andThen(after);
+
+        Assert.assertThat(String.valueOf(composed), is(format("(%s of before)", after)));
+        Assert.assertThat(StringDescription.toString(composed), is(format("(%s of before)", after)));
     }
 
     @Test
-    public void compose_yieldsAConsumerThatAppliesThisFunctionToTheResultOfAnotherFunction() {
-        Function<String, Integer> length = new NamedFunction<>(IGNORED_DESCRIPTION, String::length);
-        Function<Integer, Integer> negation = new NamedFunction<>(IGNORED_DESCRIPTION, i -> -i);
+    public void compose_yieldsAFunctionThatAppliesTheUnderlyingFunctionToTheResultOfAnotherFunction() {
+        Function<String, Integer> length = new NamedFunction<>("", String::length);
+        Function<Integer, Integer> negation = new NamedFunction<>("", i -> -i);
+
         Assert.assertThat(negation.compose(length).apply("foo"), is(-3));
     }
 
     @Test
-    public void compose_yieldsAConsumerNamedToDescribeItsComposition() {
-        Function<String, Integer> length = new NamedFunction<>("length", String::length);
-        Function<Integer, Integer> negation = new NamedFunction<>("negation", i -> -i);
-        Assert.assertThat(negation.compose(length).toString(), is("(negation of length)"));
+    public void compose_yieldsAFunctionThatDescribesItsComposition() {
+        Function<Object, Object> before = identity();
+        SelfDescribingFunction<Object, Object> after = new NamedFunction<>("after", identity());
+
+        SelfDescribingFunction<Object, Object> composed = after.compose(before);
+
+        Assert.assertThat(String.valueOf(composed), is(format("(after of %s)", before)));
+        Assert.assertThat(StringDescription.toString(composed), is(format("(after of %s)", before)));
     }
 }

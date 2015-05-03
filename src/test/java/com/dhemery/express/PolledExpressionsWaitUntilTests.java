@@ -1,6 +1,7 @@
 package com.dhemery.express;
 
 import com.dhemery.express.helpers.ExpressionsPolledBy;
+import com.dhemery.express.helpers.PollingSchedules;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 import org.jmock.auto.Mock;
@@ -20,19 +21,17 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyString;
 
 // TODO: Distribute to parameter-based test classes
-// TODO: Mock only poller
 public class PolledExpressionsWaitUntilTests {
-    private static final SelfDescribingBooleanSupplier A_BOOLEAN_SUPPLIER = Named.booleanSupplier("boolean supplier", () -> false);
-    private static final SelfDescribingFunction<String, String> A_FUNCTION = Named.function("function", Function.identity());
-    private static final Matcher<String> A_MATCHER = isEmptyString();
-    private static final PollingSchedule A_POLLING_SCHEDULE = new PollingSchedule(Duration.ofMillis(1000), Duration.ofSeconds(60));
-    private static final SelfDescribingPredicate<String> A_PREDICATE = Named.predicate("predicate", t -> true);
-    private static final String A_SUBJECT = "";
+    private static final SelfDescribingBooleanSupplier SUPPLIER = Named.booleanSupplier("boolean supplier", () -> false);
+    private static final SelfDescribingFunction<String, String> FUNCTION = Named.function("function", Function.identity());
+    private static final Matcher<String> MATCHER = isEmptyString();
+    private static final SelfDescribingPredicate<String> PREDICATE = Named.predicate("predicate", t -> true);
 
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Mock Poller poller;
 
     PolledExpressions expressions;
+    PollingSchedule schedule = PollingSchedules.random();
 
     @Before
     public void setup() {
@@ -54,7 +53,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_BOOLEAN_SUPPLIER);
+        expressions.waitUntil(SUPPLIER);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -72,7 +71,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_BOOLEAN_SUPPLIER);
+        expressions.waitUntil(SUPPLIER);
     }
 
     @Test
@@ -90,11 +89,10 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        SelfDescribingBooleanSupplier supplier = A_BOOLEAN_SUPPLIER;
 
-        String message = messageThrownBy(() -> expressions.waitUntil(supplier));
+        String message = messageThrownBy(() -> expressions.waitUntil(SUPPLIER));
 
-        assertThat(message, is(Diagnosis.of(defaultSchedule, supplier)));
+        assertThat(message, is(Diagnosis.of(defaultSchedule, SUPPLIER)));
     }
 
     @Test
@@ -112,7 +110,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_SUBJECT, A_PREDICATE);
+        expressions.waitUntil("subject", PREDICATE);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -130,7 +128,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_SUBJECT, A_PREDICATE);
+        expressions.waitUntil("subject", PREDICATE);
     }
 
     @Test
@@ -148,12 +146,11 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        String subject = A_SUBJECT;
-        SelfDescribingPredicate<String> predicate = A_PREDICATE;
+        SelfDescribingPredicate<String> predicate = PREDICATE;
 
-        String message = messageThrownBy(() -> expressions.waitUntil(subject, predicate));
+        String message = messageThrownBy(() -> expressions.waitUntil("subject", predicate));
 
-        assertThat(message, is(Diagnosis.of(defaultSchedule, subject, predicate)));
+        assertThat(message, is(Diagnosis.of(defaultSchedule, "subject", predicate)));
     }
 
     @Test
@@ -171,7 +168,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_SUBJECT, A_FUNCTION, A_PREDICATE);
+        expressions.waitUntil("subject", FUNCTION, PREDICATE);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -189,7 +186,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_SUBJECT, A_FUNCTION, A_PREDICATE);
+        expressions.waitUntil("subject", FUNCTION, PREDICATE);
     }
 
     @Test
@@ -207,14 +204,10 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        String subject = A_SUBJECT;
-        SelfDescribingFunction<String, String> function = A_FUNCTION;
-        SelfDescribingPredicate<String> predicate = A_PREDICATE;
-        String functionValue = function.apply(subject);
 
-        String message = messageThrownBy(() -> expressions.waitUntil(subject, function, predicate));
+        String message = messageThrownBy(() -> expressions.waitUntil("subject", FUNCTION, PREDICATE));
 
-        assertThat(message, is(Diagnosis.of(defaultSchedule, subject, function, predicate, functionValue)));
+        assertThat(message, is(Diagnosis.of(defaultSchedule, "subject", FUNCTION, PREDICATE, FUNCTION.apply("subject"))));
     }
 
     @Test
@@ -232,7 +225,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_SUBJECT, A_FUNCTION, A_MATCHER);
+        expressions.waitUntil("subject", FUNCTION, MATCHER);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -250,7 +243,7 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        expressions.waitUntil(A_SUBJECT, A_FUNCTION, A_MATCHER);
+        expressions.waitUntil("subject", FUNCTION, MATCHER);
     }
 
     @Test
@@ -268,14 +261,10 @@ public class PolledExpressionsWaitUntilTests {
                 return defaultSchedule;
             }
         };
-        String subject = A_SUBJECT;
-        SelfDescribingFunction<String, String> function = A_FUNCTION;
-        Matcher<String> matcher = A_MATCHER;
-        String functionValue = function.apply(subject);
 
-        String message = messageThrownBy(() -> expressions.waitUntil(subject, function, matcher));
+        String message = messageThrownBy(() -> expressions.waitUntil("subject", FUNCTION, MATCHER));
 
-        assertThat(message, is(Diagnosis.of(defaultSchedule, subject, function, matcher, functionValue)));
+        assertThat(message, is(Diagnosis.of(defaultSchedule, "subject", FUNCTION, MATCHER, FUNCTION.apply("subject"))));
     }
 
     @Test
@@ -287,7 +276,7 @@ public class PolledExpressionsWaitUntilTests {
                 return true;
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_BOOLEAN_SUPPLIER);
+        expressions.waitUntil(schedule, SUPPLIER);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -299,7 +288,7 @@ public class PolledExpressionsWaitUntilTests {
                 return false;
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_BOOLEAN_SUPPLIER);
+        expressions.waitUntil(schedule, SUPPLIER);
     }
 
     @Test
@@ -311,12 +300,10 @@ public class PolledExpressionsWaitUntilTests {
                 return false;
             }
         };
-        PollingSchedule schedule = A_POLLING_SCHEDULE;
-        SelfDescribingBooleanSupplier supplier = A_BOOLEAN_SUPPLIER;
 
-        String message = messageThrownBy(() -> expressions.waitUntil(schedule, supplier));
+        String message = messageThrownBy(() -> expressions.waitUntil(schedule, SUPPLIER));
 
-        assertThat(message, is(Diagnosis.of(schedule, supplier)));
+        assertThat(message, is(Diagnosis.of(schedule, SUPPLIER)));
     }
 
     @Test
@@ -328,7 +315,7 @@ public class PolledExpressionsWaitUntilTests {
                 return true;
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_SUBJECT, A_PREDICATE);
+        expressions.waitUntil(schedule, "subject", PREDICATE);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -340,7 +327,7 @@ public class PolledExpressionsWaitUntilTests {
                 return false;
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_SUBJECT, A_PREDICATE);
+        expressions.waitUntil(schedule, "subject", PREDICATE);
     }
 
     @Test
@@ -352,13 +339,10 @@ public class PolledExpressionsWaitUntilTests {
                 return false;
             }
         };
-        PollingSchedule schedule = A_POLLING_SCHEDULE;
-        String subject = A_SUBJECT;
-        SelfDescribingPredicate<String> predicate = A_PREDICATE;
 
-        String message = messageThrownBy(() -> expressions.waitUntil(schedule, subject, predicate));
+        String message = messageThrownBy(() -> expressions.waitUntil(schedule, "subject", PREDICATE));
 
-        assertThat(message, is(Diagnosis.of(schedule, subject, predicate)));
+        assertThat(message, is(Diagnosis.of(schedule, "subject", PREDICATE)));
     }
 
     @Test
@@ -370,7 +354,7 @@ public class PolledExpressionsWaitUntilTests {
                 return new PollEvaluationResult<>(null, true);
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_PREDICATE);
+        expressions.waitUntil(schedule, "subject", FUNCTION, PREDICATE);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -382,7 +366,7 @@ public class PolledExpressionsWaitUntilTests {
                 return new PollEvaluationResult<>(null, false);
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_PREDICATE);
+        expressions.waitUntil(schedule, "subject", FUNCTION, PREDICATE);
     }
 
     @Test
@@ -394,15 +378,10 @@ public class PolledExpressionsWaitUntilTests {
                 return new PollEvaluationResult<>(function.apply(subject), false);
             }
         };
-        PollingSchedule schedule = A_POLLING_SCHEDULE;
-        String subject = A_SUBJECT;
-        SelfDescribingFunction<String, String> function = A_FUNCTION;
-        SelfDescribingPredicate<String> predicate = A_PREDICATE;
-        String functionValue = function.apply(subject);
 
-        String message = messageThrownBy(() -> expressions.waitUntil(schedule, subject, function, predicate));
+        String message = messageThrownBy(() -> expressions.waitUntil(schedule, "subject", FUNCTION, PREDICATE));
 
-        assertThat(message, is(Diagnosis.of(schedule, subject, function, predicate, functionValue)));
+        assertThat(message, is(Diagnosis.of(schedule, "subject", FUNCTION, PREDICATE, FUNCTION.apply("subject"))));
     }
 
     @Test
@@ -414,7 +393,7 @@ public class PolledExpressionsWaitUntilTests {
                 return new PollEvaluationResult<>(null, true);
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_MATCHER);
+        expressions.waitUntil(schedule, "subject", FUNCTION, MATCHER);
     }
 
     @Test(expected = PollTimeoutException.class)
@@ -426,7 +405,7 @@ public class PolledExpressionsWaitUntilTests {
                 return new PollEvaluationResult<>(null, false);
             }
         };
-        expressions.waitUntil(A_POLLING_SCHEDULE, A_SUBJECT, A_FUNCTION, A_MATCHER);
+        expressions.waitUntil(schedule, "subject", FUNCTION, MATCHER);
     }
 
     @Test
@@ -438,14 +417,9 @@ public class PolledExpressionsWaitUntilTests {
                 return new PollEvaluationResult<>(function.apply(subject), false);
             }
         };
-        PollingSchedule schedule = A_POLLING_SCHEDULE;
-        String subject = A_SUBJECT;
-        SelfDescribingFunction<String, String> function = A_FUNCTION;
-        Matcher<String> matcher = A_MATCHER;
-        String functionValue = function.apply(subject);
 
-        String message = messageThrownBy(() -> expressions.waitUntil(schedule, subject, function, matcher));
+        String message = messageThrownBy(() -> expressions.waitUntil(schedule, "subject", FUNCTION, MATCHER));
 
-        assertThat(message, is(Diagnosis.of(schedule, subject, function, matcher, functionValue)));
+        assertThat(message, is(Diagnosis.of(schedule, "subject", FUNCTION, MATCHER, FUNCTION.apply("subject"))));
     }
 }

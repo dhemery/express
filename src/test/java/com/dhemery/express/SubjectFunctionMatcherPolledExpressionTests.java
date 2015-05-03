@@ -16,8 +16,8 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
+// TODO: Package into nested classes
 public class SubjectFunctionMatcherPolledExpressionTests {
-    private static final String SUBJECT = "subject";
 
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Mock Poller poller;
@@ -35,43 +35,43 @@ public class SubjectFunctionMatcherPolledExpressionTests {
     @Test
     public void assertThat_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
         context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply(SUBJECT), true)));
+            allowing(poller).poll(schedule, "subject", function, matcher);
+            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), true)));
         }});
 
-        expressions.assertThat(schedule, SUBJECT, function, matcher);
+        expressions.assertThat(schedule, "subject", function, matcher);
     }
 
     @Test(expected = AssertionError.class)
     public void assertThat_throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
         context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply(SUBJECT), false)));
+            allowing(poller).poll(schedule, "subject", function, matcher);
+            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), false)));
         }});
 
-        expressions.assertThat(schedule, SUBJECT, function, matcher);
+        expressions.assertThat(schedule, "subject", function, matcher);
     }
 
     @Test
     public void assertThat_errorMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply(SUBJECT), false)));
+            allowing(poller).poll(schedule, "subject", function, matcher);
+            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), false)));
         }});
 
-        String message = messageThrownBy(() -> expressions.assertThat(schedule, SUBJECT, function, matcher));
+        String message = messageThrownBy(() -> expressions.assertThat(schedule, "subject", function, matcher));
 
-        assertThat(message, is(Diagnosis.of(schedule, SUBJECT, function, matcher, function.apply(SUBJECT))));
+        assertThat(message, is(Diagnosis.of(schedule, "subject", function, matcher, function.apply("subject"))));
     }
 
     @Test
     public void satisfiedThat_returnsTrue_ifPollEvaluationResultIsSatisfied() {
         context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply(SUBJECT), true)));
+            allowing(poller).poll(schedule, "subject", function, matcher);
+            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), true)));
         }});
 
-        boolean result = expressions.satisfiedThat(schedule, SUBJECT, function, matcher);
+        boolean result = expressions.satisfiedThat(schedule, "subject", function, matcher);
 
         assertThat(result, is(true));
     }
@@ -79,11 +79,11 @@ public class SubjectFunctionMatcherPolledExpressionTests {
     @Test
     public void satisfiedThat_returnsFalse_ifPollEvaluationResultIsDissatisfied() {
         context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply(SUBJECT), false)));
+            allowing(poller).poll(schedule, "subject", function, matcher);
+            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), false)));
         }});
 
-        boolean result = expressions.satisfiedThat(schedule, SUBJECT, function, matcher);
+        boolean result = expressions.satisfiedThat(schedule, "subject", function, matcher);
 
         assertThat(result, is(false));
     }

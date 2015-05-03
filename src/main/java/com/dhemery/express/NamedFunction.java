@@ -48,7 +48,7 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
      * after} function, and their composition.
      */
     @Override
-    public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+    public <V> SelfDescribingFunction<T, V> andThen(Function<? super R, ? extends V> after) {
         return new NamedFunction<>(format("(%s of %s)", after, this), function.andThen(after));
     }
 
@@ -59,7 +59,7 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
      * before} function, and their composition.
      */
     @Override
-    public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+    public <V> SelfDescribingFunction<V, R> compose(Function<? super V, ? extends T> before) {
         return new NamedFunction<>(format("(%s of %s)", this, before), function.compose(before));
     }
 }

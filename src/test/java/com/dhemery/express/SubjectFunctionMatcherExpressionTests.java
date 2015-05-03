@@ -5,48 +5,45 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
+import static java.util.function.Function.identity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @RunWith(Enclosed.class)
 public class SubjectFunctionMatcherExpressionTests {
-    protected static class SubjectFunctionMatcherSetup {
-        static final String SUBJECT = "subject";
 
+    public static class AssertThat {
         SelfDescribingFunction<String, String> function = Named.function("function", String::toUpperCase);
-    }
-
-    public static class AssertThat extends SubjectFunctionMatcherSetup {
 
         @Test
         public void returnsWithoutThrowing_ifMatcherAcceptsFunctionOfSubject() {
-            Expressions.assertThat(SUBJECT, function, is(anything()));
+            Expressions.assertThat("subject", function, is(anything()));
         }
 
         @Test(expected = AssertionError.class)
         public void throwsAssertionError_ifMatcherRejectsFunctionOfSubject() {
-            Expressions.assertThat(SUBJECT, function, not(anything()));
+            Expressions.assertThat("subject", function, not(anything()));
         }
 
         @Test
         public void errorMessageDescribesSubjectFunctionMatcherMismatch() {
-            String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, function, not(anything())));
+            String message = Throwables.messageThrownBy(() -> Expressions.assertThat("subject", function, not(anything())));
 
-            assertThat(message, is(Diagnosis.of(SUBJECT, function, not(anything()), function.apply(SUBJECT))));
+            assertThat(message, is(Diagnosis.of("subject", function, not(anything()), function.apply("subject"))));
         }
     }
 
-    public static class SatisfiedThat extends SubjectFunctionMatcherSetup {
+    public static class SatisfiedThat {
         @Test
         public void returnsTrue_ifMatcherAcceptsFunctionOfSubject() {
-            boolean result = Expressions.satisfiedThat(SUBJECT, function, is(anything()));
+            boolean result = Expressions.satisfiedThat("subject", identity(), is(anything()));
 
             assertThat(result, is(true));
         }
 
         @Test
         public void returnsFalse_ifMatcherRejectsFunctionOfSubject() {
-            boolean result = Expressions.satisfiedThat(SUBJECT, function, not(anything()));
+            boolean result = Expressions.satisfiedThat("subject", identity(), not(anything()));
 
             assertThat(result, is(false));
         }

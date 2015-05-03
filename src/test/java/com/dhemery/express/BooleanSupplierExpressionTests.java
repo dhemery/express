@@ -6,37 +6,39 @@ import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+// TODO: Package into nested classes
 public class BooleanSupplierExpressionTests {
     @Test
     public void assertThat_returnsWithoutThrowing_ifSupplierReturnsTrue() {
-        Expressions.assertThat(supplierOf(true));
+        SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("", () -> true);
+
+        Expressions.assertThat(supplier);
     }
 
     @Test(expected = AssertionError.class)
     public void assertThat_throwsAssertionError_ifSupplierReturnsFalse() {
-        Expressions.assertThat(supplierOf(false));
+        SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("", () -> false);
+
+        Expressions.assertThat(supplier);
     }
 
     @Test
     public void assertThat_errorMessageIncludesDiagnosis() {
-        String message = messageThrownBy(() -> Expressions.assertThat(supplierOf(false)));
+        SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("supplier", () -> false);
 
-        assertThat(message, is(Diagnosis.of(supplierOf(false))));
+        String message = messageThrownBy(() -> Expressions.assertThat(supplier));
+
+        assertThat(message, is(Diagnosis.of(supplier)));
     }
 
     @Test
     public void satisfiedThat_returnsTrue_ifSupplierReturnsTrue() {
-
-        assertThat(Expressions.satisfiedThat(supplierOf(true)), is(true));
+        assertThat(Expressions.satisfiedThat(() -> true), is(true));
     }
 
     @Test
     public void satisfiedThat_returnsFalse_ifSupplierReturnsFalse() {
-
-        assertThat(Expressions.satisfiedThat(supplierOf(false)), is(false));
+        assertThat(Expressions.satisfiedThat(() -> false), is(false));
     }
 
-    private SelfDescribingBooleanSupplier supplierOf(boolean supplied) {
-        return Named.booleanSupplier(String.valueOf(supplied), () -> supplied);
-    }
 }
