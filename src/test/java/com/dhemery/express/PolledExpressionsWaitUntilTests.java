@@ -38,62 +38,7 @@ public class PolledExpressionsWaitUntilTests {
         expressions = new ExpressionsPolledBy(poller);
     }
 
-    @Test
-    public void defaultScheduleWithBooleanSupplier_returnsWithoutThrowing_ifPollReturnsTrue() {
-        PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(2));
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <C extends SelfDescribing & BooleanSupplier>
-            boolean poll(PollingSchedule schedule, C supplier) {
-                return true;
-            }
 
-            @Override
-            public PollingSchedule eventually() {
-                return defaultSchedule;
-            }
-        };
-        expressions.waitUntil(SUPPLIER);
-    }
-
-    @Test(expected = PollTimeoutException.class)
-    public void defaultScheduleWithBooleanSupplier_throwsPollTimeoutException_ifPollReturnsFalse() {
-        PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(2), Duration.ofSeconds(3));
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <C extends SelfDescribing & BooleanSupplier>
-            boolean poll(PollingSchedule schedule, C supplier) {
-                return false;
-            }
-
-            @Override
-            public PollingSchedule eventually() {
-                return defaultSchedule;
-            }
-        };
-        expressions.waitUntil(SUPPLIER);
-    }
-
-    @Test
-    public void defaultScheduleWithBooleanSupplier_exceptionMessageIncludesDiagnosis() {
-        PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(3), Duration.ofSeconds(5));
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <C extends SelfDescribing & BooleanSupplier>
-            boolean poll(PollingSchedule schedule, C supplier) {
-                return false;
-            }
-
-            @Override
-            public PollingSchedule eventually() {
-                return defaultSchedule;
-            }
-        };
-
-        String message = messageThrownBy(() -> expressions.waitUntil(SUPPLIER));
-
-        assertThat(message, is(Diagnosis.of(defaultSchedule, SUPPLIER)));
-    }
 
     @Test
     public void defaultScheduleWithSubjectPredicate_returnsWithoutThrowing_ifPollReturnsTrue() {
@@ -265,45 +210,6 @@ public class PolledExpressionsWaitUntilTests {
         String message = messageThrownBy(() -> expressions.waitUntil("subject", FUNCTION, MATCHER));
 
         assertThat(message, is(Diagnosis.of(defaultSchedule, "subject", FUNCTION, MATCHER, FUNCTION.apply("subject"))));
-    }
-
-    @Test
-    public void scheduleWithBooleanSupplier_returnsWithoutThrowing_ifPollReturnsTrue() {
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <C extends SelfDescribing & BooleanSupplier>
-            boolean poll(PollingSchedule schedule, C supplier) {
-                return true;
-            }
-        };
-        expressions.waitUntil(schedule, SUPPLIER);
-    }
-
-    @Test(expected = PollTimeoutException.class)
-    public void scheduleWithBooleanSupplier_throwsPollTimeoutException_ifPollReturnsFalse() {
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <C extends SelfDescribing & BooleanSupplier>
-            boolean poll(PollingSchedule schedule, C supplier) {
-                return false;
-            }
-        };
-        expressions.waitUntil(schedule, SUPPLIER);
-    }
-
-    @Test
-    public void scheduleWithBooleanSupplier_exceptionMessageIncludesDiagnosis() {
-        PolledExpressions expressions = new ExpressionsPolledBy(poller) {
-            @Override
-            public <C extends SelfDescribing & BooleanSupplier>
-            boolean poll(PollingSchedule schedule, C supplier) {
-                return false;
-            }
-        };
-
-        String message = messageThrownBy(() -> expressions.waitUntil(schedule, SUPPLIER));
-
-        assertThat(message, is(Diagnosis.of(schedule, SUPPLIER)));
     }
 
     @Test
