@@ -1,90 +1,81 @@
 package com.dhemery.express;
 
-import com.dhemery.express.helpers.ExpressionsPolledBy;
+import com.dhemery.express.helpers.PolledExpressionTestSetup;
 import com.dhemery.express.helpers.PollingSchedules;
 import org.hamcrest.Matcher;
 import org.jmock.Expectations;
-import org.jmock.auto.Mock;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
 
-// TODO: Package into nested classes
+@RunWith(Enclosed.class)
 public class SubjectFunctionMatcherPolledExpressionTests {
+    public static final PollingSchedule SCHEDULE = PollingSchedules.random();
+    public static final SelfDescribingFunction<String, String> FUNCTION = Named.function("function", String::toUpperCase);
+    public static final Matcher<Object> ANYTHING = anything();
 
-    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Mock Poller poller;
+    public static class AssertThat extends PolledExpressionTestSetup {
+        @Test
+        public void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
+            context.checking(new Expectations() {{
+                allowing(poller).poll(SCHEDULE, "subject", FUNCTION, ANYTHING);
+                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply("subject"), true)));
+            }});
 
-    PollingSchedule schedule = PollingSchedules.random();
-    PolledExpressions expressions;
-    SelfDescribingFunction<String, String> function = Named.function("function", String::toUpperCase);
-    Matcher<Object> matcher = anything();
+            expressions.assertThat(SCHEDULE, "subject", FUNCTION, ANYTHING);
+        }
 
-    @Before
-    public void setup() {
-        expressions = new ExpressionsPolledBy(poller);
+        @Test(expected = AssertionError.class)
+        public void throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
+            context.checking(new Expectations() {{
+                allowing(poller).poll(SCHEDULE, "subject", FUNCTION, ANYTHING);
+                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply("subject"), false)));
+            }});
+
+            expressions.assertThat(SCHEDULE, "subject", FUNCTION, ANYTHING);
+        }
+
+        @Test
+        public void errorMessage_describesSubjectFunctionMatcherMismatchAndSchedule() {
+            context.checking(new Expectations() {{
+                allowing(poller).poll(SCHEDULE, "subject", FUNCTION, ANYTHING);
+                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply("subject"), false)));
+            }});
+
+            String message = messageThrownBy(() -> expressions.assertThat(SCHEDULE, "subject", FUNCTION, ANYTHING));
+
+            assertThat(message, is(Diagnosis.of(SCHEDULE, "subject", FUNCTION, ANYTHING, FUNCTION.apply("subject"))));
+        }
     }
 
-    @Test
-    public void assertThat_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, "subject", function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), true)));
-        }});
+    public static class SatisfiedThat extends PolledExpressionTestSetup {
+        @Test
+        public void returnsTrue_ifPollEvaluationResultIsSatisfied() {
+            context.checking(new Expectations() {{
+                allowing(poller).poll(SCHEDULE, "subject", FUNCTION, ANYTHING);
+                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply("subject"), true)));
+            }});
 
-        expressions.assertThat(schedule, "subject", function, matcher);
-    }
+            boolean result = expressions.satisfiedThat(SCHEDULE, "subject", FUNCTION, ANYTHING);
 
-    @Test(expected = AssertionError.class)
-    public void assertThat_throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, "subject", function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), false)));
-        }});
+            assertThat(result, is(true));
+        }
 
-        expressions.assertThat(schedule, "subject", function, matcher);
-    }
+        @Test
+        public void returnsFalse_ifPollEvaluationResultIsDissatisfied() {
+            context.checking(new Expectations() {{
+                allowing(poller).poll(SCHEDULE, "subject", FUNCTION, ANYTHING);
+                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply("subject"), false)));
+            }});
 
-    @Test
-    public void assertThat_errorMessageIncludesDiagnosis() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, "subject", function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), false)));
-        }});
+            boolean result = expressions.satisfiedThat(SCHEDULE, "subject", FUNCTION, ANYTHING);
 
-        String message = messageThrownBy(() -> expressions.assertThat(schedule, "subject", function, matcher));
-
-        assertThat(message, is(Diagnosis.of(schedule, "subject", function, matcher, function.apply("subject"))));
-    }
-
-    @Test
-    public void satisfiedThat_returnsTrue_ifPollEvaluationResultIsSatisfied() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, "subject", function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), true)));
-        }});
-
-        boolean result = expressions.satisfiedThat(schedule, "subject", function, matcher);
-
-        assertThat(result, is(true));
-    }
-
-    @Test
-    public void satisfiedThat_returnsFalse_ifPollEvaluationResultIsDissatisfied() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, "subject", function, matcher);
-            will(returnValue(new PollEvaluationResult<>(function.apply("subject"), false)));
-        }});
-
-        boolean result = expressions.satisfiedThat(schedule, "subject", function, matcher);
-
-        assertThat(result, is(false));
+            assertThat(result, is(false));
+        }
     }
 }

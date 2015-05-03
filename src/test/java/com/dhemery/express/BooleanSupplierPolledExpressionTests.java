@@ -4,11 +4,14 @@ import com.dhemery.express.helpers.PolledExpressionTestSetup;
 import com.dhemery.express.helpers.PollingSchedules;
 import org.jmock.Expectations;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@RunWith(Enclosed.class)
 public class BooleanSupplierPolledExpressionTests {
     public static final SelfDescribingBooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
     public static final PollingSchedule SCHEDULE = PollingSchedules.random();
