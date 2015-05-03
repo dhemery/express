@@ -24,7 +24,7 @@ public class SubjectPredicateExpressionTests {
         }
 
         @Test
-        public void errorMessage_describesSubjectPredicate() {
+        public void errorMessage_describesSubjectAndPredicate() {
             String message = Throwables.messageThrownBy(() -> Expressions.assertThat("subject", ANY_VALUE.negate()));
 
             assertThat(message, is(Diagnosis.of("subject", ANY_VALUE.negate())));

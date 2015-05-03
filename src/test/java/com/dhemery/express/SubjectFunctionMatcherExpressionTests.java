@@ -26,7 +26,7 @@ public class SubjectFunctionMatcherExpressionTests {
         }
 
         @Test
-        public void errorMessageDescribesSubjectFunctionMatcherMismatch() {
+        public void errorMessage_describesSubjectFunctionMatcherAndMismatch() {
             String message = Throwables.messageThrownBy(() -> Expressions.assertThat("subject", function, not(anything())));
 
             assertThat(message, is(Diagnosis.of("subject", function, not(anything()), function.apply("subject"))));

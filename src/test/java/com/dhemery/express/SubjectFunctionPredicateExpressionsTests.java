@@ -7,6 +7,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+// TODO: Package into nested classes
 public class SubjectFunctionPredicateExpressionsTests {
     private static final String SUBJECT = "subject";
 

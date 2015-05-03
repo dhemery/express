@@ -38,7 +38,7 @@ public class SubjectPredicatePolledExpressionTests {
         }
 
         @Test
-        public void errorMessage_describesScheduleSubjectPredicate() {
+        public void errorMessage_describesSubjectPredicateAndSchedule() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, "subject", PREDICATE);
                 will(returnValue(false));

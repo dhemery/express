@@ -16,6 +16,7 @@ import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOf
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+// TODO: Package into nested classes
 public class SubjectMatcherExpressionTests {
     private static final String SUBJECT = "subject";
 
