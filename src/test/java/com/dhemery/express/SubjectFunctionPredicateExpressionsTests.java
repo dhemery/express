@@ -1,45 +1,50 @@
 package com.dhemery.express;
 
 import com.dhemery.express.helpers.Throwables;
-import org.jmock.Expectations;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-// TODO: Package into nested classes
+@RunWith(Enclosed.class)
 public class SubjectFunctionPredicateExpressionsTests {
     private static final String SUBJECT = "subject";
 
-    SelfDescribingFunction<String, String> function = Named.function("function", String::toUpperCase);
-    SelfDescribingPredicate<String> anyValue = Named.predicate("any value", t -> true);
+    private static final SelfDescribingFunction<String, String> FUNCTION = Named.function("function", String::toUpperCase);
+    private static final SelfDescribingPredicate<String> ANY_VALUE = Named.predicate("any value", t -> true);
 
-    @Test
-    public void assertThat_returnsWithoutThrowing_ifPredicateAcceptsFunctionOfSubject() {
-        Expressions.assertThat(SUBJECT, function, anyValue);
+    public static class AssertThat {
+        @Test
+        public void returnsWithoutThrowing_ifPredicateAcceptsFunctionOfSubject() {
+            Expressions.assertThat(SUBJECT, FUNCTION, ANY_VALUE);
+        }
+
+        @Test(expected = AssertionError.class)
+        public void throwsAssertionError_ifPredicateRejectsFunctionOfSubject() {
+            Expressions.assertThat(SUBJECT, FUNCTION, ANY_VALUE.negate());
+        }
+
+        @Test
+        public void errorMessage_describesSubjectFunctionPredicateAndDerivedValue() {
+            String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, FUNCTION, ANY_VALUE.negate()));
+
+            assertThat(message, is(Diagnosis.of(SUBJECT, FUNCTION, ANY_VALUE.negate(), FUNCTION.apply(SUBJECT))));
+        }
     }
 
-    @Test(expected = AssertionError.class)
-    public void assertThat_throwsAssertionError_ifPredicateRejectsFunctionOfSubject() {
-        Expressions.assertThat(SUBJECT, function, anyValue.negate());
-    }
+    public static class SatisfiedThat {
+        @Test
+        public void returnsTrue_ifPredicateAcceptsFunctionOfSubject() {
+            boolean result = Expressions.satisfiedThat(SUBJECT, FUNCTION, ANY_VALUE);
+            assertThat(result, is(true));
+        }
 
-    @Test
-    public void assertThat_errorMessage_describesSubjectFunctionPredicateDerivedValue() {
-        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, function, anyValue.negate()));
-
-        assertThat(message, is(Diagnosis.of(SUBJECT, function, anyValue.negate(), function.apply(SUBJECT))));
-    }
-
-    @Test
-    public void satisfiedThat_returnsTrue_ifPredicateAcceptsFunctionOfSubject() {
-        boolean result = Expressions.satisfiedThat(SUBJECT, function, anyValue);
-        assertThat(result, is(true));
-    }
-
-    @Test
-    public void satisfiedThat_returnsFalse_ifPredicateRejectsFunctionOfSubject() {
-        boolean result = Expressions.satisfiedThat(SUBJECT, function, anyValue.negate());
-        assertThat(result, is(false));
+        @Test
+        public void returnsFalse_ifPredicateRejectsFunctionOfSubject() {
+            boolean result = Expressions.satisfiedThat(SUBJECT, FUNCTION, ANY_VALUE.negate());
+            assertThat(result, is(false));
+        }
     }
 }
