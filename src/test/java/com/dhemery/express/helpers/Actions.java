@@ -1,16 +1,8 @@
 package com.dhemery.express.helpers;
 
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.jmock.Expectations;
 import org.jmock.api.Action;
 import org.jmock.api.Invocation;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import static org.hamcrest.Matchers.equalTo;
 
 public class Actions {
 

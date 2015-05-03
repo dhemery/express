@@ -2,8 +2,6 @@ package com.dhemery.express;
 
 import com.dhemery.express.helpers.ExpressionsPolledBy;
 import com.dhemery.express.helpers.PollingSchedules;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
@@ -13,27 +11,24 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static com.dhemery.express.helpers.Actions.appendItsStringValue;
-import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOfTheItem;
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class SubjectPredicatePolledAssertionTests {
     private static final String subject = "subject";
-    private final PollingSchedule schedule = PollingSchedules.random();
-    @Mock
-    public Poller poller;
-    public PolledExpressions expressions;
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-    @Mock
-    SelfDescribingPredicate<String> predicate;
+    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Mock Poller poller;
+    @Mock SelfDescribingPredicate<String> predicate;
+
+    PollingSchedule schedule = PollingSchedules.random();
+    PolledExpressions expressions;
 
     @Before
     public void setup() {
         expressions = new ExpressionsPolledBy(poller);
-        context.checking(new Expectations(){{
+        context.checking(new Expectations() {{
             allowing(any(SelfDescribing.class)).method("describeTo");
             will(appendItsStringValue());
         }});

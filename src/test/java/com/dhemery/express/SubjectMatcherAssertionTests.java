@@ -19,11 +19,9 @@ import static org.hamcrest.Matchers.is;
 
 public class SubjectMatcherAssertionTests {
     private static final String SUBJECT = "subject";
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-    @Mock
-    Matcher<String> matcher;
+    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Mock Matcher<String> matcher;
 
     @Before
     public void setup() {

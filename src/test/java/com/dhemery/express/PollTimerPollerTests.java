@@ -1,7 +1,6 @@
 package com.dhemery.express;
 
 import org.jmock.Expectations;
-import org.jmock.Sequence;
 import org.jmock.States;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
@@ -17,12 +16,12 @@ import static org.hamcrest.Matchers.is;
 @RunWith(Enclosed.class)
 public class PollTimerPollerTests {
     public static class WithBooleanSupplier {
-        @Rule
-        public JUnitRuleMockery context = new JUnitRuleMockery();
-        private final SelfDescribingBooleanSupplier supplier = context.mock(SelfDescribingBooleanSupplier.class);
-        private final PollTimer timer = context.mock(PollTimer.class);
-        private final PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(10));
-        private final Poller poller = new PollTimerPoller() {
+        @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+
+        SelfDescribingBooleanSupplier supplier = context.mock(SelfDescribingBooleanSupplier.class);
+        PollTimer timer = context.mock(PollTimer.class);
+        PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(10));
+        Poller poller = new PollTimerPoller() {
             @Override
             public PollTimer pollTimer() {
                 return timer;

@@ -41,7 +41,7 @@ public class PolledExpressionsWhenTests {
 
         context.checking(new Expectations() {{
             allowing(eventually).eventually();
-                will(returnValue(defaultPollingSchedule));
+            will(returnValue(defaultPollingSchedule));
 
             allowing(any(SelfDescribing.class)).method("describeTo");
             will(appendItsStringValue());
@@ -55,7 +55,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectPredicate_returnsSubject_ifPollReturnsTrue() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, predicate);
-                will(returnValue(true));
+            will(returnValue(true));
         }});
 
         String returned = expressions.when(SUBJECT, predicate);
@@ -66,7 +66,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectPredicate_throwsPollTimeoutException_ifPollReturnsFalse() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, predicate);
-                will(returnValue(false));
+            will(returnValue(false));
         }});
 
         expressions.when(SUBJECT, predicate);
@@ -76,7 +76,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectPredicate_exceptionMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, predicate);
-                will(returnValue(false));
+            will(returnValue(false));
         }});
 
         String message = messageThrownBy(() -> expressions.when(SUBJECT, predicate));
@@ -88,7 +88,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectFunctionPredicate_returnsSubject_ifPollEvaluationResultIsSatisfied() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, function, predicate);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
         }});
 
         String returned = expressions.when(SUBJECT, function, predicate);
@@ -100,7 +100,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(34), Duration.ofSeconds(55));
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, function, predicate);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
         expressions.when(SUBJECT, function, predicate);
@@ -110,7 +110,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, function, predicate);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
         String message = messageThrownBy(() -> expressions.when(SUBJECT, function, predicate));
@@ -122,7 +122,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectFunctionMatcher_returnsSubject_ifPollEvaluationResultIsSatisfied() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, function, matcher);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
         }});
 
         String returned = expressions.when(SUBJECT, function, matcher);
@@ -133,7 +133,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectFunctionMatcher_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, function, matcher);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
         expressions.when(SUBJECT, function, matcher);
@@ -143,7 +143,7 @@ public class PolledExpressionsWhenTests {
     public void defaultScheduleWithSubjectFunctionMatcher_exceptionMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, function, matcher);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
 
@@ -157,7 +157,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, predicate);
-                will(returnValue(true));
+            will(returnValue(true));
         }});
 
         String returned = expressions.when(schedule, SUBJECT, predicate);
@@ -169,7 +169,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, predicate);
-                will(returnValue(false));
+            will(returnValue(false));
         }});
 
         expressions.when(schedule, SUBJECT, predicate);
@@ -180,7 +180,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, predicate);
-                will(returnValue(false));
+            will(returnValue(false));
         }});
 
         String message = messageThrownBy(() -> expressions.when(schedule, SUBJECT, predicate));
@@ -193,7 +193,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, predicate);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
         }});
 
         String returned = expressions.when(schedule, SUBJECT, function, predicate);
@@ -205,7 +205,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, predicate);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
         expressions.when(schedule, SUBJECT, function, predicate);
@@ -216,7 +216,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, predicate);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
 
@@ -230,7 +230,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, matcher);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
         }});
 
         String returned = expressions.when(schedule, SUBJECT, function, matcher);
@@ -242,7 +242,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, matcher);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
         expressions.when(schedule, SUBJECT, function, matcher);
@@ -253,7 +253,7 @@ public class PolledExpressionsWhenTests {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, matcher);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
         }});
 
         String message = messageThrownBy(() -> expressions.when(schedule, SUBJECT, function, matcher));

@@ -19,13 +19,10 @@ import static org.hamcrest.Matchers.is;
 public class SubjectFunctionPredicateAssertionTests {
     private static final String SUBJECT = "subject";
     private static final String FUNCTION_VALUE = "function value";
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Mock
-    SelfDescribingFunction<String, String> function;
 
-    @Mock
-    SelfDescribingPredicate<String> predicate;
+    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Mock SelfDescribingFunction<String, String> function;
+    @Mock SelfDescribingPredicate<String> predicate;
 
     @Before
     public void setup() {

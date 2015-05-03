@@ -21,26 +21,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class ClockPollTimerTests {
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Auto States sleeperType;
+    @Mock Sleeper sleeper;
+
     private final ManualClock clock = new ManualClock();
     private PollTimer timer;
 
-    @Mock
-    Sleeper sleeper;
-    @Auto
-    States sleeperType;
-
     @Before
     public void setup() {
-        timer = new ClockPollTimer(clock, sleeper);
-        sleeperType.become("default");
-        context.checking(new Expectations() {{ // @formatter:off
+        context.checking(new Expectations() {{
             allowing(sleeper).sleep(with(any(Duration.class)));
-                when(sleeperType.is("default"));
-                will(advanceTheClockByTheDuration());
-        }}); // @formatter:on
+            when(sleeperType.is("default"));
+            will(advanceTheClockByTheDuration());
+        }});
+
         sleeperType.become("default");
+        timer = new ClockPollTimer(clock, sleeper);
     }
 
     @Test
@@ -118,10 +115,10 @@ public class ClockPollTimerTests {
         Duration expectedSleepDuration = pollingInterval.minus(delayBetweenStartAndTick);
 
         sleeperType.become("special");
-        context.checking(new Expectations() {{ // @formatter:off
+        context.checking(new Expectations() {{
             oneOf(sleeper).sleep(expectedSleepDuration);
-                will(advanceTheClockByTheDuration());
-        }}); // @formatter:on
+            will(advanceTheClockByTheDuration());
+        }});
 
         timer.start(schedule);
         clock.advance(delayBetweenStartAndTick);

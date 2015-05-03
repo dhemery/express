@@ -1,7 +1,5 @@
 package com.dhemery.express;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 import org.jmock.Expectations;
 import org.jmock.auto.Mock;
@@ -11,17 +9,13 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static com.dhemery.express.helpers.Actions.appendItsStringValue;
-import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOfTheItem;
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class BooleanSupplierAssertionTests {
-
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Mock
-    SelfDescribingBooleanSupplier supplier;
+    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Mock SelfDescribingBooleanSupplier supplier;
 
     @Before
     public void setup() {

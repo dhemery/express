@@ -19,15 +19,11 @@ import static org.hamcrest.Matchers.is;
 
 public class SubjectFunctionMatcherAssertionTests {
     private static final String SUBJECT = "subject";
-
     private static final String FUNCTION_VALUE = "function value";
-    @Rule
-    public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Mock
-    SelfDescribingFunction<String, String> function;
 
-    @Mock
-    Matcher<String> matcher;
+    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Mock SelfDescribingFunction<String, String> function;
+    @Mock Matcher<String> matcher;
 
     @Before
     public void setup() {
