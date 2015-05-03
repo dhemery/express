@@ -14,22 +14,18 @@ import org.junit.Test;
 import static com.dhemery.express.helpers.Actions.appendItsStringValue;
 import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOfTheItem;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class SubjectFunctionPredicateAssertionTests {
+public class SubjectMatcherExpressionTests {
     private static final String SUBJECT = "subject";
-    private static final String FUNCTION_VALUE = "function value";
 
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Mock SelfDescribingFunction<String, String> function;
-    @Mock SelfDescribingPredicate<String> predicate;
+    @Mock Matcher<String> matcher;
 
     @Before
     public void setup() {
         context.checking(new Expectations() {{
-            allowing(function).apply(SUBJECT);
-            will(returnValue(FUNCTION_VALUE));
-
             allowing(any(SelfDescribing.class)).method("describeTo");
             will(appendItsStringValue());
 
@@ -39,34 +35,46 @@ public class SubjectFunctionPredicateAssertionTests {
     }
 
     @Test
-    public void withSubjectFunctionPredicate_returnsWithoutThrowing_ifPredicateAcceptsFunctionOfSubject() {
+    public void assertThat_returnsWithoutThrowing_ifMatcherAcceptsSubject() {
         context.checking(new Expectations() {{
-            allowing(predicate).test(FUNCTION_VALUE);
+            allowing(same(matcher)).method("matches").with(equalTo(SUBJECT));
             will(returnValue(true));
         }});
 
-        Expressions.assertThat(SUBJECT, function, predicate);
+        Expressions.assertThat(SUBJECT, matcher);
     }
 
     @Test(expected = AssertionError.class)
-    public void withSubjectFunctionPredicate_throwsAssertionError_ifPredicateRejectsFunctionOfSubject() {
+    public void assertThat_throwsAssertionError_ifMatcherRejectsSubject() {
         context.checking(new Expectations() {{
-            allowing(predicate).test(FUNCTION_VALUE);
+            allowing(same(matcher)).method("matches").with(equalTo(SUBJECT));
             will(returnValue(false));
         }});
 
-        Expressions.assertThat(SUBJECT, function, predicate);
+        Expressions.assertThat(SUBJECT, matcher);
     }
 
     @Test
-    public void withSubjectFunctionPredicate_diagnosisDescribes_subject_predicate_function_functionResult() {
+    public void assertThat_errorMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
-            allowing(predicate).test(FUNCTION_VALUE);
+            allowing(same(matcher)).method("matches").with(equalTo(SUBJECT));
             will(returnValue(false));
         }});
 
-        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, function, predicate));
+        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, matcher));
 
-        assertThat(message, is(Diagnosis.of(SUBJECT, function, predicate, FUNCTION_VALUE)));
+        assertThat(message, is(Diagnosis.of(SUBJECT, matcher)));
+    }
+
+    @Test
+    public void satisfiedThat_returnsTrue_ifMatcherAcceptsSubject() {
+        boolean result = Expressions.satisfiedThat(SUBJECT, equalTo(SUBJECT));
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void satisfiedThat_returnsFalse_ifMatcherRejectsSubject() {
+        boolean result = Expressions.satisfiedThat(SUBJECT, equalTo(SUBJECT + "!"));
+        assertThat(result, is(false));
     }
 }

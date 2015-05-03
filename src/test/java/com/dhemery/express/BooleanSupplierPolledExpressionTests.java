@@ -15,7 +15,7 @@ import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class BooleanSupplierPolledAssertionTests {
+public class BooleanSupplierPolledExpressionTests {
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Mock public Poller poller;
     @Mock SelfDescribingBooleanSupplier supplier;
@@ -33,7 +33,7 @@ public class BooleanSupplierPolledAssertionTests {
     }
 
     @Test
-    public void returnsWithoutThrowing_ifPollReturnsTrue() {
+    public void assertThat_returnsWithoutThrowing_ifPollReturnsTrue() {
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, supplier);
             will(returnValue(true));
@@ -43,7 +43,7 @@ public class BooleanSupplierPolledAssertionTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void throwsAssertionError_ifPollReturnsFalse() {
+    public void assertThat_throwsAssertionError_ifPollReturnsFalse() {
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, supplier);
             will(returnValue(false));
@@ -53,7 +53,7 @@ public class BooleanSupplierPolledAssertionTests {
     }
 
     @Test
-    public void errorMessageIncludesDiagnosis() {
+    public void assertThat_errorMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, supplier);
             will(returnValue(false));
@@ -62,5 +62,29 @@ public class BooleanSupplierPolledAssertionTests {
         String message = messageThrownBy(() -> expressions.assertThat(schedule, supplier));
 
         assertThat(message, is(Diagnosis.of(schedule, supplier)));
+    }
+
+    @Test
+    public void satisfiedThat_returnsTrue_ifPollReturnsTrue() {
+        context.checking(new Expectations() {{
+            allowing(poller).poll(schedule, supplier);
+            will(returnValue(true));
+        }});
+
+        boolean result = expressions.satisfiedThat(schedule, supplier);
+
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void satisfiedThat_returnsFalse_ifPollReturnsFalse() {
+        context.checking(new Expectations() {{
+            allowing(poller).poll(schedule, supplier);
+            will(returnValue(false));
+        }});
+
+        boolean result = expressions.satisfiedThat(schedule, supplier);
+
+        assertThat(result, is(false));
     }
 }

@@ -17,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class SubjectFunctionMatcherAssertionTests {
+public class SubjectFunctionMatcherExpressionTests {
     private static final String SUBJECT = "subject";
     private static final String FUNCTION_VALUE = "function value";
 
@@ -40,34 +40,61 @@ public class SubjectFunctionMatcherAssertionTests {
     }
 
     @Test
-    public void returnsWithoutThrowing_ifMatcherAcceptsFunctionOfSubject() {
-        context.checking(new Expectations() {{
-            allowing(same(matcher)).method("matches").with(equalTo(FUNCTION_VALUE));
-            will(returnValue(true));
-        }});
+    public void assertThat_returnsWithoutThrowing_ifMatcherAcceptsFunctionOfSubject() {
+        givenThat(matcherAccepts(FUNCTION_VALUE));
 
         Expressions.assertThat(SUBJECT, function, matcher);
     }
 
     @Test(expected = AssertionError.class)
-    public void throwsAssertionError_ifMatcherRejectsFunctionOfSubject() {
-        context.checking(new Expectations() {{
-            allowing(same(matcher)).method("matches").with(equalTo(FUNCTION_VALUE));
-            will(returnValue(false));
-        }});
+    public void assertThat_throwsAssertionError_ifMatcherRejectsFunctionOfSubject() {
+        givenThat(matcherRejects(FUNCTION_VALUE));
 
         Expressions.assertThat(SUBJECT, function, matcher);
     }
 
     @Test
-    public void messageIncludesDiagnosis() {
-        context.checking(new Expectations() {{
-            allowing(same(matcher)).method("matches").with(equalTo(FUNCTION_VALUE));
-            will(returnValue(false));
-        }});
+    public void assertThat_errorMessageIncludesDiagnosis() {
+        givenThat(matcherRejects(FUNCTION_VALUE));
 
         String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, function, matcher));
 
         assertThat(message, is(Diagnosis.of(SUBJECT, function, matcher, FUNCTION_VALUE)));
+    }
+
+    @Test
+    public void satisfiedThat_returnsTrue_ifMatcherAcceptsFunctionOfSubject() {
+        givenThat(matcherAccepts(FUNCTION_VALUE));
+
+        boolean result = Expressions.satisfiedThat(SUBJECT, function, matcher);
+
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void satisfiedThat_returnsFalse_ifMatcherRejectsFunctionOfSubject() {
+        givenThat(matcherRejects(FUNCTION_VALUE));
+
+        boolean result = Expressions.satisfiedThat(SUBJECT, function, matcher);
+
+        assertThat(result, is(false));
+    }
+
+    private Expectations matcherAccepts(final String input) {
+        return new Expectations() {{
+            allowing(same(matcher)).method("matches").with(equalTo(input));
+            will(returnValue(true));
+        }};
+    }
+
+    private Expectations matcherRejects(final String input) {
+        return new Expectations() {{
+            allowing(same(matcher)).method("matches").with(equalTo(input));
+            will(returnValue(false));
+        }};
+    }
+
+    private void givenThat(Expectations expectations) {
+        context.checking(expectations);
     }
 }

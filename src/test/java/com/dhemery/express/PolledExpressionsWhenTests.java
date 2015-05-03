@@ -12,8 +12,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.time.Duration;
-
 import static com.dhemery.express.helpers.Actions.appendItsStringValue;
 import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOfTheItem;
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
@@ -48,7 +46,7 @@ public class PolledExpressionsWhenTests {
 
             allowing(any(Matcher.class)).method("describeMismatch").with(any(String.class), any(Description.class));
             will(appendTheMismatchDescriptionOfTheItem());
-        }}); //@formatter:on
+        }});
     }
 
     @Test
@@ -59,6 +57,7 @@ public class PolledExpressionsWhenTests {
         }});
 
         String returned = expressions.when(SUBJECT, predicate);
+
         assertThat(returned, is(sameInstance(SUBJECT)));
     }
 
@@ -97,7 +96,6 @@ public class PolledExpressionsWhenTests {
 
     @Test(expected = PollTimeoutException.class)
     public void defaultScheduleWithSubjectFunctionPredicate_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
-        PollingSchedule defaultSchedule = new PollingSchedule(Duration.ofSeconds(34), Duration.ofSeconds(55));
         context.checking(new Expectations() {{
             allowing(poller).poll(defaultPollingSchedule, SUBJECT, function, predicate);
             will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));

@@ -14,14 +14,13 @@ import org.junit.Test;
 import static com.dhemery.express.helpers.Actions.appendItsStringValue;
 import static com.dhemery.express.helpers.Actions.appendTheMismatchDescriptionOfTheItem;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class SubjectMatcherAssertionTests {
+public class SubjectPredicateExpressionTests {
     private static final String SUBJECT = "subject";
 
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Mock Matcher<String> matcher;
+    @Mock SelfDescribingPredicate<String> predicate;
 
     @Before
     public void setup() {
@@ -35,34 +34,46 @@ public class SubjectMatcherAssertionTests {
     }
 
     @Test
-    public void returnsWithoutThrowing_ifMatcherAcceptsSubject() {
+    public void assertThat_returnsWithoutThrowing_ifMatcherAcceptsSubject() {
         context.checking(new Expectations() {{
-            allowing(same(matcher)).method("matches").with(equalTo(SUBJECT));
+            allowing(predicate).test(SUBJECT);
             will(returnValue(true));
         }});
 
-        Expressions.assertThat(SUBJECT, matcher);
+        Expressions.assertThat(SUBJECT, predicate);
     }
 
     @Test(expected = AssertionError.class)
-    public void throwsAssertionError_ifMatcherRejectsSubject() {
+    public void assertThat_throwsAssertionError_ifMatcherRejectsSubject() {
         context.checking(new Expectations() {{
-            allowing(same(matcher)).method("matches").with(equalTo(SUBJECT));
+            allowing(predicate).test(SUBJECT);
             will(returnValue(false));
         }});
 
-        Expressions.assertThat(SUBJECT, matcher);
+        Expressions.assertThat(SUBJECT, predicate);
     }
 
     @Test
-    public void diagnosisDescribes_matcher_mismatchOfSubject() {
+    public void assertThat_errorMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
-            allowing(same(matcher)).method("matches").with(equalTo(SUBJECT));
+            allowing(predicate).test(SUBJECT);
             will(returnValue(false));
         }});
 
-        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, matcher));
+        String message = Throwables.messageThrownBy(() -> Expressions.assertThat(SUBJECT, predicate));
 
-        assertThat(message, is(Diagnosis.of(SUBJECT, matcher)));
+        assertThat(message, is(Diagnosis.of(SUBJECT, predicate)));
+    }
+
+    @Test
+    public void satisfiedThat_returnsTrue_ifPredicateAcceptsSubject() {
+        boolean result = Expressions.satisfiedThat(SUBJECT, s -> true);
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void satisfiedThat_returnsFalse_ifPredicateRejectsSubject() {
+        boolean result = Expressions.satisfiedThat(SUBJECT, s -> false);
+        assertThat(result, is(false));
     }
 }

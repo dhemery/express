@@ -18,7 +18,7 @@ import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class SubjectFunctionMatcherPolledAssertionTests {
+public class SubjectFunctionMatcherPolledExpressionTests {
     private static final String SUBJECT = "subject";
     private static final String FUNCTION_VALUE = "function value";
 
@@ -46,7 +46,7 @@ public class SubjectFunctionMatcherPolledAssertionTests {
     }
 
     @Test
-    public void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
+    public void assertThat_returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, matcher);
             will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
@@ -56,7 +56,7 @@ public class SubjectFunctionMatcherPolledAssertionTests {
     }
 
     @Test(expected = AssertionError.class)
-    public void throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
+    public void assertThat_throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, matcher);
             will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
@@ -66,7 +66,7 @@ public class SubjectFunctionMatcherPolledAssertionTests {
     }
 
     @Test
-    public void errorMessageIncludesDiagnosis() {
+    public void assertThat_errorMessageIncludesDiagnosis() {
         context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, function, matcher);
             will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
@@ -75,5 +75,29 @@ public class SubjectFunctionMatcherPolledAssertionTests {
         String message = messageThrownBy(() -> expressions.assertThat(schedule, SUBJECT, function, matcher));
 
         assertThat(message, is(Diagnosis.of(schedule, SUBJECT, function, matcher, FUNCTION_VALUE)));
+    }
+
+    @Test
+    public void satisfiedThat_returnsTrue_ifPollEvaluationResultIsSatisfied() {
+        context.checking(new Expectations() {{
+            allowing(poller).poll(schedule, SUBJECT, function, matcher);
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, true)));
+        }});
+
+        boolean result = expressions.satisfiedThat(schedule, SUBJECT, function, matcher);
+
+        assertThat(result, is(true));
+    }
+
+    @Test
+    public void satisfiedThat_returnsFalse_ifPollEvaluationResultIsDissatisfied() {
+        context.checking(new Expectations() {{
+            allowing(poller).poll(schedule, SUBJECT, function, matcher);
+            will(returnValue(new PollEvaluationResult<>(FUNCTION_VALUE, false)));
+        }});
+
+        boolean result = expressions.satisfiedThat(schedule, SUBJECT, function, matcher);
+
+        assertThat(result, is(false));
     }
 }

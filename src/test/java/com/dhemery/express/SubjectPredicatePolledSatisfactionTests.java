@@ -29,7 +29,7 @@ public class SubjectPredicatePolledSatisfactionTests {
 
     @Test
     public void returnsTrue_ifPollReturnsTrue() {
-        context.checking(new Expectations(){{
+        context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, predicate);
             will(returnValue(true));
         }});
@@ -41,7 +41,7 @@ public class SubjectPredicatePolledSatisfactionTests {
 
     @Test
     public void returnsFalse_ifPollReturnsFalse() {
-        context.checking(new Expectations(){{
+        context.checking(new Expectations() {{
             allowing(poller).poll(schedule, SUBJECT, predicate);
             will(returnValue(false));
         }});
