@@ -73,39 +73,6 @@ public class PolledExpressionsWhenTests {
     }
 
     @Test
-    public void defaultScheduleWithSubjectFunctionPredicate_returnsSubject_ifPollEvaluationResultIsSatisfied() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(defaultPollingSchedule, SUBJECT, FUNCTION, PREDICATE);
-            will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), true)));
-        }});
-
-        String returned = expressions.when(SUBJECT, FUNCTION, PREDICATE);
-        assertThat(returned, is(sameInstance(SUBJECT)));
-    }
-
-    @Test(expected = PollTimeoutException.class)
-    public void defaultScheduleWithSubjectFunctionPredicate_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(defaultPollingSchedule, SUBJECT, FUNCTION, PREDICATE);
-            will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-        }});
-
-        expressions.when(SUBJECT, FUNCTION, PREDICATE);
-    }
-
-    @Test
-    public void defaultScheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
-        context.checking(new Expectations() {{
-            allowing(poller).poll(defaultPollingSchedule, SUBJECT, FUNCTION, PREDICATE);
-            will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-        }});
-
-        String message = messageThrownBy(() -> expressions.when(SUBJECT, FUNCTION, PREDICATE));
-
-        assertThat(message, is(Diagnosis.of(defaultPollingSchedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
-    }
-
-    @Test
     public void scheduleWithSubjectPredicate_returnsSubject_ifPollReturnsTrue() {
         PollingSchedule schedule = PollingSchedules.random();
         context.checking(new Expectations() {{
@@ -139,42 +106,5 @@ public class PolledExpressionsWhenTests {
         String message = messageThrownBy(() -> expressions.when(schedule, SUBJECT, PREDICATE));
 
         assertThat(message, is(Diagnosis.of(schedule, SUBJECT, PREDICATE)));
-    }
-
-    @Test
-    public void scheduleWithSubjectFunctionPredicate_returnsSubject_ifPollEvaluationResultIsSatisfied() {
-        PollingSchedule schedule = PollingSchedules.random();
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
-            will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), true)));
-        }});
-
-        String returned = expressions.when(schedule, SUBJECT, FUNCTION, PREDICATE);
-        assertThat(returned, is(sameInstance(SUBJECT)));
-    }
-
-    @Test(expected = PollTimeoutException.class)
-    public void scheduleWithSubjectFunctionPredicate_throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
-        PollingSchedule schedule = PollingSchedules.random();
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
-            will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-        }});
-
-        expressions.when(schedule, SUBJECT, FUNCTION, PREDICATE);
-    }
-
-    @Test
-    public void scheduleWithSubjectFunctionPredicate_exceptionMessageIncludesDiagnosis() {
-        PollingSchedule schedule = PollingSchedules.random();
-        context.checking(new Expectations() {{
-            allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
-            will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-        }});
-
-
-        String message = messageThrownBy(() -> expressions.when(schedule, SUBJECT, FUNCTION, PREDICATE));
-
-        assertThat(message, is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
     }
 }
