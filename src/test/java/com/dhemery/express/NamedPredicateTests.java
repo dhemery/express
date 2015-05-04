@@ -1,7 +1,6 @@
 package com.dhemery.express;
 
 import org.hamcrest.StringDescription;
-import org.hamcrest.internal.SelfDescribingValue;
 import org.junit.Test;
 
 import java.util.function.Predicate;

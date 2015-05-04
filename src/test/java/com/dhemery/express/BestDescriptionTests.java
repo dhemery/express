@@ -1,6 +1,5 @@
 package com.dhemery.express;
 
-import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
