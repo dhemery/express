@@ -8,19 +8,19 @@ import org.hamcrest.SelfDescribing;
  * satisfied.
  */
 public class PollTimeoutException extends RuntimeException {
-    public PollTimeoutException(PollingSchedule schedule, SelfDescribing condition) {
-        super(Diagnosis.of(schedule, condition));
+    public PollTimeoutException(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier) {
+        super(Diagnosis.of(schedule, supplier));
     }
 
-    public PollTimeoutException(PollingSchedule schedule, Object subject, SelfDescribing predicate) {
+    public <T> PollTimeoutException(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         super(Diagnosis.of(schedule, subject, predicate));
     }
 
-    public PollTimeoutException(PollingSchedule schedule, Object subject, SelfDescribing function, SelfDescribing predicate, Object finalFunctionValue) {
+    public <T, V> PollTimeoutException(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate, V finalFunctionValue) {
         super(Diagnosis.of(schedule, subject, function, predicate, finalFunctionValue));
     }
 
-    public PollTimeoutException(PollingSchedule schedule, Object subject, SelfDescribing function, Matcher<?> matcher, Object finalFunctionValue) {
+    public <T, V> PollTimeoutException(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher, V finalFunctionValue) {
         super(Diagnosis.of(schedule, subject, function, matcher, finalFunctionValue));
     }
 }

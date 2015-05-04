@@ -2,11 +2,14 @@ package com.dhemery.express;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
+/**
+ * Diagnoses failed conditions, incorporating all of the given information in a
+ * regular format.
+ */
 public class Diagnosis {
-    public static String of(SelfDescribing supplier) {
+    public static String of(SelfDescribingBooleanSupplier supplier) {
         Description description = new StringDescription();
         description
                 .appendText(System.lineSeparator())
@@ -14,7 +17,7 @@ public class Diagnosis {
         return description.toString();
     }
 
-    public static String of(Object subject, SelfDescribing predicate) {
+    public static <T> String of(T subject, SelfDescribingPredicate<? super T> predicate) {
         Description description = new StringDescription();
         description
                 .appendText(System.lineSeparator())
@@ -33,7 +36,7 @@ public class Diagnosis {
         return description.toString();
     }
 
-    public static String of(Object subject, SelfDescribing function, Matcher<?> matcher, Object functionValue) {
+    public static <T, V> String of(T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher, V functionValue) {
         Description description = new StringDescription();
         description
                 .appendText(String.valueOf(subject)).appendText(System.lineSeparator())
@@ -43,7 +46,7 @@ public class Diagnosis {
         return description.toString();
     }
 
-    public static String of(Object subject, SelfDescribing function, SelfDescribing predicate, Object functionValue) {
+    public static <T, V> String of(T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate, V functionValue) {
         Description description = new StringDescription();
         description
                 .appendText(String.valueOf(subject)).appendText(System.lineSeparator())
@@ -52,7 +55,7 @@ public class Diagnosis {
         return description.toString();
     }
 
-    public static String of(PollingSchedule schedule, SelfDescribing supplier) {
+    public static String of(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier) {
         Description description = new StringDescription();
         description
                 .appendText(System.lineSeparator())
@@ -62,7 +65,7 @@ public class Diagnosis {
         return description.toString();
     }
 
-    public static String of(PollingSchedule schedule, Object subject, SelfDescribing predicate) {
+    public static <T> String of(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         Description description = new StringDescription();
         description
                 .appendValue(subject).appendText(System.lineSeparator())
@@ -72,23 +75,25 @@ public class Diagnosis {
         return description.toString();
     }
 
-    public static String of(PollingSchedule schedule, Object subject, SelfDescribing function, SelfDescribing predicate, Object finalFunctionValue) {
+    public static <T, V> String of(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate, V finalFunctionValue) {
         Description description = new StringDescription();
         description
                 .appendText(String.valueOf(subject)).appendText(System.lineSeparator())
                 .appendText("Expected: ").appendDescriptionOf(function).appendText(" ").appendDescriptionOf(predicate).appendText(System.lineSeparator())
                 .appendText(" polling: ").appendText(String.valueOf(schedule)).appendText(System.lineSeparator())
-                .appendText("     but: final ").appendDescriptionOf(function).appendText(" was ").appendValue(finalFunctionValue);
+                .appendText("     but: timed out").appendText(System.lineSeparator())
+                .appendText("   final: ").appendDescriptionOf(function).appendText(" was ").appendValue(finalFunctionValue);
         return description.toString();
     }
 
-    public static String of(PollingSchedule schedule, Object subject, SelfDescribing function, Matcher<?> matcher, Object finalFunctionValue) {
+    public static <T, V> String of(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher, V finalFunctionValue) {
         Description description = new StringDescription();
         description
                 .appendText(String.valueOf(subject)).appendText(System.lineSeparator())
                 .appendText("Expected: ").appendDescriptionOf(function).appendText(" ").appendDescriptionOf(matcher).appendText(System.lineSeparator())
                 .appendText(" polling: ").appendText(String.valueOf(schedule)).appendText(System.lineSeparator())
-                .appendText("     but: final ").appendDescriptionOf(function).appendText(" ");
+                .appendText("     but: timed out").appendText(System.lineSeparator())
+                .appendText("   final: ").appendDescriptionOf(function).appendText(" ");
         matcher.describeMismatch(finalFunctionValue, description);
         return description.toString();
     }
