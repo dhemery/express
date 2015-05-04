@@ -37,8 +37,7 @@ public class DiagnosisTests {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 "",
                 "Expected: " + StringDescription.toString(supplier),
-                " polling: " + schedule,
-                "     but: timed out"
+                "     but: timed out, polling " + schedule
         );
 
         String diagnosis = Diagnosis.of(schedule, supplier);
@@ -61,10 +60,9 @@ public class DiagnosisTests {
     @Test
     public void scheduleWithSubjectPredicate_diagnosisDescribes_subject_predicate_schedule() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
-                new StringDescription().appendValue(subject).toString(),
+                BestDescription.of(subject),
                 "Expected: " + StringDescription.toString(predicate),
-                " polling: " + schedule,
-                "     but: timed out"
+                "     but: timed out, polling " + schedule
         );
 
         String diagnosis = Diagnosis.of(schedule, subject, predicate);
@@ -95,7 +93,7 @@ public class DiagnosisTests {
         matcher.describeMismatch(functionValue, mismatchDescription);
 
         String expectedDiagnosis = String.join(System.lineSeparator(),
-                subject,
+                BestDescription.of(subject),
                 "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(matcher),
                 "     but: " + StringDescription.toString(function) + " " + mismatchDescription
         );
@@ -111,10 +109,9 @@ public class DiagnosisTests {
         matcher.describeMismatch(functionValue, mismatchDescription);
 
         String expectedDiagnosis = String.join(System.lineSeparator(),
-                subject,
+                BestDescription.of(subject),
                 "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(matcher),
-                " polling: " + schedule,
-                "     but: timed out",
+                "     but: timed out, polling " + schedule,
                 "   final: " + StringDescription.toString(function) + " " + mismatchDescription
         );
 
@@ -126,7 +123,7 @@ public class DiagnosisTests {
     @Test
     public void withSubjectFunctionPredicate_diagnosisDescribes_subject_predicate_function_functionResult() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
-                subject,
+                BestDescription.of(subject),
                 "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(predicate),
                 "     but: was " + new StringDescription().appendValue(functionValue)
         );
@@ -139,10 +136,9 @@ public class DiagnosisTests {
     @Test
     public void scheduleWithSubjectFunctionPredicate_diagnosisDescribes_subject_predicate_function_functionResult_schedule() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
-                subject,
+                BestDescription.of(subject),
                 "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(predicate),
-                " polling: " + schedule,
-                "     but: timed out",
+                "     but: timed out, polling " + schedule,
                 "   final: " + StringDescription.toString(function) + " was " + new StringDescription().appendValue(functionValue)
         );
 
