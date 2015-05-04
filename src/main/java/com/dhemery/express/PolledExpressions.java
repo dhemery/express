@@ -1,11 +1,6 @@
 package com.dhemery.express;
 
 import org.hamcrest.Matcher;
-import org.hamcrest.SelfDescribing;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Expressive methods to poll composed conditions.
@@ -185,8 +180,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the default polling schedule's duration expires before the
      *         condition is satisfied
      */
-    default <C extends SelfDescribing & BooleanSupplier>
-    void waitUntil(C condition) {
+    default void waitUntil(SelfDescribingBooleanSupplier condition) {
         PollingSchedule schedule = eventually();
         if (poll(schedule, condition)) return;
         throw new PollTimeoutException(schedule, condition);
@@ -206,8 +200,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the default polling schedule's duration expires before the
      *         condition is satisfied
      */
-    default <T, P extends SelfDescribing & Predicate<? super T>>
-    void waitUntil(T subject, P predicate) {
+    default <T> void waitUntil(T subject, SelfDescribingPredicate<? super T> predicate) {
         PollingSchedule schedule = eventually();
         if (poll(schedule, subject, predicate)) return;
         throw new PollTimeoutException(schedule, subject, predicate);
@@ -232,8 +225,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the default polling schedule's duration expires before the
      *         condition is satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    void waitUntil(T subject, F function, P predicate) {
+    default <T, R> void waitUntil(T subject, SelfDescribingFunction<? super T, R> function, SelfDescribingPredicate<? super R> predicate) {
         PollingSchedule schedule = eventually();
         PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return;
@@ -259,8 +251,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the default polling schedule's duration expires before the
      *         condition is satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    void waitUntil(T subject, F function, Matcher<? super R> matcher) {
+    default <T, R> void waitUntil(T subject, SelfDescribingFunction<? super T, R> function, Matcher<? super R> matcher) {
         PollingSchedule schedule = eventually();
         PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
         if (result.isSatisfied()) return;
@@ -279,8 +270,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the schedule's duration expires before the condition is
      *         satisfied
      */
-    default <C extends SelfDescribing & BooleanSupplier>
-    void waitUntil(PollingSchedule schedule, C condition) {
+    default void waitUntil(PollingSchedule schedule, SelfDescribingBooleanSupplier condition) {
         if (poll(schedule, condition)) return;
         throw new PollTimeoutException(schedule, condition);
     }
@@ -301,8 +291,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the schedule's duration expires before the condition is
      *         satisfied
      */
-    default <T, P extends SelfDescribing & Predicate<? super T>>
-    void waitUntil(PollingSchedule schedule, T subject, P predicate) {
+    default <T> void waitUntil(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         if (poll(schedule, subject, predicate)) return;
         throw new PollTimeoutException(schedule, subject, predicate);
     }
@@ -328,8 +317,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the schedule's duration expires before the condition is
      *         satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    void waitUntil(PollingSchedule schedule, T subject, F function, P predicate) {
+    default <T, R> void waitUntil(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, SelfDescribingPredicate<? super R> predicate) {
         PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return;
         throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
@@ -356,8 +344,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the schedule's duration expires before the condition is
      *         satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    void waitUntil(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+    default <T, R> void waitUntil(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, Matcher<? super R> matcher) {
         PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
         if (result.isSatisfied()) return;
         throw new PollTimeoutException(schedule, subject, function, matcher, result.value());
@@ -377,8 +364,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the default polling schedule's duration expires before the
      *         condition is satisfied
      */
-    default <T, R, P extends SelfDescribing & Predicate<? super T>>
-    T when(T subject, P predicate) {
+    default <T> T when(T subject, SelfDescribingPredicate<? super T> predicate) {
         PollingSchedule schedule = eventually();
         if (poll(schedule, subject, predicate)) return subject;
         throw new PollTimeoutException(schedule, subject, predicate);
@@ -403,8 +389,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the default polling schedule's duration expires before the
      *         condition is satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    T when(T subject, F function, P predicate) {
+    default <T, R> T when(T subject, SelfDescribingFunction<? super T, R> function, SelfDescribingPredicate<? super R> predicate) {
         PollingSchedule schedule = eventually();
         PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return subject;
@@ -430,8 +415,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the default polling schedule's duration expires before the
      *         condition is satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    T when(T subject, F function, Matcher<? super R> matcher) {
+    default <T, R> T when(T subject, SelfDescribingFunction<? super T, R> function, Matcher<? super R> matcher) {
         PollingSchedule schedule = eventually();
         PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
         if (result.isSatisfied()) return subject;
@@ -454,8 +438,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the schedule's duration expires before the condition is
      *         satisfied
      */
-    default <T, P extends SelfDescribing & Predicate<? super T>>
-    T when(PollingSchedule schedule, T subject, P predicate) {
+    default <T> T when(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         if (poll(schedule, subject, predicate)) return subject;
         throw new PollTimeoutException(schedule, subject, predicate);
     }
@@ -481,8 +464,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the schedule's duration expires before the condition is
      *         satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    T when(PollingSchedule schedule, T subject, F function, P predicate) {
+    default <T, R> T when(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, SelfDescribingPredicate<? super R> predicate) {
         PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return subject;
         throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
@@ -509,8 +491,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *         if the schedule's duration expires before the condition is
      *         satisfied
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    T when(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+    default <T, R> T when(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, Matcher<? super R> matcher) {
         PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
         if (result.isSatisfied()) return subject;
         throw new PollTimeoutException(schedule, subject, function, matcher, result.value());
