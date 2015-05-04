@@ -22,8 +22,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param condition
      *         the condition to satisfy
      */
-    default <C extends SelfDescribing & BooleanSupplier>
-    void assertThat(PollingSchedule schedule, C condition) {
+    default void assertThat(PollingSchedule schedule, SelfDescribingBooleanSupplier condition) {
         if (poll(schedule, condition)) return;
         throw new AssertionError(Diagnosis.of(schedule, condition));
     }
@@ -41,8 +40,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param schedule
      *         the schedule that governs the polling
      */
-    default <T, P extends SelfDescribing & Predicate<? super T>>
-    void assertThat(PollingSchedule schedule, T subject, P predicate) {
+    default <T> void assertThat(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         if (poll(schedule, subject, predicate)) return;
         throw new AssertionError(Diagnosis.of(schedule, subject, predicate));
     }
@@ -54,7 +52,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param <T>
      *         the type of the subject
      * @param <R>
-     *         the type of the result of the function
+     *         the type of the derived value
      * @param subject
      *         the subject to evaluate
      * @param function
@@ -64,8 +62,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param schedule
      *         the schedule that governs the polling
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    void assertThat(PollingSchedule schedule, T subject, F function, P predicate) {
+    default <T, R> void assertThat(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, SelfDescribingPredicate<? super R> predicate) {
         PollEvaluationResult<R> result = poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return;
         throw new AssertionError(Diagnosis.of(schedule, subject, function, predicate, result.value()));
@@ -78,7 +75,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param <T>
      *         the type of the subject
      * @param <R>
-     *         the type of the result of the function
+     *         the type of the derived value
      * @param subject
      *         the subject to evaluate
      * @param function
@@ -88,8 +85,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @param schedule
      *         the schedule that governs the polling
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    void assertThat(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+    default <T, R> void assertThat(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, Matcher<? super R> matcher) {
         PollEvaluationResult<R> result = poll(schedule, subject, function, matcher);
         if (result.isSatisfied()) return;
         throw new AssertionError(Diagnosis.of(schedule, subject, function, matcher, result.value()));
@@ -107,8 +103,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @return {@code true} if the condition is satisfied with the schedule's
      * duration, and {@code false} otherwise.
      */
-    default <C extends SelfDescribing & BooleanSupplier>
-    boolean satisfiedThat(PollingSchedule schedule, C condition) {
+    default boolean satisfiedThat(PollingSchedule schedule, SelfDescribingBooleanSupplier condition) {
         return poll(schedule, condition);
     }
 
@@ -128,8 +123,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @return {@code true} if the condition is satisfied within the schedule's
      * duration, and {@code false} otherwise.
      */
-    default <T, P extends SelfDescribing & Predicate<? super T>>
-    boolean satisfiedThat(PollingSchedule schedule, T subject, P predicate) {
+    default <T> boolean satisfiedThat(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         return poll(schedule, subject, predicate);
     }
 
@@ -153,8 +147,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @return {@code true} if the condition is satisfied within the schedule's
      * duration, and {@code false} otherwise.
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    boolean satisfiedThat(PollingSchedule schedule, T subject, F function, P predicate) {
+    default <T, R> boolean satisfiedThat(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, SelfDescribingPredicate<? super R> predicate) {
         return poll(schedule, subject, function, predicate).isSatisfied();
     }
 
@@ -178,8 +171,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * @return {@code true} if the condition is satisfied within the schedule's
      * duration, and {@code false} otherwise.
      */
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    boolean satisfiedThat(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+    default <T, R> boolean satisfiedThat(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, R> function, Matcher<? super R> matcher) {
         return poll(schedule, subject, function, matcher).isSatisfied();
     }
 
