@@ -9,9 +9,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(Enclosed.class)
-public class SubjectFunctionPredicateExpressionsTests {
+public class SubjectFunctionPredicateExpressionTests {
     private static final String SUBJECT = "subject";
-
     private static final SelfDescribingFunction<String, String> FUNCTION = Named.function("function", String::toUpperCase);
     private static final SelfDescribingPredicate<String> ANY_VALUE = Named.predicate("any value", t -> true);
 

@@ -11,9 +11,7 @@ import org.junit.runner.RunWith;
 
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 
 @RunWith(Enclosed.class)
 public class SubjectFunctionMatcherPolledExpressionTests {
@@ -122,6 +120,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
             assertThat(message, is(Diagnosis.of(defaultSchedule, SUBJECT, FUNCTION, MATCHER, FUNCTION.apply(SUBJECT))));
         }
     }
+
     public static class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();
 
@@ -200,6 +199,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
             assertThat(message, is(Diagnosis.of(defaultSchedule, SubjectFunctionMatcherPolledExpressionTests.SUBJECT, FUNCTION, MATCHER, FUNCTION.apply(SubjectFunctionMatcherPolledExpressionTests.SUBJECT))));
         }
     }
+
     public static class WhenWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();
 

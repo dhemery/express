@@ -15,10 +15,9 @@ import static org.hamcrest.Matchers.sameInstance;
 
 @RunWith(Enclosed.class)
 public class SubjectFunctionPredicatePolledExpressionTests {
-
+    public static final String SUBJECT = "subject";
     public static final SelfDescribingFunction<String, String> FUNCTION = Named.function("function", String::toUpperCase);
     public static final SelfDescribingPredicate<String> PREDICATE = Named.predicate("predicate", t -> true);
-    public static final String SUBJECT = "subject";
 
     public static class AssertThat extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();

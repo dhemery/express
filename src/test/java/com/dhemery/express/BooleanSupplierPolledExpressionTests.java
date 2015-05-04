@@ -14,8 +14,8 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(Enclosed.class)
 public class BooleanSupplierPolledExpressionTests {
-    public static final SelfDescribingBooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
     public static final PollingSchedule SCHEDULE = PollingSchedules.random();
+    public static final SelfDescribingBooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
 
     public static class AssertThat extends PolledExpressionTestSetup {
         @Test
