@@ -1,16 +1,12 @@
 package com.dhemery.express;
 
-import com.dhemery.express.helpers.ExpressionsPolledBy;
 import com.dhemery.express.helpers.PolledExpressionTestSetup;
 import com.dhemery.express.helpers.PollingSchedules;
-import org.hamcrest.SelfDescribing;
 import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
-
-import java.util.function.BooleanSupplier;
 
 import static com.dhemery.express.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
