@@ -43,7 +43,7 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
      */
     @Override
     public SelfDescribingPredicate<T> and(Predicate<? super T> other) {
-        return new NamedPredicate<>(format("(%s and %s)", this, other), predicate.and(other));
+        return new NamedPredicate<>(format("(%s and %s)", this, BestDescription.of(other)), predicate.and(other));
     }
 
     /**
@@ -52,7 +52,7 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
      */
     @Override
     public SelfDescribingPredicate<T> or(Predicate<? super T> other) {
-        return new NamedPredicate<>(format("(%s or %s)", this, other), predicate.or(other));
+        return new NamedPredicate<>(format("(%s or %s)", this, BestDescription.of(other)), predicate.or(other));
     }
 
     /**

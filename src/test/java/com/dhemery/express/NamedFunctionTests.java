@@ -41,8 +41,8 @@ public class NamedFunctionTests {
 
         SelfDescribingFunction<Object, Object> composed = before.andThen(after);
 
-        Assert.assertThat(String.valueOf(composed), is(format("(%s of before)", after)));
-        Assert.assertThat(StringDescription.toString(composed), is(format("(%s of before)", after)));
+        Assert.assertThat(String.valueOf(composed), is(format("(%s of before)", BestDescription.of(after))));
+        Assert.assertThat(StringDescription.toString(composed), is(format("(%s of before)", BestDescription.of(after))));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class NamedFunctionTests {
 
         SelfDescribingFunction<Object, Object> composed = after.compose(before);
 
-        Assert.assertThat(String.valueOf(composed), is(format("(after of %s)", before)));
-        Assert.assertThat(StringDescription.toString(composed), is(format("(after of %s)", before)));
+        Assert.assertThat(String.valueOf(composed), is(format("(after of %s)", BestDescription.of(before))));
+        Assert.assertThat(StringDescription.toString(composed), is(format("(after of %s)", BestDescription.of(before))));
     }
 }

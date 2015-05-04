@@ -49,7 +49,7 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
      */
     @Override
     public <V> SelfDescribingFunction<T, V> andThen(Function<? super R, ? extends V> after) {
-        return new NamedFunction<>(format("(%s of %s)", after, this), function.andThen(after));
+        return new NamedFunction<>(format("(%s of %s)", BestDescription.of(after), this), function.andThen(after));
     }
 
     /**
@@ -60,6 +60,6 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
      */
     @Override
     public <V> SelfDescribingFunction<V, R> compose(Function<? super V, ? extends T> before) {
-        return new NamedFunction<>(format("(%s of %s)", this, before), function.compose(before));
+        return new NamedFunction<>(format("(%s of %s)", this, BestDescription.of(before)), function.compose(before));
     }
 }
