@@ -28,9 +28,7 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @return the value returned by the underlying predicate
+     * @return whether the underlying predicate accepts the input argument
      */
     @Override
     public boolean test(T t) {
@@ -38,8 +36,8 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
     }
 
     /**
-     * {@inheritDoc} <p> The composed predicate is named to describe this
-     * predicate, the other predicate, and their composition. </p>
+     * {@inheritDoc} The composed predicate is named to describe this predicate,
+     * the other predicate, and their composition.
      */
     @Override
     public SelfDescribingPredicate<T> and(Predicate<? super T> other) {
@@ -47,8 +45,8 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
     }
 
     /**
-     * {@inheritDoc} <p> The composed predicate is named to describe this
-     * predicate, the other predicate, and their composition. </p>
+     * {@inheritDoc} The composed predicate is named to describe this predicate,
+     * the other predicate, and their composition.
      */
     @Override
     public SelfDescribingPredicate<T> or(Predicate<? super T> other) {
@@ -56,8 +54,8 @@ public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<
     }
 
     /**
-     * {@inheritDoc} <p> The composed predicate is named to describe this
-     * predicate, with the word "not" prepended. </p>
+     * {@inheritDoc} The composed predicate is named to describe this predicate,
+     * with the word "not" prepended.
      */
     @Override
     public SelfDescribingPredicate<T> negate() {

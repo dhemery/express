@@ -32,9 +32,8 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @return the value returned by the underlying function
+     * @return the value returned by applying the underlying function to the
+     * function argument
      */
     @Override
     public R apply(T t) {
@@ -42,10 +41,8 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * The composed function is named to describe this function, the {@code
-     * after} function, and their composition.
+     * {@inheritDoc} The composed function is named to describe this function,
+     * the {@code after} function, and their composition.
      */
     @Override
     public <V> SelfDescribingFunction<T, V> andThen(Function<? super R, ? extends V> after) {
@@ -53,10 +50,8 @@ public class NamedFunction<T, R> extends Named implements SelfDescribingFunction
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * The composed function is named to describe this function, the {@code
-     * before} function, and their composition.
+     * {@inheritDoc} The composed function is named to describe this function,
+     * the {@code before} function, and their composition.
      */
     @Override
     public <V> SelfDescribingFunction<V, R> compose(Function<? super V, ? extends T> before) {

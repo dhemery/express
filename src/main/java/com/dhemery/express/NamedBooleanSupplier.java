@@ -23,8 +23,6 @@ public class NamedBooleanSupplier extends Named implements SelfDescribingBoolean
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return the value returned by the underlying supplier
      */
     @Override
