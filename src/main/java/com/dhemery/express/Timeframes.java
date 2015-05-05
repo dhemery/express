@@ -4,30 +4,21 @@ import java.time.Duration;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Factory methods for polling schedules. Each method is named to read like a
- * timeframe in a polled expression.
+ * Factory methods to supply polling schedules. Each method is named to read like a
+ * timeframe in a polled expression:
+ * <pre>
+ * assertThat(eventually(), searchField, isDisplayed());
+ * assertThat(within(1, MINUTES), searchField, isDisplayed());
+ * assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
+ * </pre>
  */
 public interface Timeframes extends Eventually {
     /**
-     * @implNote The interval for the default polling schedule is defined by the
-     * system property:
-     * <pre>
-     *    com.dhemery.express.polling.duration.millis
-     * </pre>
-     * If the system properties lack a property with that key, the interval for
-     * the default polling schedule is 1 second.
-     * <p>
-     * The duration for the default polling schedule is defined by the system
-     * property:
-     * <pre>
-     *    com.dhemery.express.polling.duration.millis
-     * </pre>
-     * If the system properties lack a property with that key, the duration for
-     * the default polling schedule is 1 second.
+     * @return {@link DefaultPollingSchedule#INSTANCE}.
      */
     @Override
     default PollingSchedule eventually() {
-        return SystemPollingSchedule.INSTANCE;
+        return DefaultPollingSchedule.INSTANCE;
     }
 
     /**
@@ -36,14 +27,12 @@ public interface Timeframes extends Eventually {
      * <p>
      * This factory method is named to read nicely in polled expressions:
      * <pre>
-     * assertThat(within(10, MINUTES), jethro, is(awake()));
+     * assertThat(within(1, MINUTES), searchField, isDisplayed());
      * </pre>
-     * To specify a polling interval, call the returned schedule's {@link
-     * Within#checkingEvery(Duration) checkingEvery(Duration)} method:
+     * To specify a polling interval, call {@link Within#checkingEvery checkingEvery}
+     * on the returned schedule:
      * <pre>
-     * assertThat(
-     *     within(10, MINUTES).checkingEvery(5, SECONDS),
-     *     jethro, is(asleep()));
+     * assertThat(within(1, MINUTES).checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
      *
      * @param amount
@@ -51,9 +40,10 @@ public interface Timeframes extends Eventually {
      * @param unit
      *         the unit that the duration is measured in
      *
-     * @return a polling schedule with the given duration and default interval
+     * @return a polling schedule with the given duration and the default polling interval
      *
-     * @implNote delegates to {@link #within(Duration)}.
+     * @implSpec the returned schedule must have the same polling interval as
+     * the schedules returned by {@link Eventually#eventually eventually}.
      */
     default Within within(int amount, TemporalUnit unit) {
         return within(Duration.of(amount, unit));
@@ -65,16 +55,13 @@ public interface Timeframes extends Eventually {
      * <p>
      * This factory method is named to read nicely in polled expressions:
      * <pre>
-     * Duration tenMinutes = Duration.of(10, MINUTES);
-     * assertThat(within(tenMinutes), jethro, is(feedingChickens()));
+     * Duration tenMinutes = Duration.of(1, MINUTES);
+     * assertThat(within(tenMinutes), searchField, isDisplayed());
      * </pre>
-     * To specify a polling interval, call the returned schedule's {@link
-     * Within#checkingEvery(Duration) checkingEvery(Duration)} method:
+     * To specify a polling interval, call {@link Within#checkingEvery checkingEvery}
+     * on the returned schedule:
      * <pre>
-     * Duration tenMinutes = Duration.of(10, MINUTES);
-     * assertThat(
-     *     within(tenMinutes).checkingEvery(5, SECONDS),
-     *     jethro, is(wearingPants()));
+     * assertThat(within(tenMinutes).checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
      *
      * @param duration
@@ -82,8 +69,8 @@ public interface Timeframes extends Eventually {
      *
      * @return a polling schedule with the given duration and default interval
      *
-     * @implNote retrieves the default polling interval by calling {@link
-     * #eventually()}.
+     * @implSpec the returned schedule must have the same polling interval as
+     * the schedules returned by {@link Eventually#eventually eventually}.
      */
     default Within within(Duration duration) {
         return new Within(eventually().interval(), duration);
@@ -95,15 +82,12 @@ public interface Timeframes extends Eventually {
      * <p>
      * This factory method is named to read nicely in polled expressions:
      * <pre>
-     * assertThat(within(5, DAYS), jethro, is(eatingPie()));
+     * assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
-     * <p>
-     * To specify a polling duration, call the returned schedule's {@link
-     * CheckingEvery#expiringAfter(Duration) expiringAfter(Duration)} method:
+     * To specify a polling duration, call {@link CheckingEvery#expiringAfter expiringAfter}
+     * on the returned schedule:
      * <pre>
-     * assertThat(
-     *     checkingEvery(1, SECONDS).expiringAfter(2, HOURS),
-     *     jethro, is(hungryAgain()));
+     * assertThat(checkingEvery(1, SECONDS).expiringAfter(1, MINUTES), searchField, isDisplayed());
      * </pre>
      *
      * @param amount
@@ -114,7 +98,8 @@ public interface Timeframes extends Eventually {
      *
      * @return a polling schedule with the given interval and default duration
      *
-     * @implNote delegates to {@link #checkingEvery(Duration)}.
+     * @implSpec the returned schedule must have the same polling duration as
+     * the schedules returned by {@link Eventually#eventually eventually}.
      */
     default CheckingEvery checkingEvery(int amount, TemporalUnit unit) {
         return checkingEvery(Duration.of(amount, unit));
@@ -127,16 +112,14 @@ public interface Timeframes extends Eventually {
      * This factory method is named to read nicely in polled expressions:
      * <pre>
      * Duration tenMinutes = Duration.of(10, MINUTES);
-     * assertThat(checkingEvery(tenMinutes), jethro, is(missingHisMother()));
+     * assertThat(checkingEvery(tenMinutes), searchField, isDisplayed());
      * </pre>
-     * <p>
-     * To specify a polling duration, call the returned schedule's {@link
-     * CheckingEvery#expiringAfter(Duration) expiringAfter(Duration)} method:
+     * To specify a polling duration, call {@link CheckingEvery#expiringAfter expiringAfter}
+     * on the returned schedule:
+     * CheckingEvery#expiringAfter expiringAfter} method:
      * <pre>
-     * Duration tenMinutes = Duration.of(10, MINUTES);
-     * assertThat(
-     *     checkingEvery(tenMinutes).expiringAfter(2, HOURS),
-     *     jethro, is(walkingInMemphis()));
+     * Duration oneSecond = Duration.of(1, SECONDS);
+     * assertThat(checkingEvery(oneSecond).expiringAfter(1, MINUTES), searchField, isDisplayed());
      * </pre>
      *
      * @param interval
@@ -144,8 +127,8 @@ public interface Timeframes extends Eventually {
      *
      * @return a polling schedule with the given interval and default duration
      *
-     * @implNote retrieves the default polling duration by calling {@link
-     * #eventually()}.
+     * @implSpec the returned schedule must have the same polling duration as
+     * the schedules returned by {@link Eventually#eventually eventually}.
      */
     default CheckingEvery checkingEvery(Duration interval) {
         return new CheckingEvery(interval, eventually().duration());

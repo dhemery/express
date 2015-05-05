@@ -125,7 +125,7 @@ public class DiagnosisTests {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 BestDescription.of(subject),
                 "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(predicate),
-                "     but: was " + new StringDescription().appendValue(functionValue)
+                "     but: " + StringDescription.toString(function) + " was " + new StringDescription().appendValue(functionValue)
         );
 
         String diagnosis = Diagnosis.of(subject, function, predicate, functionValue);

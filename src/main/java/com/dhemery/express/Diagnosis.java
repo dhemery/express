@@ -45,7 +45,7 @@ public class Diagnosis {
         return diagnosis(
                 subject,
                 expected(function, matcher),
-                but(StringDescription.toString(function), matcherRejected(matcher, functionValue))
+                but(function, matcherRejected(matcher, functionValue))
         );
     }
 
@@ -53,7 +53,7 @@ public class Diagnosis {
         return diagnosis(
                 subject,
                 expected(function, predicate),
-                but(was(functionValue))
+                but(function, was(functionValue))
         );
     }
 
@@ -104,8 +104,12 @@ public class Diagnosis {
         return line("but", Arrays.stream(details));
     }
 
-    private static String onFinalEvaluation(SelfDescribing function, String... details) {
-        return line("final", Stream.concat(Stream.of(StringDescription.toString(function)), Arrays.stream(details)));
+    private static String but(SelfDescribing function, String details) {
+        return but(StringDescription.toString(function), details);
+    }
+
+    private static String onFinalEvaluation(SelfDescribing function, String details) {
+        return line("final", Stream.of(StringDescription.toString(function), details));
     }
 
     private static String line(String label, Stream<String> details) {
