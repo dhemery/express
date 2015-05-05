@@ -13,96 +13,82 @@ import java.util.function.Predicate;
  */
 public interface Poller {
     /**
-     * Polls the supplier. Repeatedly evaluates the supplier on the given
-     * schedule until either the supplier returns {@code true} or the schedule
-     * expires.
+     * Polls the supplier.
      *
      * @param schedule
-     *         the schedule on which to poll
+     *         the polling interval and duration
      * @param supplier
      *         the supplier to evaluate
      *
      * @return {@code true} if the supplier returns {@code true} before the
      * schedule expires, otherwise {@code false}
      */
-    <C extends SelfDescribing & BooleanSupplier>
-    boolean poll(PollingSchedule schedule, C supplier);
+    boolean poll(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier);
 
     /**
-     * Polls the predicate's acceptance of the subject. Repeatedly evaluates the
-     * predicate's acceptance of the subject, on the given schedule, until
-     * either the predicate accepts the subject or the schedule expires.
+     * Polls the predicate's acceptance of the subject.
      *
      * @param schedule
-     *         the schedule on which to poll
+     *         the polling interval and duration
      * @param subject
-     *         the subject of the poll
+     *         the subject to evaluate
      * @param predicate
      *         evaluates the subject
      * @param <T>
      *         the type of the subject
      *
-     * @return {@code true} if the subject satisfies the predicate before the
+     * @return {@code true} if the predicate accepts the subject before the
      * schedule expires, otherwise {@code false}
      */
-    <T, P extends SelfDescribing & Predicate<? super T>>
-    boolean poll(PollingSchedule schedule, T subject, P predicate);
+    <T> boolean poll(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate);
 
     /**
      * Polls the matcher's acceptance of the value that the function derives
-     * from the subject. Repeatedly evaluates the matcher's acceptance of the
-     * value that the function derives from the subject, on the given schedule,
-     * until either the matcher accepts the derived value or the schedule
-     * expires.
+     * from the subject.
      * <p>
      * The return value includes the value derived by the function during the
      * final evaluation, and indicates whether that value satisfied the
      * matcher.
      *
      * @param schedule
-     *         the schedule on which to poll
+     *         the polling interval and duration
      * @param subject
-     *         the subject of the poll
+     *         the subject to evaluate
      * @param function
      *         derives the value of interest from the subject
      * @param matcher
      *         evaluates the derived value
      * @param <T>
      *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
+     * @param <V>
+     *         the type of the derived value
      *
      * @return the result of the final evaluation performed by this poll
      */
-    <T, R, F extends SelfDescribing & Function<? super T, R>>
-    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher);
+    <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher);
 
     /**
      * Polls the matcher's acceptance of the value that the function derives
-     * from the subject. Repeatedly evaluates the predicate's acceptance of the
-     * value that the function derives from the subject, on the given schedule,
-     * until either the predicate accepts the derived value or the schedule
-     * expires.
+     * from the subject.
      * <p>
      * The return value includes the value derived by the function during the
      * final evaluation, and indicates whether that value satisfied the
      * predicate.
      *
      * @param schedule
-     *         the schedule on which to poll
+     *         the polling interval and duration
      * @param subject
-     *         the subject of the poll
+     *         the subject to evaluate
      * @param function
      *         derives the value of interest from the subject
      * @param predicate
      *         evaluates the derived value
      * @param <T>
      *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
+     * @param <V>
+     *         the type of the derived value
      *
      * @return the result of the final evaluation performed by this poll
      */
-    <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate);
+    <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate);
 }

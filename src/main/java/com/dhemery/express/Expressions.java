@@ -15,10 +15,13 @@ import java.util.function.Predicate;
 
 public interface Expressions {
     /**
-     * Assert that the condition is satisfied.
+     * Asserts that the supplier returns {@code true}.
      *
      * @param condition
-     *         the condition to evaluate
+     *         the supplier to evaluate
+     *
+     * @throws AssertionError
+     *         if the supplier returns {@code false}
      */
     static void assertThat(SelfDescribingBooleanSupplier condition) {
         if (!condition.getAsBoolean())
@@ -26,7 +29,7 @@ public interface Expressions {
     }
 
     /**
-     * Assert that the predicate accepts the subject.
+     * Asserts that the predicate accepts the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -41,7 +44,7 @@ public interface Expressions {
     }
 
     /**
-     * Assert that the matcher accepts the subject.
+     * Asserts that the matcher accepts the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -56,59 +59,61 @@ public interface Expressions {
     }
 
     /**
-     * Assert that the predicate accepts the value that the function derives
+     * Asserts that the predicate accepts the value that the function derives
      * from the subject.
      *
      * @param <T>
      *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
+     * @param <V>
+     *         the type of the derived value
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that derives the value of interest
+     *         derives the value of interest from the subject
      * @param predicate
-     *         the predicate that evaluates the derived value
+     *         evaluates the derived value
      */
-    static <T, R> void assertThat(T subject, SelfDescribingFunction<? super T, R> function, SelfDescribingPredicate<? super R> predicate) {
-        R value = function.apply(subject);
+    static <T, V> void assertThat(T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate) {
+        V value = function.apply(subject);
         if (!predicate.test(value))
             throw new AssertionError(Diagnosis.of(subject, function, predicate, value));
     }
 
     /**
-     * Assert that the matcher accepts the value that the function derives from
+     * Asserts that the matcher accepts the value that the function derives from
      * the subject.
      *
      * @param <T>
      *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
+     * @param <V>
+     *         the type of the derived value
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that derives the value of interest
+     *         derives the value of interest from the subject
      * @param matcher
-     *         the matcher that evaluates the derived value
+     *         evaluates the derived value
      */
-    static <T, R> void assertThat(T subject, SelfDescribingFunction<? super T, R> function, Matcher<? super R> matcher) {
-        R value = function.apply(subject);
+    static <T, V> void assertThat(T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher) {
+        V value = function.apply(subject);
         if (!matcher.matches(value))
             throw new AssertionError(Diagnosis.of(subject, function, matcher, value));
     }
 
     /**
-     * Indicate whether the condition is satisfied.
+     * Returns whether the supplier returns {@code true}.
      *
-     * @param condition
-     *         the condition to evaluate
+     * @param supplier
+     *         the supplier to evaluate
+     *
+     * @return the value returned by the supplier
      */
-    static boolean satisfiedThat(BooleanSupplier condition) {
-        return condition.getAsBoolean();
+    static boolean satisfiedThat(BooleanSupplier supplier) {
+        return supplier.getAsBoolean();
     }
 
     /**
-     * Indicate whether the predicate accepts the subject.
+     * Returns whether the predicate accepts the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -116,14 +121,16 @@ public interface Expressions {
      *         the subject to evaluate
      * @param predicate
      *         the predicate that evaluates the subject
+     *
+     * @return {@code true} if the predicate accepts the subject, otherwise
+     * {@code false}
      */
-    static <T>
-    boolean satisfiedThat(T subject, Predicate<? super T> predicate) {
+    static <T> boolean satisfiedThat(T subject, Predicate<? super T> predicate) {
         return predicate.test(subject);
     }
 
     /**
-     * Indicate whether the matcher accepts the subject.
+     * Returns whether the matcher accepts the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -131,49 +138,55 @@ public interface Expressions {
      *         the subject to evaluate
      * @param matcher
      *         the matcher that evaluates the subject
+     *
+     * @return {@code true} if the matcher accepts the subject, otherwise {@code
+     * false}
      */
-    static <T>
-    boolean satisfiedThat(T subject, Matcher<? super T> matcher) {
+    static <T> boolean satisfiedThat(T subject, Matcher<? super T> matcher) {
         return matcher.matches(subject);
     }
 
     /**
-     * Indicate whether the predicate accepts the value that the function
-     * derives from the subject.
-     *
-     * @param <T>
-     *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
-     * @param subject
-     *         the subject to evaluate
-     * @param function
-     *         the function that derives the value of interest
-     * @param predicate
-     *         the predicate that evaluates the derived value
-     */
-    static <T, R>
-    boolean satisfiedThat(T subject, Function<? super T, R> function, Predicate<? super R> predicate) {
-        return predicate.test(function.apply(subject));
-    }
-
-    /**
-     * Indicate whether the matcher accepts the value that the function derives
+     * Returns whether the predicate accepts the value that the function derives
      * from the subject.
      *
      * @param <T>
      *         the type of the subject
-     * @param <R>
-     *         the type of the result of the function
+     * @param <V>
+     *         the type of the derived value
      * @param subject
      *         the subject to evaluate
      * @param function
-     *         the function that derives the value of interest
-     * @param matcher
-     *         the matcher that evaluates the derived value
+     *         derives the value of interest from the subject
+     * @param predicate
+     *         evaluates the derived value
+     *
+     * @return {@code true} if the predicate accepts the value that the function
+     * derives from subject, otherwise {@code false}
      */
-    static <T, R>
-    boolean satisfiedThat(T subject, Function<? super T, R> function, Matcher<? super R> matcher) {
+    static <T, V> boolean satisfiedThat(T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
+        return predicate.test(function.apply(subject));
+    }
+
+    /**
+     * Returns whether the matcher accepts the value that the function derives
+     * from the subject.
+     *
+     * @param <T>
+     *         the type of the subject
+     * @param <V>
+     *         the type of the derived value
+     * @param subject
+     *         the subject to evaluate
+     * @param function
+     *         derives the value of interest from the subject
+     * @param matcher
+     *         evaluates the derived value
+     *
+     * @return {@code true} if the matcher accepts the value that the function
+     * derives from the subject, otherwise {@code false}
+     */
+    static <T, V> boolean satisfiedThat(T subject, Function<? super T, V> function, Matcher<? super V> matcher) {
         return matcher.matches(function.apply(subject));
     }
 }

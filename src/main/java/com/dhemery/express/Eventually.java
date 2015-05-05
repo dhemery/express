@@ -2,10 +2,8 @@ package com.dhemery.express;
 
 public interface Eventually {
     /**
-     * Returns the default polling schedule.
-     * <p>
-     * This factory method is named to read nicely in polled expressions:
-     * <p>
+     * Returns the default polling schedule. This factory method is named to
+     * read nicely in polled expressions:
      * <pre>
      * assertThat(eventually(), jethro, is(swimmingInTheCementPond()));
      * </pre>

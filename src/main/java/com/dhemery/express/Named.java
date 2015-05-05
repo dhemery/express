@@ -14,7 +14,10 @@ public class Named implements SelfDescribing {
     private final String name;
 
     /**
-     * Creates an object with the given name.
+     * Creates an object that describes itself with the given name.
+     *
+     * @param name
+     *         the name of the object
      */
     public Named(String name) {
         this.name = name;
@@ -29,26 +32,54 @@ public class Named implements SelfDescribing {
     }
 
     /**
-     * Creates a {@link Function} with the given name and underlying function.
+     * Decorates the supplier to describe itself with the given name.
      *
-     * @see NamedFunction
+     * @param name
+     *         the name of the supplier
+     * @param supplier
+     *         the underlying supplier
+     *
+     * @return a {@code SelfDescribingBooleanSupplier} that functions like the
+     * given supplier and describes itself with the given name.
      */
-    public static <T, R> SelfDescribingFunction<T, R> function(String description, Function<T, R> function) {
-        return new NamedFunction<>(description, function);
+    public static SelfDescribingBooleanSupplier booleanSupplier(String name, BooleanSupplier supplier) {
+        return new NamedBooleanSupplier(name, supplier);
     }
 
     /**
-     * Creates a {@link Predicate} with the given name and underlying
-     * predicate.
+     * Decorates the function to describe itself with the given name.
      *
-     * @see NamedPredicate
+     * @param name
+     *         the name of the function
+     * @param function
+     *         the underlying function
+     * @param <T>
+     *         the type of the input to the function
+     * @param <V>
+     *         the type of the result of the function
+     *
+     * @return a {@code SelfDescribingFunction} that functions like the given
+     * function and describes itself with the given name.
+     */
+    public static <T, V> SelfDescribingFunction<T, V> function(String name, Function<T, V> function) {
+        return new NamedFunction<>(name, function);
+    }
+
+    /**
+     * Decorates the predicate to describe itself with the given name.
+     *
+     * @param description
+     *         the name of the function
+     * @param predicate
+     *         the underlying predicate
+     * @param <T>
+     *         the type of the input to the predicate
+     *
+     * @return a {@code SelfDescribingPredicate} that functions like the given
+     * predicate and describes itself with the given name.
      */
     public static <T> SelfDescribingPredicate<T> predicate(String description, Predicate<T> predicate) {
         return new NamedPredicate<>(description, predicate);
-    }
-
-    public static SelfDescribingBooleanSupplier booleanSupplier(String name, BooleanSupplier supplier) {
-        return new NamedBooleanSupplier(name, supplier);
     }
 
     @Override

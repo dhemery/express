@@ -2,20 +2,10 @@ package com.dhemery.express.helpers;
 
 import com.dhemery.express.*;
 import org.hamcrest.Matcher;
-import org.hamcrest.SelfDescribing;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class ExpressionsPolledBy implements PolledExpressions {
     private Poller poller;
     private Eventually eventually;
-
-    public ExpressionsPolledBy(Poller poller) {
-        this(poller, new Timeframes() {
-        });
-    }
 
     public ExpressionsPolledBy(Poller poller, Eventually eventually) {
         this.poller = poller;
@@ -23,22 +13,22 @@ public class ExpressionsPolledBy implements PolledExpressions {
     }
 
     @Override
-    public <C extends SelfDescribing & BooleanSupplier> boolean poll(PollingSchedule schedule, C supplier) {
+    public boolean poll(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier) {
         return poller.poll(schedule, supplier);
     }
 
     @Override
-    public <T, P extends SelfDescribing & Predicate<? super T>> boolean poll(PollingSchedule schedule, T subject, P predicate) {
+    public <T> boolean poll(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         return poller.poll(schedule, subject, predicate);
     }
 
     @Override
-    public <T, R, F extends SelfDescribing & Function<? super T, R>> PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+    public <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher) {
         return poller.poll(schedule, subject, function, matcher);
     }
 
     @Override
-    public <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>> PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
+    public <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate) {
         return poller.poll(schedule, subject, function, predicate);
     }
 

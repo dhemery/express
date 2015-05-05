@@ -4,13 +4,10 @@ import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public interface PollTimerPoller extends Poller {
     @Override
-    default <C extends SelfDescribing & BooleanSupplier>
-    boolean poll(PollingSchedule schedule, C supplier) {
+    default boolean poll(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier) {
         PollTimer timer = pollTimer();
         timer.start(schedule);
         while (!timer.isExpired()) {
@@ -23,20 +20,17 @@ public interface PollTimerPoller extends Poller {
     PollTimer pollTimer();
 
     @Override
-    default <T, P extends SelfDescribing & Predicate<? super T>>
-    boolean poll(PollingSchedule schedule, T subject, P predicate) {
+    default <T> boolean poll(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
         return false;
     }
 
     @Override
-    default <T, R, F extends SelfDescribing & Function<? super T, R>>
-    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, Matcher<? super R> matcher) {
+    default <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher) {
         return null;
     }
 
     @Override
-    default <T, R, F extends SelfDescribing & Function<? super T, R>, P extends SelfDescribing & Predicate<? super R>>
-    PollEvaluationResult<R> poll(PollingSchedule schedule, T subject, F function, P predicate) {
+    default <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate) {
         return null;
     }
 }
