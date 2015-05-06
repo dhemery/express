@@ -1,4 +1,7 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.diagnosing;
+
+import com.dhemery.expressions.Named;
+import com.dhemery.expressions.SelfDescribingBooleanSupplier;
 
 import java.util.function.BooleanSupplier;
 

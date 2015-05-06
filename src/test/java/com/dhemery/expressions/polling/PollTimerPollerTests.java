@@ -1,5 +1,10 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.polling;
 
+import com.dhemery.expressions.SelfDescribingBooleanSupplier;
+import com.dhemery.expressions.polling.PollTimer;
+import com.dhemery.expressions.polling.PollTimerPoller;
+import com.dhemery.expressions.polling.Poller;
+import com.dhemery.expressions.polling.PollingSchedule;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.jmock.integration.junit4.JUnitRuleMockery;

@@ -1,4 +1,4 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.diagnosing;
 
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;

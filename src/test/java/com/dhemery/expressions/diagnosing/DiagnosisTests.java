@@ -1,7 +1,9 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.diagnosing;
 
 
+import com.dhemery.expressions.*;
 import com.dhemery.expressions.helpers.PollingSchedules;
+import com.dhemery.expressions.polling.PollingSchedule;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

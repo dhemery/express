@@ -1,4 +1,6 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.polling;
+
+import com.dhemery.expressions.Timeframes;
 
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;

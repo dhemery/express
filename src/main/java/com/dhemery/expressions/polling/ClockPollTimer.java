@@ -1,4 +1,8 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.polling;
+
+import com.dhemery.expressions.polling.PollTimer;
+import com.dhemery.expressions.polling.PollingSchedule;
+import com.dhemery.expressions.polling.Sleeper;
 
 import java.time.Clock;
 import java.time.Duration;

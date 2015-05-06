@@ -1,5 +1,6 @@
 package com.dhemery.expressions;
 
+import com.dhemery.expressions.diagnosing.Diagnosis;
 import org.hamcrest.Matcher;
 
 import java.util.function.BooleanSupplier;
@@ -7,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Expressive methods to evaluate composed conditions.
+ * Expressive methods to compose and evaluate conditions.
  *
  * @see PolledExpressions
  * @see Named

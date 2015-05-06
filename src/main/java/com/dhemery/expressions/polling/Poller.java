@@ -1,5 +1,10 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.polling;
 
+import com.dhemery.expressions.SelfDescribingBooleanSupplier;
+import com.dhemery.expressions.SelfDescribingFunction;
+import com.dhemery.expressions.SelfDescribingPredicate;
+import com.dhemery.expressions.polling.PollEvaluationResult;
+import com.dhemery.expressions.polling.PollingSchedule;
 import org.hamcrest.Matcher;
 
 /**

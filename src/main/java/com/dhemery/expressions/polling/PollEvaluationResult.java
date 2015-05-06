@@ -1,4 +1,4 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.polling;
 
 /**
  * The result of a single evaluation during a poll.
@@ -29,7 +29,7 @@ public class PollEvaluationResult<T> {
      *
      * @return the value evaluated by the poll evaluation
      */
-    T value() {
+    public T value() {
         return value;
     }
 
@@ -39,7 +39,7 @@ public class PollEvaluationResult<T> {
      * @return {@code true} if the value satisfied the poll criteria, otherwise
      * {@code false}
      */
-    boolean isSatisfied() {
+    public boolean isSatisfied() {
         return satisfied;
     }
 }

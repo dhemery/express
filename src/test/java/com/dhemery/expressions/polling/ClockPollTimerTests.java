@@ -1,5 +1,9 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.polling;
 
+import com.dhemery.expressions.polling.ClockPollTimer;
+import com.dhemery.expressions.polling.PollTimer;
+import com.dhemery.expressions.polling.PollingSchedule;
+import com.dhemery.expressions.polling.Sleeper;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.States;
@@ -23,7 +27,8 @@ import static org.hamcrest.Matchers.is;
 public class ClockPollTimerTests {
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Auto States sleeperType;
-    @Mock Sleeper sleeper;
+    @Mock
+    Sleeper sleeper;
 
     private final ManualClock clock = new ManualClock();
     private PollTimer timer;

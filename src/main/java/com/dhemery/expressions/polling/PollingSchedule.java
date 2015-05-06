@@ -1,4 +1,4 @@
-package com.dhemery.expressions;
+package com.dhemery.expressions.polling;
 
 import java.time.Duration;
 

@@ -1,5 +1,6 @@
 package com.dhemery.expressions;
 
+import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.helpers.Throwables;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;

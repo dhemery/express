@@ -1,7 +1,10 @@
 package com.dhemery.expressions;
 
+import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.helpers.PolledExpressionTestSetup;
 import com.dhemery.expressions.helpers.PollingSchedules;
+import com.dhemery.expressions.polling.PollTimeoutException;
+import com.dhemery.expressions.polling.PollingSchedule;
 import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;

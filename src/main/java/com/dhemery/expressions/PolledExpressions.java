@@ -1,9 +1,14 @@
 package com.dhemery.expressions;
 
+import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.polling.PollEvaluationResult;
+import com.dhemery.expressions.polling.PollTimeoutException;
+import com.dhemery.expressions.polling.Poller;
+import com.dhemery.expressions.polling.PollingSchedule;
 import org.hamcrest.Matcher;
 
 /**
- * Expressive methods to poll composed suppliers.
+ * Expressive methods to compose conditions and evaluate them by polling.
  *
  * @see Eventually
  * @see Expressions

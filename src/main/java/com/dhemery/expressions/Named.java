@@ -1,5 +1,8 @@
 package com.dhemery.expressions;
 
+import com.dhemery.expressions.diagnosing.NamedBooleanSupplier;
+import com.dhemery.expressions.diagnosing.NamedFunction;
+import com.dhemery.expressions.diagnosing.NamedPredicate;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 

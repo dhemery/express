@@ -1,5 +1,7 @@
 package com.dhemery.expressions;
 
+import com.dhemery.expressions.polling.PollingSchedule;
+
 /**
  * A factory method to supply polling schedules with the default polling
  * interval and duration.
