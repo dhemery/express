@@ -3,13 +3,10 @@ package com.dhemery.expressions;
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.helpers.Throwables;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-@RunWith(Enclosed.class)
 public class SubjectMatcherExpressionTests {
 
     public static class AssertThat {

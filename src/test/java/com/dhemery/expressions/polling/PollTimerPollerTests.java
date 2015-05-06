@@ -1,24 +1,17 @@
 package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.SelfDescribingBooleanSupplier;
-import com.dhemery.expressions.polling.PollTimer;
-import com.dhemery.expressions.polling.PollTimerPoller;
-import com.dhemery.expressions.polling.Poller;
-import com.dhemery.expressions.polling.PollingSchedule;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 
 import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(Enclosed.class)
 public class PollTimerPollerTests {
     public static class WithBooleanSupplier {
         @Rule public JUnitRuleMockery context = new JUnitRuleMockery();

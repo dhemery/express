@@ -1,9 +1,5 @@
 package com.dhemery.expressions.polling;
 
-import com.dhemery.expressions.polling.ClockPollTimer;
-import com.dhemery.expressions.polling.PollTimer;
-import com.dhemery.expressions.polling.PollingSchedule;
-import com.dhemery.expressions.polling.Sleeper;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.States;

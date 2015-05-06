@@ -1,8 +1,6 @@
 package com.dhemery.expressions.diagnosing;
 
 import com.dhemery.expressions.SelfDescribingFunction;
-import com.dhemery.expressions.diagnosing.BestDescription;
-import com.dhemery.expressions.diagnosing.NamedFunction;
 import org.hamcrest.StringDescription;
 import org.junit.Assert;
 import org.junit.Test;

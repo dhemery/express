@@ -3,13 +3,10 @@ package com.dhemery.expressions;
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.helpers.Throwables;
 import org.junit.Test;
-import org.junit.experimental.runners.Enclosed;
-import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(Enclosed.class)
 public class SubjectPredicateExpressionTests {
     private static final SelfDescribingPredicate<Object> ANY_VALUE = Named.predicate("any value", t -> true);
     public static final String SUBJECT = "subject";

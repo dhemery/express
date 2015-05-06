@@ -1,7 +1,6 @@
 package com.dhemery.expressions.diagnosing;
 
 import com.dhemery.expressions.SelfDescribingBooleanSupplier;
-import com.dhemery.expressions.diagnosing.NamedBooleanSupplier;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
 

@@ -1,8 +1,6 @@
 package com.dhemery.expressions.diagnosing;
 
 import com.dhemery.expressions.SelfDescribingPredicate;
-import com.dhemery.expressions.diagnosing.BestDescription;
-import com.dhemery.expressions.diagnosing.NamedPredicate;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
 

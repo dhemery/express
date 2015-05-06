@@ -1,7 +1,10 @@
 package com.dhemery.expressions.diagnosing;
 
 
-import com.dhemery.expressions.*;
+import com.dhemery.expressions.Named;
+import com.dhemery.expressions.SelfDescribingBooleanSupplier;
+import com.dhemery.expressions.SelfDescribingFunction;
+import com.dhemery.expressions.SelfDescribingPredicate;
 import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollingSchedule;
 import org.hamcrest.BaseMatcher;
@@ -23,7 +26,7 @@ public class DiagnosisTests {
     SelfDescribingBooleanSupplier supplier = uncallableBooleanSupplier();
 
     @Test
-    public void withBooleanSupplier_diagnosisDescribes_supplier() {
+    public void booleanSupplier() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 "",
                 "Expected: " + StringDescription.toString(supplier)
@@ -35,46 +38,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void scheduleWithBooleanSupplier_diagnosisDescribes_supplier_schedule() {
-        String expectedDiagnosis = String.join(System.lineSeparator(),
-                "",
-                "Expected: " + StringDescription.toString(supplier),
-                "     but: timed out, polling " + schedule
-        );
-
-        String diagnosis = Diagnosis.of(schedule, supplier);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
-    }
-
-    @Test
-    public void withSubjectPredicate_diagnosisDescribes_predicate_subject() {
-        String expectedDiagnosis = String.join(System.lineSeparator(),
-                "", "Expected: " + StringDescription.toString(predicate),
-                "     but: was " + new StringDescription().appendValue(subject)
-        );
-
-        String diagnosis = Diagnosis.of(subject, predicate);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
-    }
-
-    @Test
-    public void scheduleWithSubjectPredicate_diagnosisDescribes_subject_predicate_schedule() {
-        String expectedDiagnosis = String.join(System.lineSeparator(),
-                BestDescription.of(subject),
-                "Expected: " + StringDescription.toString(predicate),
-                "     but: timed out, polling " + schedule
-        );
-
-        String diagnosis = Diagnosis.of(schedule, subject, predicate);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
-    }
-
-    @Test
-
-    public void withSubjectMatcher_diagnosisDescribes_matcher_mismatchOfSubject() {
+    public void subjectMatcher() {
         StringDescription mismatchDescription = new StringDescription();
         matcher.describeMismatch(subject, mismatchDescription);
 
@@ -90,7 +54,19 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void withSubjectFunctionMatcher_diagnosisDescribes_subject_matcher_function_mismatchOfFunctionValue() {
+    public void subjectPredicate() {
+        String expectedDiagnosis = String.join(System.lineSeparator(),
+                "", "Expected: " + StringDescription.toString(predicate),
+                "     but: was " + new StringDescription().appendValue(subject)
+        );
+
+        String diagnosis = Diagnosis.of(subject, predicate);
+
+        assertThat(diagnosis, is(expectedDiagnosis));
+    }
+
+    @Test
+    public void subjectFunctionMatcher() {
         StringDescription mismatchDescription = new StringDescription();
         matcher.describeMismatch(functionValue, mismatchDescription);
 
@@ -106,7 +82,46 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void scheduleWithSubjectFunctionMatcher_diagnosisDescribes_subject_matcher_function_mismatchOfFunctionValue_schedule() {
+    public void subjectFunctionPredicate() {
+        String expectedDiagnosis = String.join(System.lineSeparator(),
+                BestDescription.of(subject),
+                "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(predicate),
+                "     but: " + StringDescription.toString(function) + " was " + new StringDescription().appendValue(functionValue)
+        );
+
+        String diagnosis = Diagnosis.of(subject, function, predicate, functionValue);
+
+        assertThat(diagnosis, is(expectedDiagnosis));
+    }
+
+    @Test
+    public void polledBooleanSupplier() {
+        String expectedDiagnosis = String.join(System.lineSeparator(),
+                "",
+                "Expected: " + StringDescription.toString(supplier),
+                "     but: timed out, polling " + schedule
+        );
+
+        String diagnosis = Diagnosis.of(schedule, supplier);
+
+        assertThat(diagnosis, is(expectedDiagnosis));
+    }
+
+    @Test
+    public void polledSubjectPredicate() {
+        String expectedDiagnosis = String.join(System.lineSeparator(),
+                BestDescription.of(subject),
+                "Expected: " + StringDescription.toString(predicate),
+                "     but: timed out, polling " + schedule
+        );
+
+        String diagnosis = Diagnosis.of(schedule, subject, predicate);
+
+        assertThat(diagnosis, is(expectedDiagnosis));
+    }
+
+    @Test
+    public void polledSubjectFunctionMatcher() {
         StringDescription mismatchDescription = new StringDescription();
         matcher.describeMismatch(functionValue, mismatchDescription);
 
@@ -123,20 +138,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void withSubjectFunctionPredicate_diagnosisDescribes_subject_predicate_function_functionResult() {
-        String expectedDiagnosis = String.join(System.lineSeparator(),
-                BestDescription.of(subject),
-                "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(predicate),
-                "     but: " + StringDescription.toString(function) + " was " + new StringDescription().appendValue(functionValue)
-        );
-
-        String diagnosis = Diagnosis.of(subject, function, predicate, functionValue);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
-    }
-
-    @Test
-    public void scheduleWithSubjectFunctionPredicate_diagnosisDescribes_subject_predicate_function_functionResult_schedule() {
+    public void polledSubjectFunctionPredicate() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 BestDescription.of(subject),
                 "Expected: " + StringDescription.toString(function) + " " + StringDescription.toString(predicate),
@@ -147,6 +149,12 @@ public class DiagnosisTests {
         String diagnosis = Diagnosis.of(schedule, subject, function, predicate, functionValue);
 
         assertThat(diagnosis, is(expectedDiagnosis));
+    }
+
+    private SelfDescribingBooleanSupplier uncallableBooleanSupplier() {
+        return Named.booleanSupplier("supplier", () -> {
+            throw new RuntimeException("Diagnosis unexpectedly evaluated the supplier");
+        });
     }
 
     private SelfDescribingFunction<String, String> uncallableFunction() {
@@ -177,12 +185,6 @@ public class DiagnosisTests {
     private SelfDescribingPredicate<String> uncallablePredicate() {
         return Named.predicate("predicate", t -> {
             throw new RuntimeException("Diagnosis unexpectedly evaluated the predicate");
-        });
-    }
-
-    private SelfDescribingBooleanSupplier uncallableBooleanSupplier() {
-        return Named.booleanSupplier("supplier", () -> {
-            throw new RuntimeException("Diagnosis unexpectedly evaluated the supplier");
         });
     }
 }

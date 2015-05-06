@@ -4,8 +4,6 @@ import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
-import static java.lang.String.format;
-
 /**
  * A singleton polling schedule with the default polling interval and duration.
  * <p>
