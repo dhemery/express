@@ -5,19 +5,32 @@ import com.dhemery.expressions.SelfDescribingFunction;
 import com.dhemery.expressions.SelfDescribingPredicate;
 import org.hamcrest.Matcher;
 
+/**
+ * A poller that uses a {@link PollTimer} to pause between evaluations and
+ * to determine whether the schedule has expired.
+ */
 public interface PollTimerPoller extends Poller {
     @Override
     default boolean poll(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier) {
         PollTimer timer = pollTimer();
         timer.start(schedule);
-        while (!timer.isExpired()) {
+        while (true) {
+            if (timer.isExpired()) return false;
             if (supplier.getAsBoolean()) return true;
             timer.tick();
         }
-        return false;
     }
 
-    PollTimer pollTimer();
+    /**
+     * Returns a newly created poll timer to guide one poll.
+     *
+     * @return a newly created poll timer
+     *
+     * @implNote returns a new {@link ClockPollTimer}.
+     */
+    default PollTimer pollTimer() {
+        return new ClockPollTimer();
+    }
 
     @Override
     default <T> boolean poll(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {

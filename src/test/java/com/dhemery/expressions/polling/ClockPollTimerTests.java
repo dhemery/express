@@ -23,8 +23,7 @@ import static org.hamcrest.Matchers.is;
 public class ClockPollTimerTests {
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Auto States sleeperType;
-    @Mock
-    Sleeper sleeper;
+    @Mock Sleeper sleeper;
 
     private final ManualClock clock = new ManualClock();
     private PollTimer timer;
