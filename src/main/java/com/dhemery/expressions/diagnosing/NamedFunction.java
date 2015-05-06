@@ -20,7 +20,7 @@ public class NamedFunction<T, R> extends DescribedByName implements SelfDescribi
     private final Function<T, R> function;
 
     /**
-     * Create a named function.
+     * Creates a named function.
      *
      * @param name
      *         the name of this function

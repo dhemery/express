@@ -2,7 +2,7 @@ package com.dhemery.expressions.helpers;
 
 import com.dhemery.expressions.Eventually;
 import com.dhemery.expressions.PolledExpressions;
-import com.dhemery.expressions.polling.Poller;
+import com.dhemery.expressions.Poller;
 import com.dhemery.expressions.polling.PollingSchedule;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;

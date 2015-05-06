@@ -3,7 +3,6 @@ package com.dhemery.expressions;
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.polling.PollEvaluationResult;
 import com.dhemery.expressions.polling.PollTimeoutException;
-import com.dhemery.expressions.polling.Poller;
 import com.dhemery.expressions.polling.PollingSchedule;
 import org.hamcrest.Matcher;
 
@@ -110,7 +109,7 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Returns whether the supplier returns {@code true} within the schedule's
+     * Evaluates whether the supplier returns {@code true} within the schedule's
      * duration.
      *
      * @param schedule
@@ -126,7 +125,7 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Returns whether the predicate accepts the subject within the schedule's
+     * Evaluates whether the predicate accepts the subject within the schedule's
      * duration.
      *
      * @param <T>
@@ -146,7 +145,7 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Returns whether the predicate accepts the value that the function derives
+     * Evaluates whether the predicate accepts the value that the function derives
      * from the subject within the schedule's duration.
      *
      * @param <T>
@@ -170,7 +169,7 @@ public interface PolledExpressions extends Poller, Eventually {
     }
 
     /**
-     * Returns whether the matcher accepts the value that the function derives
+     * Evaluates whether the matcher accepts the value that the function derives
      * from the subject within the schedule's duration.
      *
      * @param <T>

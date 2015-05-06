@@ -28,8 +28,10 @@ repositories {
 }
 
 javadoc {
-    options.tags 'implNote:m:Implementation Note'
-    options.tags 'implSpec:m:Implementation Requirements'
+    options.tags 'implSpec:a:Implementation Requirements'
+    options.tags 'implNote:a:Implementation Note'
+    options.links "http://docs.oracle.com/javase/8/docs/api/"
+    options.links "http://hamcrest.org/JavaHamcrest/javadoc/1.3/"
 }
 
 jar {

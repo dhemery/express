@@ -102,7 +102,7 @@ public interface Expressions {
     }
 
     /**
-     * Returns whether the supplier returns {@code true}.
+     * Evaluates whether the supplier returns {@code true}.
      *
      * @param supplier
      *         the supplier to evaluate
@@ -114,7 +114,7 @@ public interface Expressions {
     }
 
     /**
-     * Returns whether the predicate accepts the subject.
+     * Evaluates whether the predicate accepts the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -131,7 +131,7 @@ public interface Expressions {
     }
 
     /**
-     * Returns whether the matcher accepts the subject.
+     * Evaluates whether the matcher accepts the subject.
      *
      * @param <T>
      *         the type of the subject
@@ -148,7 +148,7 @@ public interface Expressions {
     }
 
     /**
-     * Returns whether the predicate accepts the value that the function derives
+     * Evaluates whether the predicate accepts the value that the function derives
      * from the subject.
      *
      * @param <T>
@@ -170,7 +170,7 @@ public interface Expressions {
     }
 
     /**
-     * Returns whether the matcher accepts the value that the function derives
+     * Evaluates whether the matcher accepts the value that the function derives
      * from the subject.
      *
      * @param <T>

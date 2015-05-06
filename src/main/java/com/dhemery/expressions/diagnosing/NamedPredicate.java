@@ -17,7 +17,7 @@ public class NamedPredicate<T> extends DescribedByName implements SelfDescribing
     private final Predicate<T> predicate;
 
     /**
-     * Create a named diagnosing predicate.
+     * Creates a named diagnosing predicate.
      *
      * @param name
      *         the name of the predicate
@@ -39,7 +39,7 @@ public class NamedPredicate<T> extends DescribedByName implements SelfDescribing
 
     /**
      * {@inheritDoc} The composed predicate is named to describe this predicate,
-     * the other predicate, and their composition.
+     * the {@code other} predicate, and their composition.
      */
     @Override
     public SelfDescribingPredicate<T> and(Predicate<? super T> other) {
@@ -48,7 +48,7 @@ public class NamedPredicate<T> extends DescribedByName implements SelfDescribing
 
     /**
      * {@inheritDoc} The composed predicate is named to describe this predicate,
-     * the other predicate, and their composition.
+     * the {@code other} predicate, and their composition.
      */
     @Override
     public SelfDescribingPredicate<T> or(Predicate<? super T> other) {

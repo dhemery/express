@@ -11,7 +11,7 @@ public class NamedBooleanSupplier extends DescribedByName implements SelfDescrib
     private final BooleanSupplier supplier;
 
     /**
-     * Create a named boolean supplier.
+     * Creates a named boolean supplier.
      *
      * @param name
      *         the name of this supplier
