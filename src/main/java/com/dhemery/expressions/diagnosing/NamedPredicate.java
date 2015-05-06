@@ -1,6 +1,5 @@
 package com.dhemery.expressions.diagnosing;
 
-import com.dhemery.expressions.Named;
 import com.dhemery.expressions.SelfDescribingPredicate;
 
 import java.util.function.Predicate;
@@ -8,13 +7,13 @@ import java.util.function.Predicate;
 import static java.lang.String.format;
 
 /**
- * A named predicate that can diagnose a rejection. Each composed predicate
+ * A {@link Predicate} that describes itself by name. Each composed predicate
  * created by this predicate is named to describe the composition.
  *
  * @param <T>
  *         the type of the input to the predicate
  */
-public class NamedPredicate<T> extends Named implements SelfDescribingPredicate<T> {
+public class NamedPredicate<T> extends DescribedByName implements SelfDescribingPredicate<T> {
     private final Predicate<T> predicate;
 
     /**

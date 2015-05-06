@@ -3,37 +3,16 @@ package com.dhemery.expressions;
 import com.dhemery.expressions.diagnosing.NamedBooleanSupplier;
 import com.dhemery.expressions.diagnosing.NamedFunction;
 import com.dhemery.expressions.diagnosing.NamedPredicate;
-import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * An object with a fixed name.
+ * Factory methods to decorate {@link BooleanSupplier}, {@link Predicate}, and
+ * {@link Function} objects to make them self-describing.
  */
-public class Named implements SelfDescribing {
-    private final String name;
-
-    /**
-     * Creates an object that describes itself with the given name.
-     *
-     * @param name
-     *         the name of the object
-     */
-    public Named(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Returns this object's name
-     */
-    @Override
-    public final String toString() {
-        return name;
-    }
-
+public interface Named {
     /**
      * Decorates the supplier to describe itself with the given name.
      *
@@ -45,7 +24,7 @@ public class Named implements SelfDescribing {
      * @return a {@code SelfDescribingBooleanSupplier} that functions like the
      * given supplier and describes itself with the given name.
      */
-    public static SelfDescribingBooleanSupplier booleanSupplier(String name, BooleanSupplier supplier) {
+    static SelfDescribingBooleanSupplier booleanSupplier(String name, BooleanSupplier supplier) {
         return new NamedBooleanSupplier(name, supplier);
     }
 
@@ -64,7 +43,7 @@ public class Named implements SelfDescribing {
      * @return a {@code SelfDescribingFunction} that functions like the given
      * function and describes itself with the given name.
      */
-    public static <T, V> SelfDescribingFunction<T, V> function(String name, Function<T, V> function) {
+    static <T, V> SelfDescribingFunction<T, V> function(String name, Function<T, V> function) {
         return new NamedFunction<>(name, function);
     }
 
@@ -81,12 +60,7 @@ public class Named implements SelfDescribing {
      * @return a {@code SelfDescribingPredicate} that functions like the given
      * predicate and describes itself with the given name.
      */
-    public static <T> SelfDescribingPredicate<T> predicate(String description, Predicate<T> predicate) {
+    static <T> SelfDescribingPredicate<T> predicate(String description, Predicate<T> predicate) {
         return new NamedPredicate<>(description, predicate);
-    }
-
-    @Override
-    public final void describeTo(Description description) {
-        description.appendText(name);
     }
 }

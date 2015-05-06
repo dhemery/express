@@ -23,8 +23,10 @@ dependencies {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
+
 javadoc {
     options.tags 'implNote:m:Implementation Note'
     options.tags 'implSpec:m:Implementation Requirements'
@@ -74,7 +76,7 @@ uploadArchives {
                 pom.project {
                     name 'Expression Kit'
                     packaging 'jar'
-                    description 'Compose and evaluate conditions'
+                    description 'Expressive methods to compose and evaluate conditions'
                     url "${github.url}"
 
                     scm {

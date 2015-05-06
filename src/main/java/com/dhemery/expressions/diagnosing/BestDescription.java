@@ -21,9 +21,9 @@ public class BestDescription {
     }
 
     /**
-     * Returns a description of the item. If the item is {@link SelfDescribing},
-     * its self-description is returned. Otherwise, the description is as
-     * formatted by {@link StringDescription#appendValue}.
+     * Returns a description of the item. If the item implements {@link
+     * SelfDescribing}, its self-description is returned. Otherwise, the
+     * description is as formatted by {@link StringDescription#appendValue}.
      *
      * @param item
      *         the item to describe
