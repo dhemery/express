@@ -92,25 +92,20 @@ public interface Timeframes extends Eventually {
      *      assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
      *
-     * To specify a polling duration, call {@link CheckingEvery#expiringIn expiringIn}
-     * on the returned schedule:
-     *
-     * <pre>
-     *      assertThat(checkingEvery(1, SECONDS).expiringIn(1, MINUTES), searchField, isDisplayed());
-     * </pre>
+     * To specify both a polling interval and duration, see {@link #within}.
      *
      * @param amount
      *         the interval on which to poll, measured in terms of the unit
      * @param unit
      *         the unit that the polling interval is measured in
      *
-     * @return a polling schedule with the given interval and default duration
+     * @return a polling schedule with the given interval and default polling duration
      *
      * @implSpec the returned schedule must have the same polling duration as
      * the schedules returned by {@link Eventually#eventually eventually}.
      */
-    default CheckingEvery checkingEvery(int amount, TemporalUnit unit) {
-        return checkingEvery(Duration.of(amount, unit));
+    default PollingSchedule checkingEvery(int amount, TemporalUnit unit) {
+        return new PollingSchedule(Duration.of(amount, unit), eventually().duration());
     }
 
     /**
@@ -124,23 +119,17 @@ public interface Timeframes extends Eventually {
      *      assertThat(checkingEvery(oneSecond), searchField, isDisplayed());
      * </pre>
      *
-     * To specify a polling duration, call {@link CheckingEvery#expiringIn expiringIn}
-     * on the returned schedule:
-     * CheckingEvery#expiringIn expiringIn} method:
-     *
-     * <pre>
-     *      assertThat(checkingEvery(oneSecond).expiringIn(1, MINUTES), searchField, isDisplayed());
-     * </pre>
+     * To specify both a polling interval and duration, see {@link #within}.
      *
      * @param interval
      *         the interval on which to poll
      *
-     * @return a polling schedule with the given interval and default duration
+     * @return a polling schedule with the given interval and default polling duration
      *
      * @implSpec the returned schedule must have the same polling duration as
      * the schedules returned by {@link Eventually#eventually eventually}.
      */
-    default CheckingEvery checkingEvery(Duration interval) {
-        return new CheckingEvery(interval, eventually().duration());
+    default PollingSchedule checkingEvery(Duration interval) {
+        return new PollingSchedule(interval, eventually().duration());
     }
 }
