@@ -19,9 +19,9 @@ public interface Eventually {
      * <p>This factory method is named to read nicely in polled expressions:
      *
      * <pre>
-     * assertThat(eventually(), searchField, isDisplayed());
+     *      assertThat(eventually(), searchField, isDisplayed());
      * </pre>
-     * @implSpec
+     *
      * @return a polling schedule with the default polling interval and duration
      */
     PollingSchedule eventually();

@@ -1,6 +1,7 @@
 package com.dhemery.express;
 
 import java.time.Duration;
+import java.time.temporal.TemporalUnit;
 
 /**
  * A polling schedule with a given interval and a default duration.
@@ -35,7 +36,23 @@ public class CheckingEvery extends PollingSchedule {
      * @return a polling schedule with the given duration and this schedule's
      * interval
      */
-    public PollingSchedule expiringAfter(Duration duration) {
+    public PollingSchedule expiringIn(Duration duration) {
         return new PollingSchedule(interval(), duration);
+    }
+
+    /**
+     * Creates a polling schedule with the specified duration and this schedule's
+     * interval.
+     *
+     * @param amount
+     *         the duration to poll, measured in terms of the unit
+     * @param unit
+     *         the unit that the polling duration is measured in
+     *
+     * @return a polling schedule with the specified duration and this schedule's
+     * interval
+     */
+    public PollingSchedule expiringIn(int amount, TemporalUnit unit) {
+        return expiringIn(Duration.of(amount, unit));
     }
 }

@@ -6,10 +6,11 @@ import java.time.temporal.TemporalUnit;
 /**
  * Factory methods to supply polling schedules. Each method is named to read like a
  * timeframe in a polled expression:
+ *
  * <pre>
- * assertThat(eventually(), searchField, isDisplayed());
- * assertThat(within(1, MINUTES), searchField, isDisplayed());
- * assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
+ *      assertThat(eventually(), searchField, isDisplayed());
+ *      assertThat(within(1, MINUTES), searchField, isDisplayed());
+ *      assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
  * </pre>
  */
 public interface Timeframes extends Eventually {
@@ -24,19 +25,22 @@ public interface Timeframes extends Eventually {
     /**
      * Creates a polling schedule with the given duration and the default
      * polling interval.
-     * <p>
-     * This factory method is named to read nicely in polled expressions:
+     *
+     * <p>This factory method is named to read nicely in polled expressions:
+     *
      * <pre>
-     * assertThat(within(1, MINUTES), searchField, isDisplayed());
+     *      assertThat(within(1, MINUTES), searchField, isDisplayed());
      * </pre>
+     *
      * To specify a polling interval, call {@link Within#checkingEvery checkingEvery}
      * on the returned schedule:
+     *
      * <pre>
-     * assertThat(within(1, MINUTES).checkingEvery(1, SECONDS), searchField, isDisplayed());
+     *      assertThat(within(1, MINUTES).checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
      *
      * @param amount
-     *         the amount of the duration, measured in terms of the unit
+     *         the duration to poll, measured in terms of the unit
      * @param unit
      *         the unit that the duration is measured in
      *
@@ -52,16 +56,19 @@ public interface Timeframes extends Eventually {
     /**
      * Creates a polling schedule with the given duration and the default
      * polling interval.
-     * <p>
-     * This factory method is named to read nicely in polled expressions:
+     *
+     * <p>This factory method is named to read nicely in polled expressions:
+     *
      * <pre>
-     * Duration tenMinutes = Duration.of(1, MINUTES);
-     * assertThat(within(tenMinutes), searchField, isDisplayed());
+     *      Duration oneMinute = Duration.of(1, MINUTES);
+     *      assertThat(within(oneMinute), searchField, isDisplayed());
      * </pre>
+     *
      * To specify a polling interval, call {@link Within#checkingEvery checkingEvery}
      * on the returned schedule:
+     *
      * <pre>
-     * assertThat(within(tenMinutes).checkingEvery(1, SECONDS), searchField, isDisplayed());
+     *      assertThat(within(oneMinute).checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
      *
      * @param duration
@@ -79,20 +86,21 @@ public interface Timeframes extends Eventually {
     /**
      * Creates a polling schedule with the given duration and the default
      * polling interval.
-     * <p>
-     * This factory method is named to read nicely in polled expressions:
+     * <p>This factory method is named to read nicely in polled expressions:
+     *
      * <pre>
-     * assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
+     *      assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
-     * To specify a polling duration, call {@link CheckingEvery#expiringAfter expiringAfter}
+     *
+     * To specify a polling duration, call {@link CheckingEvery#expiringIn expiringIn}
      * on the returned schedule:
+     *
      * <pre>
-     * assertThat(checkingEvery(1, SECONDS).expiringAfter(1, MINUTES), searchField, isDisplayed());
+     *      assertThat(checkingEvery(1, SECONDS).expiringIn(1, MINUTES), searchField, isDisplayed());
      * </pre>
      *
      * @param amount
-     *         the amount of the polling interval, measured in terms of the
-     *         unit
+     *         the interval on which to poll, measured in terms of the unit
      * @param unit
      *         the unit that the polling interval is measured in
      *
@@ -108,18 +116,20 @@ public interface Timeframes extends Eventually {
     /**
      * Creates a polling schedule with the given polling interval and the
      * default polling duration.
-     * <p>
-     * This factory method is named to read nicely in polled expressions:
+     *
+     * <p>This factory method is named to read nicely in polled expressions:
+     *
      * <pre>
-     * Duration tenMinutes = Duration.of(10, MINUTES);
-     * assertThat(checkingEvery(tenMinutes), searchField, isDisplayed());
+     *      Duration oneSecond = Duration.of(1, SECONDS);
+     *      assertThat(checkingEvery(oneSecond), searchField, isDisplayed());
      * </pre>
-     * To specify a polling duration, call {@link CheckingEvery#expiringAfter expiringAfter}
+     *
+     * To specify a polling duration, call {@link CheckingEvery#expiringIn expiringIn}
      * on the returned schedule:
-     * CheckingEvery#expiringAfter expiringAfter} method:
+     * CheckingEvery#expiringIn expiringIn} method:
+     *
      * <pre>
-     * Duration oneSecond = Duration.of(1, SECONDS);
-     * assertThat(checkingEvery(oneSecond).expiringAfter(1, MINUTES), searchField, isDisplayed());
+     *      assertThat(checkingEvery(oneSecond).expiringIn(1, MINUTES), searchField, isDisplayed());
      * </pre>
      *
      * @param interval
