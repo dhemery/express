@@ -1,3 +1,5 @@
+import org.gradle.api.JavaVersion
+
 apply plugin: 'java'
 apply plugin: 'maven'
 
@@ -11,20 +13,28 @@ dependencies {
     testCompile 'org.jmock:jmock-junit4:2.8.1'
 }
 
-task sourcesJar(type: Jar) {
+task sourcesJar(type: Jar, dependsOn: classes) {
+    description = 'Assembles a jar containing the main sources.'
     classifier 'sources'
     from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar) {
+    description = 'Assembles a jar containing the javadocs.'
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
 
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 jar {
     manifest {
-        attributes("Implementation-Title": description,
-                "Implementation-Version": version)
+        attributes(
+                "Implementation-Title": project.description,
+                "Implementation-Version": project.version,
+                "Implementation-Vendor": 'Dale H. Emery'
+        )
     }
 }
 
