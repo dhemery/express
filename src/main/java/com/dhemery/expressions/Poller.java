@@ -1,7 +1,6 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.polling.PollEvaluationResult;
-import com.dhemery.expressions.polling.PollingSchedule;
 import org.hamcrest.Matcher;
 
 /**

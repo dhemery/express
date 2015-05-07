@@ -3,7 +3,7 @@ package com.dhemery.expressions.helpers;
 import com.dhemery.expressions.*;
 import com.dhemery.expressions.polling.PollEvaluationResult;
 import com.dhemery.expressions.Poller;
-import com.dhemery.expressions.polling.PollingSchedule;
+import com.dhemery.expressions.PollingSchedule;
 import org.hamcrest.Matcher;
 
 public class ExpressionsPolledBy implements PolledExpressions {

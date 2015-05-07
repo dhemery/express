@@ -1,5 +1,7 @@
 package com.dhemery.expressions.polling;
 
+import com.dhemery.expressions.PollingSchedule;
+
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;

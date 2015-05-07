@@ -1,4 +1,4 @@
-package com.dhemery.expressions.polling;
+package com.dhemery.expressions;
 
 import java.time.Duration;
 
@@ -24,10 +24,18 @@ public class PollingSchedule {
         this.duration = duration;
     }
 
+    /**
+     * Returns this schedule's polling duration.
+     * @return this schedule's polling duration
+     */
     public Duration duration() {
         return duration;
     }
 
+    /**
+     * Returns this schedule's polling interval.
+     * @return this schedule's polling interval
+     */
     public Duration interval() {
         return interval;
     }

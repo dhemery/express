@@ -1,7 +1,6 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.polling.DefaultPollingSchedule;
-import com.dhemery.expressions.polling.PollingSchedule;
 import com.dhemery.expressions.polling.Within;
 
 import java.time.Duration;

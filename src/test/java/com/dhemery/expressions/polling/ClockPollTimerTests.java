@@ -1,5 +1,6 @@
 package com.dhemery.expressions.polling;
 
+import com.dhemery.expressions.PollingSchedule;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.States;

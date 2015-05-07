@@ -1,6 +1,7 @@
 package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.Poller;
+import com.dhemery.expressions.PollingSchedule;
 import com.dhemery.expressions.SelfDescribingBooleanSupplier;
 import org.jmock.Expectations;
 import org.jmock.States;

@@ -3,53 +3,57 @@ import org.gradle.api.JavaVersion
 apply plugin: 'java'
 apply plugin: 'maven'
 
+ext {
+    vendor = [name: 'Dale H. Emery', group: 'com.dhemery']
+}
+
 project.description = 'Expression Kit'
-project.group = 'com.dhemery'
+project.group = vendor.group
 project.version = "1.0.0"
 
-dependencies {
+project.dependencies {
     compile 'org.hamcrest:hamcrest-library:1.3'
     testCompile 'junit:junit:4.12'
     testCompile 'org.jmock:jmock-junit4:2.8.1'
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
+task sourcesJar(type: Jar) {
     description = 'Assembles a jar containing the main sources.'
     classifier 'sources'
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar) {
-    description = 'Assembles a jar containing the javadocs.'
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-jar {
-    manifest {
-        attributes(
-                "Implementation-Title": project.description,
-                "Implementation-Version": project.version,
-                "Implementation-Vendor": 'Dale H. Emery'
-        )
-    }
-}
-
-javadoc {
+tasks.javadoc {
     options.tags 'implSpec:a:Implementation Requirements'
     options.tags 'implNote:a:Implementation Note'
     options.links "http://docs.oracle.com/javase/8/docs/api/"
     options.links "http://hamcrest.org/JavaHamcrest/javadoc/1.3/"
 }
 
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    description = 'Assembles a jar containing the javadoc documentation.'
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+tasks.install.dependsOn clean, test
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.jar {
+    manifest {
+        attributes(
+                "Implementation-Title": project.description,
+                "Implementation-Version": project.version,
+                "Implementation-Vendor": vendor.name
+        )
+    }
+}
+
 artifacts {
     archives sourcesJar, javadocJar
 }
-
-install.dependsOn clean
 
 repositories {
     mavenLocal()

@@ -1,5 +1,7 @@
 package com.dhemery.expressions.polling;
 
+import com.dhemery.expressions.PollingSchedule;
+
 /**
  * Manages time for a single poll.
  */

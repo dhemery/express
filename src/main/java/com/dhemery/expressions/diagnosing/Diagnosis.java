@@ -3,7 +3,7 @@ package com.dhemery.expressions.diagnosing;
 import com.dhemery.expressions.SelfDescribingBooleanSupplier;
 import com.dhemery.expressions.SelfDescribingFunction;
 import com.dhemery.expressions.SelfDescribingPredicate;
-import com.dhemery.expressions.polling.PollingSchedule;
+import com.dhemery.expressions.PollingSchedule;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.SelfDescribing;

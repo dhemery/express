@@ -1,6 +1,6 @@
 package com.dhemery.expressions.helpers;
 
-import com.dhemery.expressions.polling.PollingSchedule;
+import com.dhemery.expressions.PollingSchedule;
 
 import java.time.Duration;
 import java.util.Random;
