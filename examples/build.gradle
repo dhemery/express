@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+project.description = 'Expression Kit Examples'
+
+dependencies {
+    compile 'com.dhemery:expression-kit:1.0.0'
+    testCompile 'junit:junit:4.12'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
