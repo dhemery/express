@@ -1,31 +1,9 @@
-import static org.gradle.api.JavaVersion.VERSION_1_8
-
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'signing'
 
-group = "com.dhemery"
-version = "1.0.0"
-archivesBaseName = "expression-kit"
-
-sourceCompatibility = VERSION_1_8
-targetCompatibility = VERSION_1_8
-
-def dale = [id: 'dhemery', name: 'Dale H. Emery', vendor: 'dhemery.com', url: 'http://dhemery.com/']
-def github = [url: "https://github.com/${dale.id}/${archivesBaseName}", connection: "https://github.com/${dale.id}/${archivesBaseName}.git"]
-
-dependencies {
-    compile group: 'org.hamcrest', name: 'hamcrest-library', version: '1.3'
-    testCompile(group: 'junit', name: 'junit', version: '4.12') {
-        transitive = false
-    }
-    testCompile group: 'org.jmock', name: 'jmock-junit4', version: '2.8.1'
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
+project.description = 'Expression Kit'
+project.group = 'com.dhemery'
+project.version = "1.0.0"
 
 javadoc {
     options.tags 'implSpec:a:Implementation Requirements'
@@ -34,75 +12,15 @@ javadoc {
     options.links "http://hamcrest.org/JavaHamcrest/javadoc/1.3/"
 }
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': "${archivesBaseName}",
-                'Implementation-Vendor': "${dale.vendor}",
-                'Implementation-Version': version
-    }
+dependencies {
+    compile 'org.hamcrest:hamcrest-library:1.3'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.jmock:jmock-junit4:2.8.1'
 }
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
-}
-
-artifacts {
-    archives sourcesJar, javadocJar
-}
-
-signing {
-    required { gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-}
-
-uploadArchives {
-    if (hasProperty('ossrhUsername') && hasProperty('ossrhPassword')) {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: ossrhUsername, password: ossrhPassword)
-                }
-
-                pom.project {
-                    name 'Expression Kit'
-                    packaging 'jar'
-                    description 'Expressive methods to compose and evaluate conditions'
-                    url "${github.url}"
-
-                    scm {
-                        connection "${github.connection}"
-                        url "${github.url}"
-                    }
-
-                    licenses {
-                        license {
-                            name 'The MIT License (MIT)'
-                            url 'http://opensource.org/licenses/MIT'
-                        }
-                    }
-
-                    developers {
-                        developer {
-                            id "${dale.id}"
-                            name "${dale.name}"
-                        }
-                    }
-                }
-            }
-        }
-    }
+repositories {
+    mavenLocal()
+    mavenCentral()
 }
 
 task wrapper(type: Wrapper) {
