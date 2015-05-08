@@ -8,6 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
 
+import java.util.function.Function;
+
 import static com.dhemery.expressions.Expressions.assertThat;
 import static com.dhemery.expressions.examples.helpers.GUITextLabelExpressions.*;
 import static org.hamcrest.Matchers.is;
@@ -46,8 +48,12 @@ public class AssertionExamples {
     }
 
     @Test
-    public void subjectFunctionNegatedPredicate() {
-        assertThat(visibleLabel("FOO"), text(), isUpperCase().negate());
+    public void subjectComposedFunctionNegatedPredicate() {
+        assertThat(visibleLabel("foo"), text().andThen(toUpperCase()), isUpperCase().negate());
+    }
+
+    private Function<String, String> toUpperCase() {
+        return Named.function("upper case", String::toUpperCase);
     }
 
     @Test
