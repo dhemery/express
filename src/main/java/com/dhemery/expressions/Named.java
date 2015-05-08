@@ -15,6 +15,11 @@ import java.util.function.Predicate;
 public interface Named {
     /**
      * Decorates the supplier to describe itself with the given name.
+     * <pre>{@code
+     *      SelfDescribingBooleanSupplier jvmIsJava8 = Named.booleanSupplier(
+     *                      "jvm is java 8",
+     *                      () -> System.getProperty("java.version").startsWith("1.8."));
+     * }</pre>
      *
      * @param name
      *         the name of the supplier
@@ -30,6 +35,10 @@ public interface Named {
 
     /**
      * Decorates the function to describe itself with the given name.
+     *
+     * <pre>{@code
+     *     SelfDescribingFunction<String,Integer> length = Named.function("length", String::length);
+     * }</pre>
      *
      * @param name
      *         the name of the function
@@ -49,6 +58,10 @@ public interface Named {
 
     /**
      * Decorates the predicate to describe itself with the given name.
+     *
+     * <pre>{@code
+     *     SelfDescribingPredicate<String> empty = Named.predicate("empty", String::isEmpty);
+     * }</pre>
      *
      * @param description
      *         the name of the function

@@ -7,8 +7,8 @@ import java.time.Duration;
 import java.time.temporal.TemporalUnit;
 
 /**
- * Factory methods to supply polling schedules. Each method is named to read like a
- * timeframe in a polled expression:
+ * Factory methods for polling schedules. Each method is named
+ * to read like a time frame in a polled expression:
  *
  * <pre>
  *      assertThat(eventually(), searchField, isDisplayed());
@@ -16,7 +16,7 @@ import java.time.temporal.TemporalUnit;
  *      assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
  * </pre>
  */
-public interface Timeframes extends Eventually {
+public interface TimeFrames extends Eventually {
     /**
      * @return {@link DefaultPollingSchedule#INSTANCE}.
      */
@@ -38,7 +38,7 @@ public interface Timeframes extends Eventually {
      * To specify a polling interval, call {@link Within#checkingEvery checkingEvery}
      * on the returned schedule:
      *
-     * <pre>
+     * <pre>˜
      *      assertThat(within(1, MINUTES).checkingEvery(1, SECONDS), searchField, isDisplayed());
      * </pre>
      *

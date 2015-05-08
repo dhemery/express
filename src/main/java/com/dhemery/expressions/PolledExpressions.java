@@ -6,7 +6,8 @@ import com.dhemery.expressions.polling.PollTimeoutException;
 import org.hamcrest.Matcher;
 
 /**
- * Expressive methods to compose conditions and evaluate them by polling.
+ * Methods to compose conditions, evaluate them by polling, and act on the
+ * results.
  *
  * @see Eventually
  * @see Expressions

@@ -3,6 +3,8 @@ package com.dhemery.expressions;
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import org.junit.Test;
 
+import java.util.function.BooleanSupplier;
+
 import static com.dhemery.expressions.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -12,6 +14,8 @@ public class BooleanSupplierExpressionTests {
     public static class AssertThat {
         @Test
         public void returnsWithoutThrowing_ifSupplierReturnsTrue() {
+            BooleanSupplier s = () -> System.getProperty("java.version").startsWith("1.8.");
+            System.out.println(System.getProperty("java.version"));
             SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("", () -> true);
 
             Expressions.assertThat(supplier);

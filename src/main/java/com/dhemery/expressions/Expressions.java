@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Expressive methods to compose and evaluate conditions.
+ * Methods to compose conditions, evaluate them, and act on the results.
  *
  * @see PolledExpressions
  * @see Named

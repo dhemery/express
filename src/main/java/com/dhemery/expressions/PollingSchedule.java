@@ -5,7 +5,7 @@ import java.time.Duration;
 import static java.lang.String.format;
 
 /**
- * Defines the interval and duration for a poll.
+ * The interval and duration for a poll.
  */
 public class PollingSchedule {
     private final Duration interval;
@@ -43,5 +43,29 @@ public class PollingSchedule {
     @Override
     public String toString() {
         return format("every %s for %s", interval, duration);
+    }
+
+    /**
+     * @return {@code true} if the given object is a {@code PollingSchedule}
+     * with the same interval and duration as this schedule.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PollingSchedule)) return false;
+
+        PollingSchedule that = (PollingSchedule) o;
+
+        if (interval != null ? !interval.equals(that.interval) : that.interval != null)
+            return false;
+        return !(duration != null ? !duration.equals(that.duration) : that.duration != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = interval != null ? interval.hashCode() : 0;
+        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        return result;
     }
 }

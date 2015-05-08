@@ -4,8 +4,8 @@ import com.dhemery.expressions.polling.PollEvaluationResult;
 import org.hamcrest.Matcher;
 
 /**
- * Poll a condition on a schedule until either the condition is satisfied or the
- * schedule expires.
+ * Repeatedly evaluates a condition until it is satisfied or the polling
+ * duration expires.
  */
 public interface Poller {
     /**

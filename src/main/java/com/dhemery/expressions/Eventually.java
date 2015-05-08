@@ -1,28 +1,29 @@
 package com.dhemery.expressions;
 
 /**
- * Provides polling schedules with the default polling
- * interval and duration.
+ * A factory method for default polling schedules.
  */
 public interface Eventually {
     /**
      * Returns a polling schedule with the default polling interval and
      * duration.
-     *
-     * <p>The default polling interval and duration are defined by each
-     * implementation.
-     *
-     * <p>The polling schedules returned by this method must all
-     * have the same polling interval and the same polling duration.
-     * There is no requirement that each call return a new instance.
-     *
-     * <p>This factory method is named to read nicely in polled expressions:
-     *
+     * <p>
+     * This factory method is named to read nicely in polled expressions:
      * <pre>
      *      assertThat(eventually(), searchField, isDisplayed());
      * </pre>
+     * The default polling interval and duration are defined by each
+     * implementation.
+     * Implementors must decide what polling schedule is a reasonable default for
+     * their purposes.
+     * <p>
+     * There is no requirement that a new instance be returned each time this
+     * method is invoked. If the implementation returns different instances, all
+     * instances must be pairwise equal.
      *
      * @return a polling schedule with the default polling interval and duration
+     *
+     * @see PollingSchedule#equals
      */
     PollingSchedule eventually();
 }

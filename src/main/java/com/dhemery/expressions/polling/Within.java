@@ -1,7 +1,7 @@
 package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.PollingSchedule;
-import com.dhemery.expressions.Timeframes;
+import com.dhemery.expressions.TimeFrames;
 
 import java.time.Duration;
 import java.time.temporal.TemporalUnit;
@@ -10,14 +10,14 @@ import java.time.temporal.TemporalUnit;
  * A polling schedule with a given duration and a default interval.
  * <p>
  * This class is not intended for direct use. Instead, call {@link
- * Timeframes#within}.
+ * TimeFrames#within}.
  */
 public class Within extends PollingSchedule {
     /**
      * Creates a polling schedule with the given interval and duration.
      * <p>
      * This constructor is not intended for direct use. Instead, call {@link
-     * Timeframes#within}.
+     * TimeFrames#within}.
      *
      * @param interval
      *         the interval on which to poll
