@@ -13,7 +13,7 @@
  * Expression Kit defines four types of expression methods,
  * each with a distinct purpose:
  *
- * <table summary="Types of Expressions" style="text-align: left">
+ * <table summary="Types of Expressions" class="daleTable">
  * <thead>
  * <tr>
  * <th>Method name</th>
@@ -22,6 +22,7 @@
  * <th>Result If Not Satisfied</th>
  * </tr>
  * </thead>
+ * <tbody>
  * <tr>
  * <td>{@code assertThat}</td>
  * <td>Assert that a condition is true</td>
@@ -46,33 +47,35 @@
  * <td>Returns its subject</td>
  * <td>Throws a {@link com.dhemery.expressions.polling.PollTimeoutException PollTimeoutException}</td>
  * </tr>
+ * </tbody>
  * </table>
  * <p>
  * Each expression method is named to read nicely in the code where it is called.
  * For example, each of these calls evaluates whether the submit button is displayed:
  *
- * <pre>
- *      assertThat(submitButton, isDisplayed);
+ * <pre>{@code
+ * assertThat(submitButton, isDisplayed);
  *
- *      if(satisfiedThat(submitButton, isDisplayed)) { /* do something /* }
+ * if(satisfiedThat(submitButton, isDisplayed)) { /* do something /* }
  *
- *      waitUntil(submitButton, isDisplayed);
+ * waitUntil(submitButton, isDisplayed);
  *
- *      when(submitButton, isDisplayed).click();
- * </pre>
+ * when(submitButton, isDisplayed).click();
+ * }</pre>
  *
  * <h1>Composing Conditions</h1>
  * <p>
  * Each expression method has a number of forms. Each form offers a distinct
  * way to compose the condition for the method to evaluate.
  *
- * <table summary="Composed Conditions" style="text-align: left">
+ * <table summary="Composed Conditions" class="daleTable">
  * <thead>
  * <tr>
  * <th>Parameters</th>
  * <th>Composes a Condition That is Satisfied If ...</th>
  * </tr>
  * </thead>
+ * <tbody>
  * <tr>
  * <td>{@code supplier}</td>
  * <td>{@code supplier.getAsBoolean()} returns {@code true}</td>
@@ -93,15 +96,16 @@
  * <td>{@code subject}, {@code function}, {@code predicate}</td>
  * <td>{@code predicate.test(function.apply(subject))} returns {@code true}</td>
  * </tr>
+ * </tbody>
  * </table>
  * <p>
  * For example, each of these these examples evaluates some condition relating
  * to a submit button:
- * <pre>
- *      assertThat(submitButton, isDisplayed);
+ * <pre>{@code
+ * assertThat(submitButton, isDisplayed);
  *
- *      assertThat(submitButton, backgroundColor, is(standardButtonBackgroundColor));
- * </pre>
+ * assertThat(submitButton, backgroundColor, is(standardButtonBackgroundColor));
+ * }</pre>
  *
  * <h1>Self-Describing Conditions</h1>
  * Most expression methods are designed not only to evaluate conditions, but
@@ -137,11 +141,12 @@
  * {@code Function},
  * and {@code Predicate} objects
  * with the ability to describe themselves.
- * <pre>{@code
- *      SelfDescribingFunction<String,Integer> length = Named.function("length", String::length);
- *      SelfDescribingPredicate<String> empty = Named.predicate("empty", String::isEmpty);
- * }</pre>
  *
+ * <pre>{@code
+ * SelfDescribingFunction<String,Integer> length = Named.function("length", String::length);
+ *
+ * SelfDescribingPredicate<String> empty = Named.predicate("empty", String::isEmpty);
+ * }</pre>
  * <h1>Evaluating Immediately or By Polling</h1>
  * <p>
  * Each expression method has forms that accept a
@@ -150,7 +155,7 @@
  * The effect of passing a polling schedule or not passing one
  * depends on the method.
  *
- * <table summary="Expression Methods and Polling" style="text-align: left">
+ * <table summary="Expression Methods and Polling" class="daleTable">
  * <thead>
  * <tr>
  * <th>Method Name</th>
@@ -158,6 +163,7 @@
  * <th>With a Polling Schedule</th>
  * </tr>
  * </thead>
+ * <tbody>
  * <tr>
  * <td>{@code assertThat}</td>
  * <td>Evaluates the condition immediately, without polling</td>
@@ -178,6 +184,7 @@
  * <td>Polls the condition using the default polling schedule</td>
  * <td>Evaluates the condition using the given polling schedule</td>
  * </tr>
+ * </tbody>
  * </table>
  *
  * <p>
@@ -189,15 +196,15 @@
  * <p>
  * For example, each of these calls polls for up to 10 seconds for the submit
  * button to be displayed:
- * <pre>
- *      assertThat(within(10, SECONDS), submitButton, isDisplayed);
+ * <pre>{@code
+ * assertThat(within(10, SECONDS), submitButton, isDisplayed);
  *
- *      if(satisfiedThat(within(10, SECONDS), submitButton, isDisplayed) { ... }
+ * if(satisfiedThat(within(10, SECONDS), submitButton, isDisplayed) { ... }
  *
- *      waitUntil(within(10, SECONDS), submitButton, isDisplayed);
+ * waitUntil(within(10, SECONDS), submitButton, isDisplayed);
  *
- *      when(within(10, SECONDS), submitButton, isDisplayed).click();
- * </pre>
+ * when(within(10, SECONDS), submitButton, isDisplayed).click();
+ * }</pre>
  * <p>
  * <strong>Implicit Polling</strong>
  * <p>
@@ -210,11 +217,11 @@
  * <p>
  * Each of these evaluates the condition repeatedly until it is satisfied,
  * using the default polling schedule:
- * <pre>
- *      waitUntil(submitButton, isDisplayed);
+ * <pre>{@code
+ * waitUntil(submitButton, isDisplayed);
  *
- *      when(submitButton, isDisplayed).click();
- * </pre>
+ * when(submitButton, isDisplayed).click();
+ * }</pre>
  * <p>
  * <strong>Evaluating Immediately</strong>
  * <p>
@@ -223,60 +230,60 @@
  * schedule, these methods evaluate the condition immediately, without polling.
  * <p>
  * Each of these calls evaluates the condition immediately, without polling:
- * <pre>
- *      assertThat(submitButton, isDisplayed);
+ * <pre>{@code
+ * assertThat(submitButton, isDisplayed);
  *
- *      if(satisfiedThat(submitButton, isDisplayed) { ... }
- * </pre>
+ * if(satisfiedThat(submitButton, isDisplayed) { ... }
+ * }</pre>
  *
  * <h1>Polling Schedules</h1>
  * <p>
  * A polling schedule includes a polling interval and a polling duration.
  * The interval indicates how often to evaluate the condition,
  * and the duration indicates how long to poll.
- * <p>
- * <strong>The Default Polling Schedule</strong>
- * <p>
- * Each implementation of {@link com.dhemery.expressions.PolledExpressions}
+ * </p>
+ * <p><strong>The Default Polling Schedule</strong>
+ * </p>
+ * <p>Each implementation of {@link com.dhemery.expressions.PolledExpressions}
  * must implement the {@code eventually} method.
  * This method returns a default polling schedule.
- * <p>
- * This default polling schedule is used implicitly whenever a {@code waitUntil} or
+ * </p>
+ * <p>This default polling schedule is used implicitly whenever a {@code waitUntil} or
  * {@code when} method is called without a polling schedule:
+ * <pre>{@code
+ * waitUntil(submitButton, isDisplayed);
  *
- * <pre>
- *      waitUntil(submitButton, isDisplayed);
- *
- *      when(submitButton, isDisplayed).click();
- * </pre>
- *
+ * when(submitButton, isDisplayed).click();
+ * }</pre>
+ * <p>
  * The default polling schedule can also be passed explicitly by calling
  * {@code eventually}:
+ * </p>
+ * <pre>{@code
+ * assertThat(eventually(), submitButton, isDisplayed);
  *
- * <pre>
- *      assertThat(eventually(), submitButton, isDisplayed);
+ * if(satisfiedThat(eventually(), submitButton, isDisplayed) { ... }
  *
- *      if(satisfiedThat(eventually(), submitButton, isDisplayed) { ... }
+ * // Explicit but otherwise unnecessary
+ * waitUntil(eventually(), submitButton, isDisplayed);
  *
- *      // Explicit but otherwise unnecessary
- *      waitUntil(eventually(), submitButton, isDisplayed);
- *
- *      // Explicit but otherwise unnecessary
- *      when(eventually(), submitButton, isDisplayed).click();
- * </pre>
+ * // Explicit but otherwise unnecessary
+ * when(eventually(), submitButton, isDisplayed).click();
+ * }</pre>
  *
  * <h1>Time Frames</h1>
  * <p>
  * Polled expressions read nicely when the polling schedule is phrased as a time
  * frame. The {@link com.dhemery.expressions.TimeFrames} interface defines
  * several "time frame" factory methods for polling schedules:
- * <table summary="Time Frame Methods" style="text-align: left">
+ * <table summary="Time Frame Methods" class="daleTable">
  * <thead>
  * <tr>
  * <th>Method Name</th>
  * <th colspan="2" style="text-align: center">Creates a Polling Schedule With</th>
  * </tr>
  * </thead>
+ * <tbody>
  * <tr>
  * <td>{@code eventually}</td>
  * <td>The default polling interval</td>
@@ -292,22 +299,23 @@
  * <td>The given polling interval</td>
  * <td>The default polling duration</td>
  * </tr>
+ * </tbody>
  * </table>
  * <p>
  * Each method is designed to read reasonably nicely in polled expressions:
- * <pre>
- *      assertThat(eventually(), submitButton, isDisplayed);
+ * <pre>{@code
+ * assertThat(eventually(), submitButton, isDisplayed);
  *
- *      assertThat(within(10, SECONDS), submitButton, isDisplayed);
+ * assertThat(within(10, SECONDS), submitButton, isDisplayed);
  *
- *      assertThat(checkingEvery(100, MILLIS), submitButton, isDisplayed);
- * </pre>
+ * assertThat(checkingEvery(100, MILLIS), submitButton, isDisplayed);
+ * }</pre>
  * <p>
  * The polling schedule returned by {@code within} has a {@code checkingEvery}
  * method. This gives a way to specify both the polling interval and duration in
  * a single expression:
- * <pre>
- *      assertThat(within(10, SECONDS).checkingEvery(100, MILLIS), submitButton, isDisplayed);
- * </pre>
+ * <pre>{@code
+ * assertThat(within(10, SECONDS).checkingEvery(100, MILLIS), submitButton, isDisplayed);
+ * }</pre>
  */
 package com.dhemery.expressions;

@@ -5,6 +5,7 @@ apply plugin: 'maven'
 
 ext {
     vendor = [name: 'Dale H. Emery', group: 'com.dhemery']
+    stylesheet = new File(projectDir, "/stylesheets/stylesheet.css")
 }
 
 project.description = 'Expression Kit'
@@ -24,6 +25,8 @@ task sourcesJar(type: Jar) {
 }
 
 tasks.javadoc {
+    inputs.file project.stylesheet
+    options.stylesheetFile = project.stylesheet
     options.tags 'implSpec:a:Implementation Requirements'
     options.tags 'implNote:a:Implementation Note'
     options.links "http://docs.oracle.com/javase/8/docs/api/"
