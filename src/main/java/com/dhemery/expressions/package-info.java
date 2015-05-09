@@ -53,7 +53,7 @@
  * Each expression method is named to read nicely in the code where it is called.
  * For example, each of these calls evaluates whether the submit button is displayed:
  *
- * <pre>{@code
+ * <pre>
  * assertThat(submitButton, isDisplayed);
  *
  * if(satisfiedThat(submitButton, isDisplayed)) { /* do something /* }
@@ -61,7 +61,7 @@
  * waitUntil(submitButton, isDisplayed);
  *
  * when(submitButton, isDisplayed).click();
- * }</pre>
+ * </pre>
  *
  * <h1>Composing Conditions</h1>
  * <p>
@@ -101,11 +101,11 @@
  * <p>
  * For example, each of these these examples evaluates some condition relating
  * to a submit button:
- * <pre>{@code
+ * <pre>
  * assertThat(submitButton, isDisplayed);
  *
  * assertThat(submitButton, backgroundColor, is(standardButtonBackgroundColor));
- * }</pre>
+ * </pre>
  *
  * <h1>Self-Describing Conditions</h1>
  * Most expression methods are designed not only to evaluate conditions, but
@@ -142,7 +142,7 @@
  * and {@code Predicate} objects
  * with the ability to describe themselves.
  *
- * <pre>{@code
+ * <pre>{@literal
  * SelfDescribingFunction<String,Integer> length = Named.function("length", String::length);
  *
  * SelfDescribingPredicate<String> empty = Named.predicate("empty", String::isEmpty);
@@ -196,7 +196,7 @@
  * <p>
  * For example, each of these calls polls for up to 10 seconds for the submit
  * button to be displayed:
- * <pre>{@code
+ * <pre>
  * assertThat(within(10, SECONDS), submitButton, isDisplayed);
  *
  * if(satisfiedThat(within(10, SECONDS), submitButton, isDisplayed) { ... }
@@ -204,7 +204,7 @@
  * waitUntil(within(10, SECONDS), submitButton, isDisplayed);
  *
  * when(within(10, SECONDS), submitButton, isDisplayed).click();
- * }</pre>
+ * </pre>
  * <p>
  * <strong>Implicit Polling</strong>
  * <p>
@@ -217,11 +217,11 @@
  * <p>
  * Each of these evaluates the condition repeatedly until it is satisfied,
  * using the default polling schedule:
- * <pre>{@code
+ * <pre>
  * waitUntil(submitButton, isDisplayed);
  *
  * when(submitButton, isDisplayed).click();
- * }</pre>
+ * </pre>
  * <p>
  * <strong>Evaluating Immediately</strong>
  * <p>
@@ -230,11 +230,11 @@
  * schedule, these methods evaluate the condition immediately, without polling.
  * <p>
  * Each of these calls evaluates the condition immediately, without polling:
- * <pre>{@code
+ * <pre>
  * assertThat(submitButton, isDisplayed);
  *
  * if(satisfiedThat(submitButton, isDisplayed) { ... }
- * }</pre>
+ * </pre>
  *
  * <h1>Polling Schedules</h1>
  * <p>
@@ -250,16 +250,16 @@
  * </p>
  * <p>This default polling schedule is used implicitly whenever a {@code waitUntil} or
  * {@code when} method is called without a polling schedule:
- * <pre>{@code
+ * <pre>
  * waitUntil(submitButton, isDisplayed);
  *
  * when(submitButton, isDisplayed).click();
- * }</pre>
+ * </pre>
  * <p>
  * The default polling schedule can also be passed explicitly by calling
  * {@code eventually}:
  * </p>
- * <pre>{@code
+ * <pre>
  * assertThat(eventually(), submitButton, isDisplayed);
  *
  * if(satisfiedThat(eventually(), submitButton, isDisplayed) { ... }
@@ -269,7 +269,7 @@
  *
  * // Explicit but otherwise unnecessary
  * when(eventually(), submitButton, isDisplayed).click();
- * }</pre>
+ * </pre>
  *
  * <h1>Time Frames</h1>
  * <p>
@@ -303,19 +303,19 @@
  * </table>
  * <p>
  * Each method is designed to read reasonably nicely in polled expressions:
- * <pre>{@code
+ * <pre>
  * assertThat(eventually(), submitButton, isDisplayed);
  *
  * assertThat(within(10, SECONDS), submitButton, isDisplayed);
  *
  * assertThat(checkingEvery(100, MILLIS), submitButton, isDisplayed);
- * }</pre>
+ * </pre>
  * <p>
  * The polling schedule returned by {@code within} has a {@code checkingEvery}
  * method. This gives a way to specify both the polling interval and duration in
  * a single expression:
- * <pre>{@code
+ * <pre>
  * assertThat(within(10, SECONDS).checkingEvery(100, MILLIS), submitButton, isDisplayed);
- * }</pre>
+ * </pre>
  */
 package com.dhemery.expressions;

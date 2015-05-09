@@ -10,7 +10,7 @@ public interface Eventually {
      * <p>
      * This factory method is named to read nicely in polled expressions:
      * <pre>
-     *      assertThat(eventually(), searchField, isDisplayed());
+     * assertThat(eventually(), searchField, isDisplayed());
      * </pre>
      * The default polling interval and duration are defined by each
      * implementation.

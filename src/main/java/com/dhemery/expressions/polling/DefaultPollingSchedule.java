@@ -13,7 +13,7 @@ import java.util.Optional;
  * by the {@link System#getProperties() system property}
  * with the key:
  * <pre>
- *      com.dhemery.expressions.polling.interval.millis
+ * com.dhemery.expressions.polling.interval.millis
  * </pre>
  * If the system has no such property, the default
  * polling interval is 1 second.
@@ -21,7 +21,7 @@ import java.util.Optional;
  * The default polling duration is specified (in milliseconds)
  * by the system property with the key:
  * <pre>
- *      com.dhemery.expressions.polling.interval.millis
+ * com.dhemery.expressions.polling.interval.millis
  * </pre>
  * If the system has no such property, the default
  * polling duration is 1 minute.
