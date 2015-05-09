@@ -9,10 +9,13 @@ import java.time.temporal.TemporalUnit;
 /**
  * <p>Factory methods for polling schedules. Each method is named
  * to read like a time frame in a polled expression:
+ *
  * <pre>
  * assertThat(<strong>eventually()</strong>, searchField, isDisplayed());
+ *
  * assertThat(<strong>within(1, MINUTES)</strong>, searchField, isDisplayed());
- * assertThat(<strong>checkingEvery(1, SECONDS)</strong>, searchField, isDisplayed());
+ *
+ * assertThat(<strong>checkedEvery(1, SECONDS)</strong>, searchField, isDisplayed());
  * </pre>
  */
 public interface TimeFrames extends Eventually {
@@ -27,18 +30,18 @@ public interface TimeFrames extends Eventually {
     /**
      * Creates a polling schedule with the given duration and the default
      * polling interval.
-     *
-     * <p>This factory method is named to read nicely in polled expressions:
+     * <p>
+     * This factory method is named to read like a time frame in polled expressions:
      *
      * <pre>
-     * assertThat(within(1, MINUTES), searchField, isDisplayed());
+     * assertThat(<strong>within(1, MINUTES)</strong>, searchField, isDisplayed());
      * </pre>
      *
-     * To specify a polling interval, call {@link Within#checkingEvery checkingEvery}
+     * To specify a polling interval, call {@link Within#checkedEvery checkedEvery}
      * on the returned schedule:
      *
      * <pre>
-     * assertThat(within(1, MINUTES)<strong>.checkingEvery(1, SECONDS)</strong>, searchField, isDisplayed());
+     * assertThat(within(1, MINUTES)<strong>.checkedEvery(1, SECONDS)</strong>, searchField, isDisplayed());
      * </pre>
      *
      * @param amount
@@ -58,19 +61,19 @@ public interface TimeFrames extends Eventually {
     /**
      * Creates a polling schedule with the given duration and the default
      * polling interval.
-     *
-     * <p>This factory method is named to read nicely in polled expressions:
+     * <p>
+     * This factory method is named to read like a time frame in polled expressions:
      *
      * <pre>
      * Duration oneMinute = Duration.of(1, MINUTES);
-     * assertThat(within(oneMinute), searchField, isDisplayed());
+     * assertThat(<strong>within(oneMinute)</strong>, searchField, isDisplayed());
      * </pre>
      *
-     * To specify a polling interval, call {@link Within#checkingEvery checkingEvery}
+     * To specify a polling interval, call {@link Within#checkedEvery checkedEvery}
      * on the returned schedule:
      *
      * <pre>
-     * assertThat(within(oneMinute).checkingEvery(1, SECONDS), searchField, isDisplayed());
+     * assertThat(within(oneMinute).<strong>checkedEvery(1, SECONDS)</strong>, searchField, isDisplayed());
      * </pre>
      *
      * @param duration
@@ -88,10 +91,11 @@ public interface TimeFrames extends Eventually {
     /**
      * Creates a polling schedule with the given duration and the default
      * polling interval.
-     * <p>This factory method is named to read nicely in polled expressions:
+     * <p>
+     * This factory method is named to read like a time frame in polled expressions:
      *
      * <pre>
-     * assertThat(checkingEvery(1, SECONDS), searchField, isDisplayed());
+     * assertThat(<strong>checkedEvery(1, SECONDS)</strong>, searchField, isDisplayed());
      * </pre>
      *
      * To specify both a polling interval and duration, see {@link #within}.
@@ -106,19 +110,19 @@ public interface TimeFrames extends Eventually {
      * @implSpec the returned schedule must have the same polling duration as
      * the schedules returned by {@link Eventually#eventually eventually}.
      */
-    default PollingSchedule checkingEvery(int amount, TemporalUnit unit) {
+    default PollingSchedule checkedEvery(int amount, TemporalUnit unit) {
         return new PollingSchedule(Duration.of(amount, unit), eventually().duration());
     }
 
     /**
      * Creates a polling schedule with the given polling interval and the
      * default polling duration.
-     *
-     * <p>This factory method is named to read nicely in polled expressions:
+     * <p>
+     * This factory method is named to read like a time frame in polled expressions:
      *
      * <pre>
      * Duration oneSecond = Duration.of(1, SECONDS);
-     * assertThat(checkingEvery(oneSecond), searchField, isDisplayed());
+     * assertThat(<strong>checkedEvery(oneSecond)</strong>, searchField, isDisplayed());
      * </pre>
      *
      * To specify both a polling interval and duration, see {@link #within}.
@@ -131,7 +135,7 @@ public interface TimeFrames extends Eventually {
      * @implSpec the returned schedule must have the same polling duration as
      * the schedules returned by {@link Eventually#eventually eventually}.
      */
-    default PollingSchedule checkingEvery(Duration interval) {
+    default PollingSchedule checkedEvery(Duration interval) {
         return new PollingSchedule(interval, eventually().duration());
     }
 }

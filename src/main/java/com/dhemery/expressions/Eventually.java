@@ -8,10 +8,12 @@ public interface Eventually {
      * Returns a polling schedule with the default polling interval and
      * duration.
      * <p>
-     * This factory method is named to read nicely in polled expressions:
+     * This factory method is named to read like a time frame in polled expressions:
+     *
      * <pre>
-     * assertThat(eventually(), searchField, isDisplayed());
+     * assertThat(<strong>eventually()</strong>, searchField, isDisplayed());
      * </pre>
+     *
      * The default polling interval and duration are defined by each
      * implementation.
      * Implementors must decide what polling schedule is a reasonable default for

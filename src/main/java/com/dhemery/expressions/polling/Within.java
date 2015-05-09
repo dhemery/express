@@ -38,7 +38,7 @@ public class Within extends PollingSchedule {
      * @return a polling schedule with the given interval and this schedule's
      * duration
      */
-    public PollingSchedule checkingEvery(Duration interval) {
+    public PollingSchedule checkedEvery(Duration interval) {
         return new PollingSchedule(interval, duration());
     }
 
@@ -54,7 +54,7 @@ public class Within extends PollingSchedule {
      * @return a polling schedule with the given interval and this schedule's
      * duration
      */
-    public PollingSchedule checkingEvery(int amount, TemporalUnit unit) {
-        return checkingEvery(Duration.of(amount, unit));
+    public PollingSchedule checkedEvery(int amount, TemporalUnit unit) {
+        return checkedEvery(Duration.of(amount, unit));
     }
 }

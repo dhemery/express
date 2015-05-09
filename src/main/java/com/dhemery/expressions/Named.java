@@ -16,9 +16,9 @@ public interface Named {
     /**
      * Decorates the supplier to describe itself with the given name.
      * <pre>{@literal
-     * SelfDescribingBooleanSupplier jvmIsJava8 = Named.booleanSupplier(
-     *                      "jvm is java 8",
-     *                      () -> System.getProperty("java.version").startsWith("1.8."));
+     * SelfDescribingBooleanSupplier jvmIsJava8 =
+     *          Named.booleanSupplier("jvm is java 8",
+     *                  () -> System.getProperty("java.version").startsWith("1.8."));
      * }</pre>
      *
      * @param name
@@ -37,7 +37,8 @@ public interface Named {
      * Decorates the function to describe itself with the given name.
      *
      * <pre>{@literal
-     * SelfDescribingFunction<String,Integer> length = Named.function("length", String::length);
+     * SelfDescribingFunction<String,Integer> length =
+     *          Named.function("length", String::length);
      * }</pre>
      *
      * @param name
@@ -60,7 +61,8 @@ public interface Named {
      * Decorates the predicate to describe itself with the given name.
      *
      * <pre>{@literal
-     * SelfDescribingPredicate<String> empty = Named.predicate("empty", String::isEmpty);
+     * SelfDescribingPredicate<String> empty =
+     *          Named.predicate("empty", String::isEmpty);
      * }</pre>
      *
      * @param description

@@ -54,13 +54,13 @@
  * For example, each of these calls evaluates whether the submit button is displayed:
  *
  * <pre>
- * assertThat(submitButton, isDisplayed);
+ * <strong>assertThat</strong>(submitButton, isDisplayed);
  *
- * if(satisfiedThat(submitButton, isDisplayed)) { /* do something /* }
+ * if(<strong>satisfiedThat</strong>(submitButton, isDisplayed)) { /* do something /* }
  *
- * waitUntil(submitButton, isDisplayed);
+ * <strong>waitUntil</strong>(submitButton, isDisplayed);
  *
- * when(submitButton, isDisplayed).click();
+ * <strong>when</strong>(submitButton, isDisplayed).click();
  * </pre>
  *
  * <h1>Composing Conditions</h1>
@@ -295,27 +295,27 @@
  * <td>The given polling duration</td>
  * </tr>
  * <tr>
- * <td>{@code checkingEvery}</td>
+ * <td>{@code checkedEvery}</td>
  * <td>The given polling interval</td>
  * <td>The default polling duration</td>
  * </tr>
  * </tbody>
  * </table>
  * <p>
- * Each method is designed to read reasonably nicely in polled expressions:
+ * Each method is designed to read like a time frame in polled expressions:
  * <pre>
- * assertThat(eventually(), submitButton, isDisplayed);
+ * assertThat(<strong>eventually()</strong>, submitButton, isDisplayed);
  *
- * assertThat(within(10, SECONDS), submitButton, isDisplayed);
+ * assertThat(<strong>within(10, SECONDS)</strong>, submitButton, isDisplayed);
  *
- * assertThat(checkingEvery(100, MILLIS), submitButton, isDisplayed);
+ * assertThat(<strong>checkedEvery(100, MILLIS)</strong>, submitButton, isDisplayed);
  * </pre>
  * <p>
- * The polling schedule returned by {@code within} has a {@code checkingEvery}
+ * The polling schedule returned by {@code within} has a {@code checkedEvery}
  * method. This gives a way to specify both the polling interval and duration in
  * a single expression:
  * <pre>
- * assertThat(within(10, SECONDS).checkingEvery(100, MILLIS), submitButton, isDisplayed);
+ * assertThat(within(10, SECONDS).<strong>checkedEvery(100, MILLIS)</strong>, submitButton, isDisplayed);
  * </pre>
  */
 package com.dhemery.expressions;
