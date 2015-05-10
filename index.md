@@ -1,5 +1,6 @@
 ---
 title: Expression Kit by dhemery
+layout: page
 ---
 
 # Expression Kit
