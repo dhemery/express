@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expression-kit.iml" filepath="$PROJECT_DIR$/.idea/modules/expression-kit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expression-kit_main.iml" filepath="$PROJECT_DIR$/.idea/modules/expression-kit_main.iml" group="expression-kit" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/expression-kit_test.iml" filepath="$PROJECT_DIR$/.idea/modules/expression-kit_test.iml" group="expression-kit" />
+    </modules>
+  </component>
+</project>
