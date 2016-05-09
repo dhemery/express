@@ -1,15 +1,14 @@
 package com.dhemery.expressions.diagnosing;
 
-import com.dhemery.expressions.SelfDescribingBooleanSupplier;
-import com.dhemery.expressions.SelfDescribingFunction;
-import com.dhemery.expressions.SelfDescribingPredicate;
 import com.dhemery.expressions.PollingSchedule;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -19,17 +18,16 @@ import static java.util.stream.Collectors.joining;
  * Diagnoses failed conditions, incorporating all of the given information.
  */
 public class Diagnosis {
-    private static final SelfDescribing NO_SUBJECT = ignoredDescription -> {
-    };
+    private static final String NO_SUBJECT = "";
 
-    public static String of(SelfDescribingBooleanSupplier supplier) {
+    public static String of(BooleanSupplier supplier) {
         return diagnosis(
                 NO_SUBJECT,
                 expected(supplier)
         );
     }
 
-    public static <T> String of(T subject, SelfDescribingPredicate<? super T> predicate) {
+    public static <T> String of(T subject, Predicate<? super T> predicate) {
         return diagnosis(
                 NO_SUBJECT,
                 expected(predicate),
@@ -45,23 +43,23 @@ public class Diagnosis {
         );
     }
 
-    public static <T, V> String of(T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher, V functionValue) {
+    public static <T, V> String of(T subject, Function<? super T, V> function, Matcher<? super V> matcher, V functionValue) {
         return diagnosis(
-                subject,
+                subject.toString(),
                 expected(function, matcher),
-                but(function, matcherRejected(matcher, functionValue))
+                but(function.toString(), matcherRejected(matcher, functionValue))
         );
     }
 
-    public static <T, V> String of(T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate, V functionValue) {
+    public static <T, V> String of(T subject, Function<? super T, V> function, Predicate<? super V> predicate, V functionValue) {
         return diagnosis(
-                subject,
+                subject.toString(),
                 expected(function, predicate),
-                but(function, was(functionValue))
+                but(function.toString(), was(functionValue))
         );
     }
 
-    public static String of(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier) {
+    public static String of(PollingSchedule schedule, BooleanSupplier supplier) {
         return diagnosis(
                 NO_SUBJECT,
                 expected(supplier),
@@ -69,51 +67,46 @@ public class Diagnosis {
         );
     }
 
-    public static <T> String of(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
+    public static <T> String of(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
         return diagnosis(
-                subject,
+                subject.toString(),
                 expected(predicate),
                 but(timedOutPolling(schedule))
         );
     }
 
-    public static <T, V> String of(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate, V finalFunctionValue) {
+    public static <T, V> String of(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate, V finalFunctionValue) {
         return diagnosis(
-                subject,
+                subject.toString(),
                 expected(function, predicate),
                 but(timedOutPolling(schedule)),
                 onFinalEvaluation(function, was(finalFunctionValue))
         );
     }
 
-    public static <T, V> String of(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher, V finalFunctionValue) {
+    public static <T, V> String of(PollingSchedule schedule, T subject, Function<? super T, V> function, Matcher<? super V> matcher, V finalFunctionValue) {
         return diagnosis(
-                subject,
+                subject.toString(),
                 expected(function, matcher),
                 but(timedOutPolling(schedule)),
                 onFinalEvaluation(function, matcherRejected(matcher, finalFunctionValue))
         );
     }
 
-    private static String diagnosis(Object subject, String... lines) {
-        String subjectLine = BestDescription.of(subject) + System.lineSeparator();
-        return Arrays.stream(lines).collect(joining(System.lineSeparator(), subjectLine, ""));
+    private static String diagnosis(String... lines) {
+        return Arrays.stream(lines).collect(joining(System.lineSeparator()));
     }
 
-    private static String expected(SelfDescribing... details) {
-        return line("Expected", Arrays.stream(details).map(StringDescription::toString));
+    private static String expected(Object... details) {
+        return line("Expected", Arrays.stream(details).map(Object::toString));
     }
 
     private static String but(String... details) {
         return line("but", Arrays.stream(details));
     }
 
-    private static String but(SelfDescribing function, String details) {
-        return but(StringDescription.toString(function), details);
-    }
-
-    private static String onFinalEvaluation(SelfDescribing function, String details) {
-        return line("final", Stream.of(StringDescription.toString(function), details));
+    private static <T,R> String onFinalEvaluation(Function<T,R> function, String details) {
+        return line("final", Stream.of(function.toString(), details));
     }
 
     private static String line(String label, Stream<String> details) {
@@ -123,7 +116,7 @@ public class Diagnosis {
     private static String matcherRejected(Matcher<?> matcher, Object actualValue) {
         Description description = new StringDescription();
         matcher.describeMismatch(actualValue, description);
-        return String.valueOf(description);
+        return description.toString();
     }
 
     private static String timedOutPolling(PollingSchedule schedule) {
@@ -131,6 +124,6 @@ public class Diagnosis {
     }
 
     private static String was(Object item) {
-        return format("was %s", BestDescription.of(item));
+        return format("was %s", item);
     }
 }

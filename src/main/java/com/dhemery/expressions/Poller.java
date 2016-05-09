@@ -3,6 +3,10 @@ package com.dhemery.expressions;
 import com.dhemery.expressions.polling.PollEvaluationResult;
 import org.hamcrest.Matcher;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * Repeatedly evaluates a condition until it is satisfied or the polling
  * duration expires.
@@ -19,7 +23,7 @@ public interface Poller {
      * @return {@code true} if the supplier returns {@code true} before the
      * schedule expires, otherwise {@code false}
      */
-    boolean poll(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier);
+    boolean poll(PollingSchedule schedule, BooleanSupplier supplier);
 
     /**
      * Polls the predicate's acceptance of the subject.
@@ -36,7 +40,7 @@ public interface Poller {
      * @return {@code true} if the predicate accepts the subject before the
      * schedule expires, otherwise {@code false}
      */
-    <T> boolean poll(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate);
+    <T> boolean poll(PollingSchedule schedule, T subject, Predicate<? super T> predicate);
 
     /**
      * Polls the matcher's acceptance of the value that the function derives
@@ -61,7 +65,7 @@ public interface Poller {
      *
      * @return the result of the final evaluation performed by this poll
      */
-    <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher);
+    <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, Function<? super T, V> function, Matcher<? super V> matcher);
 
     /**
      * Polls the matcher's acceptance of the value that the function derives
@@ -86,5 +90,5 @@ public interface Poller {
      *
      * @return the result of the final evaluation performed by this poll
      */
-    <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate);
+    <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate);
 }

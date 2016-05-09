@@ -1,6 +1,7 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import org.junit.Test;
 
 import java.util.function.BooleanSupplier;
@@ -16,21 +17,21 @@ public class BooleanSupplierExpressionTests {
         public void returnsWithoutThrowing_ifSupplierReturnsTrue() {
             BooleanSupplier s = () -> System.getProperty("java.version").startsWith("1.8.");
             System.out.println(System.getProperty("java.version"));
-            SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("", () -> true);
+            BooleanSupplier supplier = Named.booleanSupplier("", () -> true);
 
             Expressions.assertThat(supplier);
         }
 
         @Test(expected = AssertionError.class)
         public void throwsAssertionError_ifSupplierReturnsFalse() {
-            SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("", () -> false);
+            BooleanSupplier supplier = Named.booleanSupplier("", () -> false);
 
             Expressions.assertThat(supplier);
         }
 
         @Test
         public void errorMessage_describesSupplier() {
-            SelfDescribingBooleanSupplier supplier = Named.booleanSupplier("supplier", () -> false);
+            BooleanSupplier supplier = Named.booleanSupplier("supplier", () -> false);
 
             String message = messageThrownBy(() -> Expressions.assertThat(supplier));
 

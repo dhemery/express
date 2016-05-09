@@ -7,12 +7,10 @@
  * <li>Support diagnosis by fully describing the conditions in error, exception,
  * and log messages</li>
  * </ul>
- *
  * <h1>Expression Methods</h1>
  * <p>
  * Expression Kit defines four types of expression methods,
  * each with a distinct purpose:
- *
  * <table summary="Types of Expressions" class="daleTable">
  * <thead>
  * <tr>
@@ -52,7 +50,6 @@
  * <p>
  * Each expression method is named to read nicely in the code where it is called.
  * For example, each of these calls evaluates whether the submit button is displayed:
- *
  * <pre>
  * <strong>assertThat</strong>(submitButton, isDisplayed);
  *
@@ -62,12 +59,10 @@
  *
  * <strong>when</strong>(submitButton, isDisplayed).click();
  * </pre>
- *
  * <h1>Composing Conditions</h1>
  * <p>
  * Each expression method has a number of forms. Each form offers a distinct
  * way to compose the condition for the method to evaluate.
- *
  * <table summary="Composed Conditions" class="daleTable">
  * <thead>
  * <tr>
@@ -106,7 +101,6 @@
  *
  * assertThat(submitButton, backgroundColor, is(standardButtonBackgroundColor));
  * </pre>
- *
  * <h1>Self-Describing Conditions</h1>
  * Most expression methods are designed not only to evaluate conditions, but
  * also to describe the conditions they evaluate. For example, when each
@@ -118,30 +112,30 @@
  * polled conditions in its log messages.
  * <p>
  * In order to ensure that these expression methods can fully describe the
- * conditions they evaluate, they accept only supplier, function, and predicate
+ * conditions they evaluate, most expressions require that you pass
+ * supplier, function, and predicate
  * objects that are able to describe themselves. To support this requirement,
- * Expression Kit defines {@link org.hamcrest.SelfDescribing} specializations of
+ * Expression Kit defines self-describing extensions
  * three standard Java functional interfaces:
  * <ul>
- * <li>{@link com.dhemery.expressions.SelfDescribingBooleanSupplier}</li>
- * <li>{@link com.dhemery.expressions.SelfDescribingFunction}</li>
- * <li>{@link com.dhemery.expressions.SelfDescribingPredicate}</li>
+ * <li>{@link com.dhemery.expressions.diagnosing.NamedBooleanSupplier}</li>
+ * <li>{@link com.dhemery.expressions.diagnosing.NamedFunction}</li>
+ * <li>{@link com.dhemery.expressions.diagnosing.NamedPredicate}</li>
  * </ul>
  * <p>
- * The only expression methods that can accept bare, non-{@code SelfDescribing}
+ * The only expression methods that do not require self-describing
  * suppliers, functions, and predicates are the
  * {@link com.dhemery.expressions.Expressions#satisfiedThat Expressions.satisfiedThat}
- * methods. These methods do not throw exceptions, and do not poll, and so do
+ * methods. These methods do not throw exceptions and do not poll, and so do
  * not require the objects to describe themselves.
  * <p>
- * <strong>Creating Self-Describing Suppliers, Functions, and Predicates</strong>
+ * <strong>Creating Named Suppliers, Functions, and Predicates</strong>
  * <p>
- * The {@link com.dhemery.expressions.Named} interface offers factory methods to decorate
+ * The {@link com.dhemery.expressions.diagnosing.Named} interface offers factory methods to decorate
  * {@code BooleanSupplier},
  * {@code Function},
  * and {@code Predicate} objects
  * with the ability to describe themselves.
- *
  * <pre>{@literal
  * SelfDescribingFunction<String,Integer> length = Named.function("length", String::length);
  *
@@ -154,7 +148,6 @@
  * and forms that do not.
  * The effect of passing a polling schedule or not passing one
  * depends on the method.
- *
  * <table summary="Expression Methods and Polling" class="daleTable">
  * <thead>
  * <tr>
@@ -186,7 +179,6 @@
  * </tr>
  * </tbody>
  * </table>
- *
  * <p>
  * <strong>Explicit Polling</strong>
  * <p>
@@ -235,7 +227,6 @@
  *
  * if(satisfiedThat(submitButton, isDisplayed) { ... }
  * </pre>
- *
  * <h1>Polling Schedules</h1>
  * <p>
  * A polling schedule includes a polling interval and a polling duration.
@@ -270,7 +261,6 @@
  * // Explicit but otherwise unnecessary
  * when(eventually(), submitButton, isDisplayed).click();
  * </pre>
- *
  * <h1>Time Frames</h1>
  * <p>
  * Polled expressions read nicely when the polling schedule is phrased as a time

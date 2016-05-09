@@ -1,7 +1,12 @@
 package com.dhemery.expressions.polling;
 
-import com.dhemery.expressions.*;
+import com.dhemery.expressions.Poller;
+import com.dhemery.expressions.PollingSchedule;
 import org.hamcrest.Matcher;
+
+import java.util.function.BooleanSupplier;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * A poller that uses a {@link PollTimer} to pause between evaluations and
@@ -9,7 +14,7 @@ import org.hamcrest.Matcher;
  */
 public interface PollTimerPoller extends Poller {
     @Override
-    default boolean poll(PollingSchedule schedule, SelfDescribingBooleanSupplier supplier) {
+    default boolean poll(PollingSchedule schedule, BooleanSupplier supplier) {
         PollTimer timer = pollTimer();
         timer.start(schedule);
         while (true) {
@@ -31,17 +36,17 @@ public interface PollTimerPoller extends Poller {
     }
 
     @Override
-    default <T> boolean poll(PollingSchedule schedule, T subject, SelfDescribingPredicate<? super T> predicate) {
+    default <T> boolean poll(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
         return false;
     }
 
     @Override
-    default <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher) {
+    default <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, Function<? super T, V> function, Matcher<? super V> matcher) {
         return null;
     }
 
     @Override
-    default <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate) {
+    default <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
         return null;
     }
 }

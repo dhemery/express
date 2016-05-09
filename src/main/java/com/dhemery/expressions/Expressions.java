@@ -1,6 +1,7 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import org.hamcrest.Matcher;
 
 import java.util.function.BooleanSupplier;
@@ -24,7 +25,7 @@ public interface Expressions {
      * @throws AssertionError
      *         if the supplier returns {@code false}
      */
-    static void assertThat(SelfDescribingBooleanSupplier condition) {
+    static void assertThat(BooleanSupplier condition) {
         if (!condition.getAsBoolean())
             throw new AssertionError(Diagnosis.of(condition));
     }
@@ -39,7 +40,7 @@ public interface Expressions {
      * @param predicate
      *         the predicate that evaluates the subject
      */
-    static <T> void assertThat(T subject, SelfDescribingPredicate<? super T> predicate) {
+    static <T> void assertThat(T subject, Predicate<? super T> predicate) {
         if (!predicate.test(subject))
             throw new AssertionError(Diagnosis.of(subject, predicate));
     }
@@ -74,7 +75,7 @@ public interface Expressions {
      * @param predicate
      *         evaluates the derived value
      */
-    static <T, V> void assertThat(T subject, SelfDescribingFunction<? super T, V> function, SelfDescribingPredicate<? super V> predicate) {
+    static <T, V> void assertThat(T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
         V value = function.apply(subject);
         if (!predicate.test(value))
             throw new AssertionError(Diagnosis.of(subject, function, predicate, value));
@@ -95,7 +96,7 @@ public interface Expressions {
      * @param matcher
      *         evaluates the derived value
      */
-    static <T, V> void assertThat(T subject, SelfDescribingFunction<? super T, V> function, Matcher<? super V> matcher) {
+    static <T, V> void assertThat(T subject, Function<? super T, V> function, Matcher<? super V> matcher) {
         V value = function.apply(subject);
         if (!matcher.matches(value))
             throw new AssertionError(Diagnosis.of(subject, function, matcher, value));

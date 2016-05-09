@@ -1,13 +1,11 @@
 package com.dhemery.expressions.diagnosing;
 
-import com.dhemery.expressions.SelfDescribingBooleanSupplier;
-
 import java.util.function.BooleanSupplier;
 
 /**
  * A {@link BooleanSupplier} that describes itself by name.
  */
-public class NamedBooleanSupplier extends DescribedByName implements SelfDescribingBooleanSupplier {
+public class NamedBooleanSupplier extends Named implements BooleanSupplier {
     private final BooleanSupplier supplier;
 
     /**

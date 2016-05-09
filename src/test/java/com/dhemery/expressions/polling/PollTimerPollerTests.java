@@ -2,7 +2,6 @@ package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.Poller;
 import com.dhemery.expressions.PollingSchedule;
-import com.dhemery.expressions.SelfDescribingBooleanSupplier;
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -10,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.time.Duration;
+import java.util.function.BooleanSupplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -18,7 +18,7 @@ public class PollTimerPollerTests {
     public static class WithBooleanSupplier {
         @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
 
-        SelfDescribingBooleanSupplier supplier = context.mock(SelfDescribingBooleanSupplier.class);
+        BooleanSupplier supplier = context.mock(BooleanSupplier.class);
         PollTimer timer = context.mock(PollTimer.class);
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(10));
         Poller poller = new PollTimerPoller() {

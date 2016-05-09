@@ -1,7 +1,5 @@
 package com.dhemery.expressions.diagnosing;
 
-import com.dhemery.expressions.SelfDescribingPredicate;
-import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 import java.util.function.Predicate;
@@ -22,10 +20,9 @@ public class NamedPredicateTests {
     @Test
     public void describesItselfWithTheGivenName() {
         String name = "a name of a predicate";
-        SelfDescribingPredicate<String> predicate = new NamedPredicate<>(name, t -> true);
+        Predicate<String> predicate = new NamedPredicate<>(name, t -> true);
 
         assertThat(String.valueOf(predicate), is(name));
-        assertThat(StringDescription.toString(predicate), is(name));
     }
 
     @Test
@@ -41,13 +38,12 @@ public class NamedPredicateTests {
 
     @Test
     public void or_yieldsAPredicateThatDescribesItsComposition() {
-        SelfDescribingPredicate<String> first = new NamedPredicate<>("first", t -> true);
+        Predicate<String> first = new NamedPredicate<>("first", t -> true);
         Predicate<String> second = t -> true;
 
-        SelfDescribingPredicate<String> composed = first.or(second);
+        Predicate<String> composed = first.or(second);
 
-        assertThat(String.valueOf(composed), is(format("(first or %s)", BestDescription.of(second))));
-        assertThat(StringDescription.toString(composed), is(format("(first or %s)", BestDescription.of(second))));
+        assertThat(String.valueOf(composed), is(format("(first or %s)", second)));
     }
 
     @Test
@@ -63,13 +59,12 @@ public class NamedPredicateTests {
 
     @Test
     public void and_yieldsAPredicateThatDescribesItsComposition() {
-        SelfDescribingPredicate<String> first = new NamedPredicate<>("first", t -> true);
+        Predicate<String> first = new NamedPredicate<>("first", t -> true);
         Predicate<String> second = t -> true;
 
-        SelfDescribingPredicate<String> composed = first.and(second);
+        Predicate<String> composed = first.and(second);
 
-        assertThat(String.valueOf(composed), is(format("(first and %s)", BestDescription.of(second))));
-        assertThat(StringDescription.toString(composed), is(format("(first and %s)", BestDescription.of(second))));
+        assertThat(String.valueOf(composed), is(format("(first and %s)", second)));
     }
 
     @Test
@@ -82,15 +77,10 @@ public class NamedPredicateTests {
 
     @Test
     public void negate_yieldsAPredicateThatDescribesItsComposition() {
-        SelfDescribingPredicate<String> positive = new NamedPredicate<>("positive", t -> true);
+        Predicate<String> positive = new NamedPredicate<>("positive", t -> true);
 
-        SelfDescribingPredicate<String> composed = positive.negate();
+        Predicate<String> composed = positive.negate();
 
         assertThat(String.valueOf(composed), is("(not positive)"));
-        assertThat(StringDescription.toString(composed), is("(not positive)"));
-    }
-
-    private String descriptionOf(Object o) {
-        return new StringDescription().appendValue(o).toString();
     }
 }

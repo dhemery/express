@@ -1,7 +1,5 @@
 package com.dhemery.expressions.diagnosing;
 
-import com.dhemery.expressions.SelfDescribingFunction;
-
 import java.util.function.Function;
 
 import static java.lang.String.format;
@@ -16,7 +14,7 @@ import static java.lang.String.format;
  * @param <R>
  *         the type of the result of the function
  */
-public class NamedFunction<T, R> extends DescribedByName implements SelfDescribingFunction<T, R> {
+public class NamedFunction<T, R> extends Named implements Function<T, R> {
     private final Function<T, R> function;
 
     /**
@@ -46,8 +44,8 @@ public class NamedFunction<T, R> extends DescribedByName implements SelfDescribi
      * {@code after} function, and their composition.
      */
     @Override
-    public <V> SelfDescribingFunction<T, V> andThen(Function<? super R, ? extends V> after) {
-        return new NamedFunction<>(format("(%s of %s)", BestDescription.of(after), this), function.andThen(after));
+    public <V> Function<T, V> andThen(Function<? super R, ? extends V> after) {
+        return new NamedFunction<>(format("(%s of %s)", after, this), function.andThen(after));
     }
 
     /**
@@ -55,7 +53,7 @@ public class NamedFunction<T, R> extends DescribedByName implements SelfDescribi
      * {@code before} function, and their composition.
      */
     @Override
-    public <V> SelfDescribingFunction<V, R> compose(Function<? super V, ? extends T> before) {
-        return new NamedFunction<>(format("(%s of %s)", this, BestDescription.of(before)), function.compose(before));
+    public <V> Function<V, R> compose(Function<? super V, ? extends T> before) {
+        return new NamedFunction<>(format("(%s of %s)", this, before), function.compose(before));
     }
 }

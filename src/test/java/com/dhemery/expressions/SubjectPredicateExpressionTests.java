@@ -1,14 +1,17 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import com.dhemery.expressions.helpers.Throwables;
 import org.junit.Test;
+
+import java.util.function.Predicate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class SubjectPredicateExpressionTests {
-    private static final SelfDescribingPredicate<Object> ANY_VALUE = Named.predicate("any value", t -> true);
+    private static final Predicate<Object> ANY_VALUE = Named.predicate("any value", t -> true);
     public static final String SUBJECT = "subject";
 
     public static class AssertThat {

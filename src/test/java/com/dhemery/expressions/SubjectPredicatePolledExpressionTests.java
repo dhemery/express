@@ -1,12 +1,15 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import com.dhemery.expressions.helpers.PolledExpressionTestSetup;
 import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
 import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.function.Predicate;
 
 import static com.dhemery.expressions.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,7 +18,7 @@ import static org.hamcrest.Matchers.sameInstance;
 
 public class SubjectPredicatePolledExpressionTests {
     public static final String SUBJECT = "subject";
-    public static final SelfDescribingPredicate<String> PREDICATE = Named.predicate("predicate", t -> true);
+    public static final Predicate<String> PREDICATE = Named.predicate("predicate", t -> true);
 
     public static class AssertThat extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();

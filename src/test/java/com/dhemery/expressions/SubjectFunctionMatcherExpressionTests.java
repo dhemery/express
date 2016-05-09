@@ -1,8 +1,11 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import com.dhemery.expressions.helpers.Throwables;
 import org.junit.Test;
+
+import java.util.function.Function;
 
 import static java.util.function.Function.identity;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -11,7 +14,7 @@ import static org.hamcrest.Matchers.*;
 public class SubjectFunctionMatcherExpressionTests {
 
     public static class AssertThat {
-        SelfDescribingFunction<String, String> function = Named.function("function", String::toUpperCase);
+        Function<String, String> function = Named.function("function", String::toUpperCase);
 
         @Test
         public void returnsWithoutThrowing_ifMatcherAcceptsFunctionOfSubject() {

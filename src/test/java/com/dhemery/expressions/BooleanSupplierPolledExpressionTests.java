@@ -1,6 +1,7 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import com.dhemery.expressions.helpers.PolledExpressionTestSetup;
 import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
@@ -8,13 +9,15 @@ import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.function.BooleanSupplier;
+
 import static com.dhemery.expressions.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class BooleanSupplierPolledExpressionTests {
     public static final PollingSchedule SCHEDULE = PollingSchedules.random();
-    public static final SelfDescribingBooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
+    public static final BooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
 
     public static class AssertThat extends PolledExpressionTestSetup {
         @Test

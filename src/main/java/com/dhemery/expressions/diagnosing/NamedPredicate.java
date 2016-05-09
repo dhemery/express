@@ -1,7 +1,5 @@
 package com.dhemery.expressions.diagnosing;
 
-import com.dhemery.expressions.SelfDescribingPredicate;
-
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
@@ -13,11 +11,11 @@ import static java.lang.String.format;
  * @param <T>
  *         the type of the input to the predicate
  */
-public class NamedPredicate<T> extends DescribedByName implements SelfDescribingPredicate<T> {
+public class NamedPredicate<T> extends Named implements Predicate<T> {
     private final Predicate<T> predicate;
 
     /**
-     * Creates a named diagnosing predicate.
+     * Creates a named predicate.
      *
      * @param name
      *         the name of the predicate
@@ -42,8 +40,8 @@ public class NamedPredicate<T> extends DescribedByName implements SelfDescribing
      * the {@code other} predicate, and their composition.
      */
     @Override
-    public SelfDescribingPredicate<T> and(Predicate<? super T> other) {
-        return new NamedPredicate<>(format("(%s and %s)", this, BestDescription.of(other)), predicate.and(other));
+    public Predicate<T> and(Predicate<? super T> other) {
+        return new NamedPredicate<>(format("(%s and %s)", this, other), predicate.and(other));
     }
 
     /**
@@ -51,8 +49,8 @@ public class NamedPredicate<T> extends DescribedByName implements SelfDescribing
      * the {@code other} predicate, and their composition.
      */
     @Override
-    public SelfDescribingPredicate<T> or(Predicate<? super T> other) {
-        return new NamedPredicate<>(format("(%s or %s)", this, BestDescription.of(other)), predicate.or(other));
+    public Predicate<T> or(Predicate<? super T> other) {
+        return new NamedPredicate<>(format("(%s or %s)", this, other), predicate.or(other));
     }
 
     /**
@@ -60,7 +58,7 @@ public class NamedPredicate<T> extends DescribedByName implements SelfDescribing
      * with the word "not" prepended.
      */
     @Override
-    public SelfDescribingPredicate<T> negate() {
+    public Predicate<T> negate() {
         return new NamedPredicate<>(format("(not %s)", this), predicate.negate());
     }
 }
