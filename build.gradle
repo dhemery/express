@@ -64,5 +64,5 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '4.2'
 }
