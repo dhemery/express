@@ -15,7 +15,6 @@ public class BooleanSupplierExpressionTests {
     public static class AssertThat {
         @Test
         public void returnsWithoutThrowing_ifSupplierReturnsTrue() {
-            BooleanSupplier s = () -> System.getProperty("java.version").startsWith("1.8.");
             System.out.println(System.getProperty("java.version"));
             BooleanSupplier supplier = Named.booleanSupplier("", () -> true);
 

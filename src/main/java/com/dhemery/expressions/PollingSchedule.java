@@ -14,10 +14,8 @@ public class PollingSchedule {
     /**
      * Create a schedule to poll with the given interval and duration.
      *
-     * @param interval
-     *         the polling interval
-     * @param duration
-     *         the duration to poll
+     * @param interval the polling interval
+     * @param duration the duration to poll
      */
     public PollingSchedule(Duration interval, Duration duration) {
         this.interval = interval;
@@ -26,6 +24,7 @@ public class PollingSchedule {
 
     /**
      * Returns this schedule's polling duration.
+     *
      * @return this schedule's polling duration
      */
     public Duration duration() {
@@ -34,6 +33,7 @@ public class PollingSchedule {
 
     /**
      * Returns this schedule's polling interval.
+     *
      * @return this schedule's polling interval
      */
     public Duration interval() {
@@ -56,9 +56,8 @@ public class PollingSchedule {
 
         PollingSchedule that = (PollingSchedule) o;
 
-        if (interval != null ? !interval.equals(that.interval) : that.interval != null)
-            return false;
-        return !(duration != null ? !duration.equals(that.duration) : that.duration != null);
+        return (interval != null ? interval.equals(that.interval) : that.interval == null)
+                && !(duration != null ? !duration.equals(that.duration) : that.duration != null);
 
     }
 

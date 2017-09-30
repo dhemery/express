@@ -39,7 +39,13 @@
     </properties>
   </component>
   <component name="EntryPointsManager">
-    <entry_points version="2.0" />
+    <pattern value="com.dhemery.expressions.TimeFrames" method="checkedEvery" />
+    <pattern value="com.dhemery.expressions.TimeFrames" method="within" />
+    <pattern value="com.dhemery.expressions.TimeFrames" />
+    <pattern value="com.dhemery.expressions.polling.Within" method="checkedEvery" />
+    <pattern value="com.dhemery.expressions.polling.Within" />
+    <pattern value="com.dhemery.expressions.Poller" method="poll" />
+    <pattern value="com.dhemery.expressions.Poller" />
   </component>
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />

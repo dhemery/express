@@ -165,7 +165,7 @@ public class DiagnosisTests {
     }
 
     private Matcher<String> uncallableMatcher() {
-        return new BaseMatcher<String>() {
+        return new BaseMatcher<>() {
             @Override
             public void describeTo(Description description) {
                 description.appendText("matcher");
