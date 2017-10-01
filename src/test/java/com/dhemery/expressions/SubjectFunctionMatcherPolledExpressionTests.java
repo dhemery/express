@@ -18,16 +18,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SubjectFunctionMatcherPolledExpressionTests {
-    public static final PollingSchedule SCHEDULE = PollingSchedules.random();
-    public static final String SUBJECT = "subject";
-    public static final Function<String, String> FUNCTION = Named.function("function", String::toUpperCase);
-    public static final Matcher<Object> MATCHER = anything();
+class SubjectFunctionMatcherPolledExpressionTests {
+    private static final PollingSchedule SCHEDULE = PollingSchedules.random();
+    private static final String SUBJECT = "subject";
+    private static final Function<String, String> FUNCTION = Named.function("function", String::toUpperCase);
+    private static final Matcher<Object> MATCHER = anything();
 
     @Nested
-    public class AssertThat extends PolledExpressionTestSetup {
+    class AssertThat extends PolledExpressionTestSetup {
         @Test
-        public void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
+        void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), true)));
@@ -37,7 +37,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
         }
 
         @Test
-        public void throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
+        void throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
@@ -51,9 +51,9 @@ public class SubjectFunctionMatcherPolledExpressionTests {
     }
 
     @Nested
-    public class SatisfiedThat extends PolledExpressionTestSetup {
+    class SatisfiedThat extends PolledExpressionTestSetup {
         @Test
-        public void returnsTrue_ifPollEvaluationResultIsSatisfied() {
+        void returnsTrue_ifPollEvaluationResultIsSatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), true)));
@@ -65,7 +65,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
         }
 
         @Test
-        public void returnsFalse_ifPollEvaluationResultIsDissatisfied() {
+        void returnsFalse_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
@@ -78,16 +78,16 @@ public class SubjectFunctionMatcherPolledExpressionTests {
     }
 
     @Nested
-    public class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
+    class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
         PollingSchedule defaultSchedule;
 
         @BeforeEach
-        public void setup() {
+        void setup() {
             defaultSchedule = expressions.eventually();
         }
 
         @Test
-        public void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
+        void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), true)));
@@ -97,7 +97,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
         }
 
         @Test
-        public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
+        void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
@@ -112,11 +112,11 @@ public class SubjectFunctionMatcherPolledExpressionTests {
     }
 
     @Nested
-    public class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
+    class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();
 
         @Test
-        public void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
+        void returnsWithoutThrowing_ifPollEvaluationResultIsSatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), true)));
@@ -126,7 +126,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
         }
 
         @Test
-        public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
+        void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
@@ -141,17 +141,17 @@ public class SubjectFunctionMatcherPolledExpressionTests {
     }
 
     @Nested
-    public class WhenWithDefaultPollingSchedule extends PolledExpressionTestSetup {
-        public static final String SUBJECT = SubjectFunctionMatcherPolledExpressionTests.SUBJECT;
+    class WhenWithDefaultPollingSchedule extends PolledExpressionTestSetup {
+        static final String SUBJECT = SubjectFunctionMatcherPolledExpressionTests.SUBJECT;
         PollingSchedule defaultSchedule;
 
         @BeforeEach
-        public void setup() {
+        void setup() {
             defaultSchedule = expressions.eventually();
         }
 
         @Test
-        public void returnsSubject_ifPollEvaluationResultIsSatisfied() {
+        void returnsSubject_ifPollEvaluationResultIsSatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SubjectFunctionMatcherPolledExpressionTests.SUBJECT), true)));
@@ -162,7 +162,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
         }
 
         @Test
-        public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
+        void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SubjectFunctionMatcherPolledExpressionTests.SUBJECT), false)));
@@ -177,11 +177,11 @@ public class SubjectFunctionMatcherPolledExpressionTests {
     }
 
     @Nested
-    public class WhenWithExplicitPollingSchedule extends PolledExpressionTestSetup {
+    class WhenWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();
 
         @Test
-        public void returnsSubject_ifPollEvaluationResultIsSatisfied() {
+        void returnsSubject_ifPollEvaluationResultIsSatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), true)));
@@ -192,7 +192,7 @@ public class SubjectFunctionMatcherPolledExpressionTests {
         }
 
         @Test
-        public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
+        void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUBJECT, FUNCTION, MATCHER);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));

@@ -12,20 +12,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SubjectFunctionPredicateExpressionTests {
+class SubjectFunctionPredicateExpressionTests {
     private static final String SUBJECT = "subject";
     private static final Function<String, String> FUNCTION = Named.function("function", String::toUpperCase);
     private static final Predicate<String> ANY_VALUE = Named.predicate("any value", t -> true);
 
     @Nested
-    public class AssertThat {
+    class AssertThat {
         @Test
-        public void returnsWithoutThrowing_ifPredicateAcceptsFunctionOfSubject() {
+        void returnsWithoutThrowing_ifPredicateAcceptsFunctionOfSubject() {
             Expressions.assertThat(SUBJECT, FUNCTION, ANY_VALUE);
         }
 
         @Test
-        public void throwsAssertionError_ifPredicateRejectsFunctionOfSubject() {
+        void throwsAssertionError_ifPredicateRejectsFunctionOfSubject() {
             AssertionError thrown = assertThrows(
                     AssertionError.class,
                     () -> Expressions.assertThat(SUBJECT, FUNCTION, ANY_VALUE.negate())
@@ -35,15 +35,15 @@ public class SubjectFunctionPredicateExpressionTests {
     }
 
     @Nested
-    public class SatisfiedThat {
+    class SatisfiedThat {
         @Test
-        public void returnsTrue_ifPredicateAcceptsFunctionOfSubject() {
+        void returnsTrue_ifPredicateAcceptsFunctionOfSubject() {
             boolean result = Expressions.satisfiedThat(SUBJECT, FUNCTION, ANY_VALUE);
             assertThat(result, is(true));
         }
 
         @Test
-        public void returnsFalse_ifPredicateRejectsFunctionOfSubject() {
+        void returnsFalse_ifPredicateRejectsFunctionOfSubject() {
             boolean result = Expressions.satisfiedThat(SUBJECT, FUNCTION, ANY_VALUE.negate());
             assertThat(result, is(false));
         }

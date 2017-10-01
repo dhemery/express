@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class BooleanSupplierExpressionTests {
 
     @Nested
-    public class AssertThat {
+    class AssertThat {
         @Test
-        public void returnsWithoutThrowing_ifSupplierReturnsTrue() {
+        void returnsWithoutThrowing_ifSupplierReturnsTrue() {
             System.out.println(System.getProperty("java.version"));
             BooleanSupplier supplier = Named.booleanSupplier("", () -> true);
 
@@ -24,7 +24,7 @@ class BooleanSupplierExpressionTests {
         }
 
         @Test
-        public void throwsAssertionError_ifSupplierReturnsFalse() {
+        void throwsAssertionError_ifSupplierReturnsFalse() {
             BooleanSupplier supplier = Named.booleanSupplier("supplier", () -> false);
 
             AssertionError thrown = assertThrows(
@@ -37,14 +37,14 @@ class BooleanSupplierExpressionTests {
     }
 
     @Nested
-    public class SatisfiedThat {
+    class SatisfiedThat {
         @Test
-        public void returnsTrue_ifSupplierReturnsTrue() {
+        void returnsTrue_ifSupplierReturnsTrue() {
             assertThat(Expressions.satisfiedThat(() -> true), is(true));
         }
 
         @Test
-        public void returnsFalse_ifSupplierReturnsFalse() {
+        void returnsFalse_ifSupplierReturnsFalse() {
             assertThat(Expressions.satisfiedThat(() -> false), is(false));
         }
     }

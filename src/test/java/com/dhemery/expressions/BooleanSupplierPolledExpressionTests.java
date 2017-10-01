@@ -50,9 +50,9 @@ public class BooleanSupplierPolledExpressionTests {
     }
 
     @Nested
-    public class SatisfiedThat extends PolledExpressionTestSetup {
+    class SatisfiedThat extends PolledExpressionTestSetup {
         @Test
-        public void returnsTrue_ifPollReturnsTrue() {
+        void returnsTrue_ifPollReturnsTrue() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUPPLIER);
                 will(returnValue(true));
@@ -64,7 +64,7 @@ public class BooleanSupplierPolledExpressionTests {
         }
 
         @Test
-        public void returnsFalse_ifPollReturnsFalse() {
+        void returnsFalse_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUPPLIER);
                 will(returnValue(false));
@@ -77,16 +77,16 @@ public class BooleanSupplierPolledExpressionTests {
     }
 
     @Nested
-    public class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
+    class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule defaultSchedule;
 
         @BeforeEach
-        public void setUp() {
+        void setUp() {
             defaultSchedule = expressions.eventually();
         }
 
         @Test
-        public void returnsWithoutThrowing_ifPollReturnsTrue() {
+        void returnsWithoutThrowing_ifPollReturnsTrue() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUPPLIER);
                 will(returnValue(true));
@@ -96,7 +96,7 @@ public class BooleanSupplierPolledExpressionTests {
         }
 
         @Test
-        public void throwsPollTimeoutException_ifPollReturnsFalse() {
+        void throwsPollTimeoutException_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUPPLIER);
                 will(returnValue(false));
@@ -108,25 +108,14 @@ public class BooleanSupplierPolledExpressionTests {
             );
             assertThat(thrown.getMessage(), is(Diagnosis.of(defaultSchedule, SUPPLIER)));
         }
-
-        @Test
-        public void exceptionMessage_describesSupplierAndDefaultSchedule() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUPPLIER);
-                will(returnValue(false));
-            }});
-
-            String message = messageThrownBy(() -> expressions.waitUntil(SUPPLIER));
-
-        }
     }
 
     @Nested
-    public class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
+    class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule schedule = PollingSchedules.random();
 
         @Test
-        public void returnsWithoutThrowing_ifPollReturnsTrue() {
+        void returnsWithoutThrowing_ifPollReturnsTrue() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUPPLIER);
                 will(returnValue(true));
@@ -136,7 +125,7 @@ public class BooleanSupplierPolledExpressionTests {
         }
 
         @Test
-        public void throwsPollTimeoutException_ifPollReturnsFalse() {
+        void throwsPollTimeoutException_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUPPLIER);
                 will(returnValue(false));
