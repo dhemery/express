@@ -18,7 +18,7 @@ public class SubjectFunctionPredicateExpressionTests {
     private static final Predicate<String> ANY_VALUE = Named.predicate("any value", t -> true);
 
     @Nested
-    public static class AssertThat {
+    public class AssertThat {
         @Test
         public void returnsWithoutThrowing_ifPredicateAcceptsFunctionOfSubject() {
             Expressions.assertThat(SUBJECT, FUNCTION, ANY_VALUE);
@@ -35,7 +35,7 @@ public class SubjectFunctionPredicateExpressionTests {
     }
 
     @Nested
-    public static class SatisfiedThat {
+    public class SatisfiedThat {
         @Test
         public void returnsTrue_ifPredicateAcceptsFunctionOfSubject() {
             boolean result = Expressions.satisfiedThat(SUBJECT, FUNCTION, ANY_VALUE);
