@@ -6,20 +6,23 @@ import com.dhemery.expressions.helpers.PolledExpressionTestSetup;
 import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
 import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
 
 import static com.dhemery.expressions.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BooleanSupplierPolledExpressionTests {
     public static final PollingSchedule SCHEDULE = PollingSchedules.random();
     public static final BooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
 
-    public static class AssertThat extends PolledExpressionTestSetup {
+    @Nested
+    public class AssertThat extends PolledExpressionTestSetup {
         @Test
         public void returnsWithoutThrowing_ifPollReturnsTrue() {
             context.checking(new Expectations() {{
@@ -30,30 +33,24 @@ public class BooleanSupplierPolledExpressionTests {
             expressions.assertThat(SCHEDULE, SUPPLIER);
         }
 
-        @Test(expected = AssertionError.class)
+        @Test
         public void throwsAssertionError_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUPPLIER);
                 will(returnValue(false));
             }});
 
-            expressions.assertThat(SCHEDULE, SUPPLIER);
-        }
+            AssertionError thrown = assertThrows(
+                    AssertionError.class,
+                    () -> expressions.assertThat(SCHEDULE, SUPPLIER)
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of(SCHEDULE, SUPPLIER)));
 
-        @Test
-        public void errorMessage_describesScheduleAndSupplier() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(SCHEDULE, SUPPLIER);
-                will(returnValue(false));
-            }});
-
-            String message = messageThrownBy(() -> expressions.assertThat(SCHEDULE, SUPPLIER));
-
-            assertThat(message, is(Diagnosis.of(SCHEDULE, SUPPLIER)));
         }
     }
 
-    public static class SatisfiedThat extends PolledExpressionTestSetup {
+    @Nested
+    public class SatisfiedThat extends PolledExpressionTestSetup {
         @Test
         public void returnsTrue_ifPollReturnsTrue() {
             context.checking(new Expectations() {{
@@ -79,10 +76,11 @@ public class BooleanSupplierPolledExpressionTests {
         }
     }
 
-    public static class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
+    @Nested
+    public class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule defaultSchedule;
 
-        @Before
+        @BeforeEach
         public void setUp() {
             defaultSchedule = expressions.eventually();
         }
@@ -97,14 +95,18 @@ public class BooleanSupplierPolledExpressionTests {
             expressions.waitUntil(SUPPLIER);
         }
 
-        @Test(expected = PollTimeoutException.class)
+        @Test
         public void throwsPollTimeoutException_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUPPLIER);
                 will(returnValue(false));
             }});
 
-            expressions.waitUntil(SUPPLIER);
+            PollTimeoutException thrown = assertThrows(
+                    PollTimeoutException.class,
+                    () -> expressions.waitUntil(SUPPLIER)
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of(defaultSchedule, SUPPLIER)));
         }
 
         @Test
@@ -116,11 +118,11 @@ public class BooleanSupplierPolledExpressionTests {
 
             String message = messageThrownBy(() -> expressions.waitUntil(SUPPLIER));
 
-            assertThat(message, is(Diagnosis.of(defaultSchedule, SUPPLIER)));
         }
     }
 
-    public static class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
+    @Nested
+    public class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule schedule = PollingSchedules.random();
 
         @Test
@@ -133,26 +135,18 @@ public class BooleanSupplierPolledExpressionTests {
             expressions.waitUntil(schedule, SUPPLIER);
         }
 
-        @Test(expected = PollTimeoutException.class)
+        @Test
         public void throwsPollTimeoutException_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUPPLIER);
                 will(returnValue(false));
             }});
 
-            expressions.waitUntil(schedule, SUPPLIER);
-        }
-
-        @Test
-        public void exceptionMessage_describesSupplierAndSchedule() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUPPLIER);
-                will(returnValue(false));
-            }});
-
-            String message = messageThrownBy(() -> expressions.waitUntil(schedule, SUPPLIER));
-
-            assertThat(message, is(Diagnosis.of(schedule, SUPPLIER)));
+            PollTimeoutException thrown = assertThrows(
+                    PollTimeoutException.class,
+                    () -> expressions.waitUntil(schedule, SUPPLIER)
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUPPLIER)));
         }
     }
 }

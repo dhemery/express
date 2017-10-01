@@ -2,17 +2,19 @@ package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.diagnosing.Named;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
 
-import static com.dhemery.expressions.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BooleanSupplierExpressionTests {
+class BooleanSupplierExpressionTests {
 
-    public static class AssertThat {
+    @Nested
+    public class AssertThat {
         @Test
         public void returnsWithoutThrowing_ifSupplierReturnsTrue() {
             System.out.println(System.getProperty("java.version"));
@@ -21,24 +23,21 @@ public class BooleanSupplierExpressionTests {
             Expressions.assertThat(supplier);
         }
 
-        @Test(expected = AssertionError.class)
-        public void throwsAssertionError_ifSupplierReturnsFalse() {
-            BooleanSupplier supplier = Named.booleanSupplier("", () -> false);
-
-            Expressions.assertThat(supplier);
-        }
-
         @Test
-        public void errorMessage_describesSupplier() {
+        public void throwsAssertionError_ifSupplierReturnsFalse() {
             BooleanSupplier supplier = Named.booleanSupplier("supplier", () -> false);
 
-            String message = messageThrownBy(() -> Expressions.assertThat(supplier));
+            AssertionError thrown = assertThrows(
+                    AssertionError.class,
+                    () -> Expressions.assertThat(supplier)
+            );
 
-            assertThat(message, is(Diagnosis.of(supplier)));
+            assertThat(thrown.getMessage(), is(Diagnosis.of(supplier)));
         }
     }
 
-    public static class SatisfiedThat {
+    @Nested
+    public class SatisfiedThat {
         @Test
         public void returnsTrue_ifSupplierReturnsTrue() {
             assertThat(Expressions.satisfiedThat(() -> true), is(true));
