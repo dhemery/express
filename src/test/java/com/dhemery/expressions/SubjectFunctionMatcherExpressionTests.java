@@ -3,17 +3,20 @@ package com.dhemery.expressions;
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.diagnosing.Named;
 import com.dhemery.expressions.helpers.Throwables;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
 import static java.util.function.Function.identity;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SubjectFunctionMatcherExpressionTests {
 
-    public static class AssertThat {
+    @Nested
+    public class AssertThat {
         Function<String, String> function = Named.function("function", String::toUpperCase);
 
         @Test
@@ -21,9 +24,11 @@ public class SubjectFunctionMatcherExpressionTests {
             Expressions.assertThat("subject", function, is(anything()));
         }
 
-        @Test(expected = AssertionError.class)
+        @Test
         public void throwsAssertionError_ifMatcherRejectsFunctionOfSubject() {
-            Expressions.assertThat("subject", function, not(anything()));
+            assertThrows(
+                    AssertionError.class, () ->
+                    Expressions.assertThat("subject", function, not(anything())));
         }
 
         @Test
@@ -34,7 +39,8 @@ public class SubjectFunctionMatcherExpressionTests {
         }
     }
 
-    public static class SatisfiedThat {
+    @Nested
+    public class SatisfiedThat {
         @Test
         public void returnsTrue_ifMatcherAcceptsFunctionOfSubject() {
             boolean result = Expressions.satisfiedThat("subject", identity(), is(anything()));
