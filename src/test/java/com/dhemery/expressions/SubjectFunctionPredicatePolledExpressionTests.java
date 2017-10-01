@@ -7,23 +7,25 @@ import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollEvaluationResult;
 import com.dhemery.expressions.polling.PollTimeoutException;
 import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.dhemery.expressions.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SubjectFunctionPredicatePolledExpressionTests {
     public static final String SUBJECT = "subject";
     public static final Function<String, String> FUNCTION = Named.function("function", String::toUpperCase);
     public static final Predicate<String> PREDICATE = Named.predicate("predicate", t -> true);
 
-    public static class AssertThat extends PolledExpressionTestSetup {
+    @Nested
+    public class AssertThat extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();
 
         @Test
@@ -36,30 +38,24 @@ public class SubjectFunctionPredicatePolledExpressionTests {
             expressions.assertThat(schedule, SUBJECT, FUNCTION, PREDICATE);
         }
 
-        @Test(expected = AssertionError.class)
+        @Test
         public void throwsAssertionError_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
             }});
 
-            expressions.assertThat(schedule, SUBJECT, FUNCTION, PREDICATE);
+            AssertionError thrown = assertThrows(
+                    AssertionError.class,
+                    () -> expressions.assertThat(schedule, SUBJECT, FUNCTION, PREDICATE)
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
         }
 
-        @Test
-        public void errorMessage_describesSubjectFunctionPredicateDerivedValueAndSchedule() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-            }});
-
-            String message = messageThrownBy(() -> expressions.assertThat(schedule, SUBJECT, FUNCTION, PREDICATE));
-
-            assertThat(message, is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
-        }
     }
 
-    public static class SatisfiedThat extends PolledExpressionTestSetup {
+    @Nested
+    public class SatisfiedThat extends PolledExpressionTestSetup {
         PollingSchedule schedule = PollingSchedules.random();
 
         @Test
@@ -87,10 +83,11 @@ public class SubjectFunctionPredicatePolledExpressionTests {
         }
     }
 
-    public static class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
+    @Nested
+    public class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule defaultSchedule;
 
-        @Before
+        @BeforeEach
         public void setUp() {
             defaultSchedule = expressions.eventually();
         }
@@ -105,33 +102,26 @@ public class SubjectFunctionPredicatePolledExpressionTests {
             expressions.waitUntil(SUBJECT, FUNCTION, PREDICATE);
         }
 
-        @Test(expected = PollTimeoutException.class)
+        @Test
         public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, PREDICATE);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
             }});
 
-            expressions.waitUntil(SUBJECT, FUNCTION, PREDICATE);
-        }
-
-        @Test
-        public void exceptionMessage_describesSubjectFunctionPredicateDerivedValueAndSchedule() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, PREDICATE);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-            }});
-
-            String message = messageThrownBy(() -> expressions.waitUntil(SUBJECT, FUNCTION, PREDICATE));
-
-            assertThat(message, is(Diagnosis.of(defaultSchedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
+            PollTimeoutException thrown = assertThrows(
+                    PollTimeoutException.class,
+                    () -> expressions.waitUntil(SUBJECT, FUNCTION, PREDICATE)
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of(defaultSchedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
         }
     }
 
-    public static class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
+    @Nested
+    public class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule schedule = PollingSchedules.random();
 
-        @Before
+        @BeforeEach
         public void setUp() {
             schedule = expressions.eventually();
         }
@@ -146,33 +136,26 @@ public class SubjectFunctionPredicatePolledExpressionTests {
             expressions.waitUntil(schedule, SUBJECT, FUNCTION, PREDICATE);
         }
 
-        @Test(expected = PollTimeoutException.class)
+        @Test
         public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
             }});
 
-            expressions.waitUntil(schedule, SUBJECT, FUNCTION, PREDICATE);
-        }
-
-        @Test
-        public void exceptionMessage_describesSubjectFunctionPredicateDerivedValueAndSchedule() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-            }});
-
-            String message = messageThrownBy(() -> expressions.waitUntil(schedule, SUBJECT, FUNCTION, PREDICATE));
-
-            assertThat(message, is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
+            PollTimeoutException thrown = assertThrows(
+                    PollTimeoutException.class,
+                    () -> expressions.waitUntil(schedule, SUBJECT, FUNCTION, PREDICATE)
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
         }
     }
 
-    public static class WhenWithDefaultPollingSchedule extends PolledExpressionTestSetup {
+    @Nested
+    public class WhenWithDefaultPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule defaultSchedule;
 
-        @Before
+        @BeforeEach
         public void setUp() {
             defaultSchedule = expressions.eventually();
         }
@@ -188,33 +171,27 @@ public class SubjectFunctionPredicatePolledExpressionTests {
             assertThat(returnedValue, is(sameInstance(SUBJECT)));
         }
 
-        @Test(expected = PollTimeoutException.class)
+        @Test
         public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, PREDICATE);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
             }});
 
-            expressions.when(SUBJECT, FUNCTION, PREDICATE);
-        }
+            PollTimeoutException thrown = assertThrows(
+                    PollTimeoutException.class,
+                    () -> expressions.when(SUBJECT, FUNCTION, PREDICATE)
+            );
 
-        @Test
-        public void exceptionMessage_describesSubjectFunctionPredicateDerivedValueAndSchedule() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUBJECT, FUNCTION, PREDICATE);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-            }});
-
-            String message = messageThrownBy(() -> expressions.when(SUBJECT, FUNCTION, PREDICATE));
-
-            assertThat(message, is(Diagnosis.of(defaultSchedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
+            assertThat(thrown.getMessage(), is(Diagnosis.of(defaultSchedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
         }
     }
 
-    public static class WhenWithExplicitPollingSchedule extends PolledExpressionTestSetup {
+    @Nested
+    public class WhenWithExplicitPollingSchedule extends PolledExpressionTestSetup {
         private PollingSchedule schedule = PollingSchedules.random();
 
-        @Before
+        @BeforeEach
         public void setUp() {
             schedule = expressions.eventually();
         }
@@ -230,26 +207,18 @@ public class SubjectFunctionPredicatePolledExpressionTests {
             assertThat(returnedValue, is(sameInstance(SUBJECT)));
         }
 
-        @Test(expected = PollTimeoutException.class)
+        @Test
         public void throwsPollTimeoutException_ifPollEvaluationResultIsDissatisfied() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
                 will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
             }});
 
-            expressions.when(schedule, SUBJECT, FUNCTION, PREDICATE);
-        }
-
-        @Test
-        public void exceptionMessage_describesSubjectFunctionPredicateDerivedValueAndSchedule() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, FUNCTION, PREDICATE);
-                will(returnValue(new PollEvaluationResult<>(FUNCTION.apply(SUBJECT), false)));
-            }});
-
-            String message = messageThrownBy(() -> expressions.when(schedule, SUBJECT, FUNCTION, PREDICATE));
-
-            assertThat(message, is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
+            PollTimeoutException thrown = assertThrows(
+                    PollTimeoutException.class,
+                    () -> expressions.when(schedule, SUBJECT, FUNCTION, PREDICATE)
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
         }
     }
 }
