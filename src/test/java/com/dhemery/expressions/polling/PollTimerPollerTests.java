@@ -3,10 +3,11 @@ package com.dhemery.expressions.polling;
 import com.dhemery.expressions.Poller;
 import com.dhemery.expressions.PollingSchedule;
 import org.jmock.Expectations;
+import org.jmock.Mockery;
 import org.jmock.States;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.function.BooleanSupplier;
@@ -15,8 +16,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class PollTimerPollerTests {
-    public static class WithBooleanSupplier {
-        @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
+    @Nested
+    class WithBooleanSupplier {
+        Mockery context = new JUnit4Mockery();
 
         BooleanSupplier supplier = context.mock(BooleanSupplier.class);
         PollTimer timer = context.mock(PollTimer.class);
@@ -29,7 +31,7 @@ public class PollTimerPollerTests {
         };
 
         @Test
-        public void startsTimerWithSchedule_beforeCheckingForExpiration() {
+        void startsTimerWithSchedule_beforeCheckingForExpiration() {
             States poll = context.states("poll").startsAs("new");
 
             context.checking(new Expectations() {{
@@ -46,7 +48,7 @@ public class PollTimerPollerTests {
         }
 
         @Test
-        public void returnsFalse_withoutEvaluatingSupplier_ifTimerIsAlreadyExpiredAtStartOfPoll() {
+        void returnsFalse_withoutEvaluatingSupplier_ifTimerIsAlreadyExpiredAtStartOfPoll() {
             context.checking(new Expectations() {{
                 allowing(timer).isExpired();
                 will(returnValue(true));
@@ -59,7 +61,7 @@ public class PollTimerPollerTests {
         }
 
         @Test
-        public void returnsTrue_ifSupplierReturnsTrue_beforeTimerExpires() {
+        void returnsTrue_ifSupplierReturnsTrue_beforeTimerExpires() {
             context.checking(new Expectations() {{
                 allowing(supplier).getAsBoolean();
                 will(onConsecutiveCalls(
@@ -78,7 +80,7 @@ public class PollTimerPollerTests {
         }
 
         @Test
-        public void returnsFalse_ifTimerExpires_beforeSupplierReturnsTrue() {
+        void returnsFalse_ifTimerExpires_beforeSupplierReturnsTrue() {
             context.checking(new Expectations() {{
                 allowing(supplier).getAsBoolean();
                 will(returnValue(false));
@@ -97,7 +99,7 @@ public class PollTimerPollerTests {
         }
 
         @Test
-        public void ticksTimer_betweenEvaluations() {
+        void ticksTimer_betweenEvaluations() {
             States poll = context.states("poll").startsAs("evaluating");
 
             context.checking(new Expectations() {{

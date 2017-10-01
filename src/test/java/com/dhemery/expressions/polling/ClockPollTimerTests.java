@@ -3,15 +3,13 @@ package com.dhemery.expressions.polling;
 import com.dhemery.expressions.PollingSchedule;
 import org.hamcrest.Description;
 import org.jmock.Expectations;
+import org.jmock.Mockery;
 import org.jmock.States;
 import org.jmock.api.Action;
 import org.jmock.api.Invocation;
-import org.jmock.auto.Auto;
-import org.jmock.auto.Mock;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -21,16 +19,17 @@ import java.time.ZoneId;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ClockPollTimerTests {
-    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Auto States sleeperType;
-    @Mock Sleeper sleeper;
+class ClockPollTimerTests {
+    private Mockery context = new JUnit4Mockery();
+    private States sleeperType = context.states("poll state");
+
+    private Sleeper sleeper = context.mock(Sleeper.class);
 
     private final ManualClock clock = new ManualClock();
     private PollTimer timer;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         context.checking(new Expectations() {{
             allowing(sleeper).sleep(with(any(Duration.class)));
             when(sleeperType.is("default"));
@@ -42,28 +41,28 @@ public class ClockPollTimerTests {
     }
 
     @Test
-    public void withNegativePollDuration_isExpiredOnStart() {
+    void withNegativePollDuration_isExpiredOnStart() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(-1));
         timer.start(schedule);
         assertThat(timer.isExpired(), is(true));
     }
 
     @Test
-    public void withZeroPollDuration_isExpiredOnStart() {
+    void withZeroPollDuration_isExpiredOnStart() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(0));
         timer.start(schedule);
         assertThat(timer.isExpired(), is(true));
     }
 
     @Test
-    public void withPositivePollDuration_isNotExpiredOnStart() {
+    void withPositivePollDuration_isNotExpiredOnStart() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(1));
         timer.start(schedule);
         assertThat(timer.isExpired(), is(false));
     }
 
     @Test
-    public void isNotExpired_ifTimeElapsedSinceStart_isLessThanPollDuration() {
+    void isNotExpired_ifTimeElapsedSinceStart_isLessThanPollDuration() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3).plus(Duration.ofNanos(1)));
         timer.start(schedule);
         timer.tick();
@@ -73,7 +72,7 @@ public class ClockPollTimerTests {
     }
 
     @Test
-    public void isExpired_ifTimeElapsedSinceStart_isExactlyPollDuration() {
+    void isExpired_ifTimeElapsedSinceStart_isExactlyPollDuration() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3));
         timer.start(schedule);
         timer.tick();
@@ -83,7 +82,7 @@ public class ClockPollTimerTests {
     }
 
     @Test
-    public void isExpired_ifTimeElapsedSinceStart_exceedsPollDuration() {
+    void isExpired_ifTimeElapsedSinceStart_exceedsPollDuration() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3).minus(Duration.ofNanos(1)));
         timer.start(schedule);
         timer.tick();
@@ -93,7 +92,7 @@ public class ClockPollTimerTests {
     }
 
     @Test
-    public void tick_sleepsUsingSleeper() {
+    void tick_sleepsUsingSleeper() {
         final Duration pollingInterval = Duration.ofSeconds(1);
         PollingSchedule schedule = new PollingSchedule(pollingInterval, Duration.ofSeconds(3));
 
@@ -109,7 +108,7 @@ public class ClockPollTimerTests {
     }
 
     @Test
-    public void tick_sleepsUntilNextPollingIntervalBoundary() {
+    void tick_sleepsUntilNextPollingIntervalBoundary() {
         final Duration pollingInterval = Duration.ofSeconds(1);
         PollingSchedule schedule = new PollingSchedule(pollingInterval, Duration.ofSeconds(3));
         Duration delayBetweenStartAndTick = Duration.ofMillis(123);
@@ -145,7 +144,7 @@ public class ClockPollTimerTests {
             return now;
         }
 
-        public void advance(Duration amountToAdvance) {
+        void advance(Duration amountToAdvance) {
             now = now.plus(amountToAdvance);
         }
     }
