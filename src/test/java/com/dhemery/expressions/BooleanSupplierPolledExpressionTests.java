@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
 
-import static com.dhemery.expressions.helpers.Throwables.messageThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
