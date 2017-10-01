@@ -1,34 +1,34 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
-import com.dhemery.expressions.helpers.Throwables;
-import org.junit.Test;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class SubjectMatcherExpressionTests {
 
-    public static class AssertThat {
+    @Nested
+    public class AssertThat {
         @Test
         public void returnsWithoutThrowing_ifMatcherAcceptsSubject() {
             Expressions.assertThat("subject", anything());
         }
 
-        @Test(expected = AssertionError.class)
-        public void throwsAssertionError_ifMatcherRejectsSubject() {
-            Expressions.assertThat("subject", not(anything()));
-        }
-
         @Test
-        public void errorMessage_describesMatcherAndMismatch() {
-            String message = Throwables.messageThrownBy(() -> Expressions.assertThat("subject", not(anything())));
-
-            assertThat(message, is(Diagnosis.of("subject", not(anything()))));
+        public void throwsAssertionError_ifMatcherRejectsSubject() {
+            AssertionError thrown = assertThrows(
+                    AssertionError.class,
+                    () -> Expressions.assertThat("subject", not(anything()))
+            );
+            assertThat(thrown.getMessage(), is(Diagnosis.of("subject", not(anything()))));
         }
     }
 
-    public static class SatisfiedThat {
+    @Nested
+    public class SatisfiedThat {
         @Test
         public void returnsTrue_ifMatcherAcceptsSubject() {
             boolean result = Expressions.satisfiedThat("subject", anything());
