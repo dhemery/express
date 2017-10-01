@@ -11,19 +11,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SubjectPredicateExpressionTests {
+class SubjectPredicateExpressionTests {
     private static final Predicate<Object> ANY_VALUE = Named.predicate("any value", t -> true);
-    public static final String SUBJECT = "subject";
+    private static final String SUBJECT = "subject";
 
     @Nested
-    public class AssertThat {
+    class AssertThat {
         @Test
-        public void returnsWithoutThrowing_ifMatcherAcceptsSubject() {
+        void returnsWithoutThrowing_ifMatcherAcceptsSubject() {
             Expressions.assertThat(SUBJECT, ANY_VALUE);
         }
 
         @Test
-        public void throwsAssertionError_ifMatcherRejectsSubject() {
+        void throwsAssertionError_ifMatcherRejectsSubject() {
             AssertionError thrown = assertThrows(
                     AssertionError.class,
                     () -> Expressions.assertThat(SUBJECT, ANY_VALUE.negate())
@@ -33,15 +33,15 @@ public class SubjectPredicateExpressionTests {
     }
 
     @Nested
-    public class SatisfiedThat {
+    class SatisfiedThat {
         @Test
-        public void returnsTrue_ifPredicateAcceptsSubject() {
+        void returnsTrue_ifPredicateAcceptsSubject() {
             boolean result = Expressions.satisfiedThat(SUBJECT, ANY_VALUE);
             assertThat(result, is(true));
         }
 
         @Test
-        public void returnsFalse_ifPredicateRejectsSubject() {
+        void returnsFalse_ifPredicateRejectsSubject() {
             boolean result = Expressions.satisfiedThat(SUBJECT, ANY_VALUE.negate());
             assertThat(result, is(false));
         }
