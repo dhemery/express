@@ -1,6 +1,6 @@
 package com.dhemery.expressions.diagnosing;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
@@ -8,9 +8,9 @@ import static java.lang.String.format;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class NamedPredicateTests {
+class NamedPredicateTests {
     @Test
-    public void delegatesTestToTheUnderlyingPredicate() {
+    void delegatesTestToTheUnderlyingPredicate() {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
 
         assertThat(startsWithF.test("foo"), is(true));
@@ -18,7 +18,7 @@ public class NamedPredicateTests {
     }
 
     @Test
-    public void describesItselfWithTheGivenName() {
+    void describesItselfWithTheGivenName() {
         String name = "a name of a predicate";
         Predicate<String> predicate = new NamedPredicate<>(name, t -> true);
 
@@ -26,7 +26,7 @@ public class NamedPredicateTests {
     }
 
     @Test
-    public void or_yieldsAPredicateThatPerformsALogical_OR_OfTheUnderlyingPredicateAndAnother() {
+    void or_yieldsAPredicateThatPerformsALogical_OR_OfTheUnderlyingPredicateAndAnother() {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
         Predicate<String> endsWithO = new NamedPredicate<>("", s -> s.endsWith("o"));
 
@@ -37,7 +37,7 @@ public class NamedPredicateTests {
     }
 
     @Test
-    public void or_yieldsAPredicateThatDescribesItsComposition() {
+    void or_yieldsAPredicateThatDescribesItsComposition() {
         Predicate<String> first = new NamedPredicate<>("first", t -> true);
         Predicate<String> second = t -> true;
 
@@ -47,7 +47,7 @@ public class NamedPredicateTests {
     }
 
     @Test
-    public void and_yieldsAPredicateThatPerformsALogical_AND_OfTheUnderlyingPredicateAndAnother() {
+    void and_yieldsAPredicateThatPerformsALogical_AND_OfTheUnderlyingPredicateAndAnother() {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
         Predicate<String> endsWithO = new NamedPredicate<>("", s -> s.endsWith("o"));
 
@@ -58,7 +58,7 @@ public class NamedPredicateTests {
     }
 
     @Test
-    public void and_yieldsAPredicateThatDescribesItsComposition() {
+    void and_yieldsAPredicateThatDescribesItsComposition() {
         Predicate<String> first = new NamedPredicate<>("first", t -> true);
         Predicate<String> second = t -> true;
 
@@ -68,7 +68,7 @@ public class NamedPredicateTests {
     }
 
     @Test
-    public void negate_yieldsAPredicateThatPerformsALogical_NOT_OfTheUnderlyingPredicate() {
+    void negate_yieldsAPredicateThatPerformsALogical_NOT_OfTheUnderlyingPredicate() {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
 
         assertThat(startsWithF.negate().test("foo"), is(false));
@@ -76,7 +76,7 @@ public class NamedPredicateTests {
     }
 
     @Test
-    public void negate_yieldsAPredicateThatDescribesItsComposition() {
+    void negate_yieldsAPredicateThatDescribesItsComposition() {
         Predicate<String> positive = new NamedPredicate<>("positive", t -> true);
 
         Predicate<String> composed = positive.negate();

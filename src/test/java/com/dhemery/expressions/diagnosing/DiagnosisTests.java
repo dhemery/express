@@ -7,7 +7,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class DiagnosisTests {
+class DiagnosisTests {
     private Function<String, String> function = uncallableFunction();
     private String functionValue = "function value";
     private Matcher<String> matcher = uncallableMatcher();
@@ -26,7 +26,7 @@ public class DiagnosisTests {
     private BooleanSupplier supplier = uncallableBooleanSupplier();
 
     @Test
-    public void booleanSupplier() {
+    void booleanSupplier() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 "",
                 String.format("Expected: %s", supplier)
@@ -38,7 +38,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void subjectMatcher() {
+    void subjectMatcher() {
         StringDescription mismatchDescription = new StringDescription();
         matcher.describeMismatch(subject, mismatchDescription);
 
@@ -54,7 +54,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void subjectPredicate() {
+    void subjectPredicate() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 "",
                 String.format("Expected: %s", predicate),
@@ -67,7 +67,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void subjectFunctionMatcher() {
+    void subjectFunctionMatcher() {
         StringDescription mismatchDescription = new StringDescription();
         matcher.describeMismatch(functionValue, mismatchDescription);
 
@@ -83,7 +83,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void subjectFunctionPredicate() {
+    void subjectFunctionPredicate() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 subject,
                 String.format("Expected: %s %s", function, predicate),
@@ -96,7 +96,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void polledBooleanSupplier() {
+    void polledBooleanSupplier() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 "",
                 String.format("Expected: %s", supplier),
@@ -109,7 +109,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void polledSubjectPredicate() {
+    void polledSubjectPredicate() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 subject,
                 String.format("Expected: %s", predicate),
@@ -122,7 +122,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void polledSubjectFunctionMatcher() {
+    void polledSubjectFunctionMatcher() {
         StringDescription mismatchDescription = new StringDescription();
         matcher.describeMismatch(functionValue, mismatchDescription);
 
@@ -139,7 +139,7 @@ public class DiagnosisTests {
     }
 
     @Test
-    public void polledSubjectFunctionPredicate() {
+    void polledSubjectFunctionPredicate() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 subject,
                 String.format("Expected: %s %s", function, predicate),
