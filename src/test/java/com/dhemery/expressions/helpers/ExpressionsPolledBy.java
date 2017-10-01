@@ -15,7 +15,7 @@ public class ExpressionsPolledBy implements PolledExpressions {
     private Poller poller;
     private Eventually eventually;
 
-    public ExpressionsPolledBy(Poller poller, Eventually eventually) {
+    ExpressionsPolledBy(Poller poller, Eventually eventually) {
         this.poller = poller;
         this.eventually = eventually;
     }

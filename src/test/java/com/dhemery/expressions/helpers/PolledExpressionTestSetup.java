@@ -9,7 +9,7 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.jupiter.api.BeforeEach;
 
 public class PolledExpressionTestSetup {
-    public Mockery context = new JUnit4Mockery();
+    protected Mockery context = new JUnit4Mockery();
     public Poller poller;
 
     public PolledExpressions expressions;

@@ -16,14 +16,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BooleanSupplierPolledExpressionTests {
-    public static final PollingSchedule SCHEDULE = PollingSchedules.random();
-    public static final BooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
+class BooleanSupplierPolledExpressionTests {
+    private static final PollingSchedule SCHEDULE = PollingSchedules.random();
+    private static final BooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
 
     @Nested
-    public class AssertThat extends PolledExpressionTestSetup {
+    class AssertThat extends PolledExpressionTestSetup {
         @Test
-        public void returnsWithoutThrowing_ifPollReturnsTrue() {
+        void returnsWithoutThrowing_ifPollReturnsTrue() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUPPLIER);
                 will(returnValue(true));
@@ -33,7 +33,7 @@ public class BooleanSupplierPolledExpressionTests {
         }
 
         @Test
-        public void throwsAssertionError_ifPollReturnsFalse() {
+        void throwsAssertionError_ifPollReturnsFalse() {
             context.checking(new Expectations() {{
                 allowing(poller).poll(SCHEDULE, SUPPLIER);
                 will(returnValue(false));
