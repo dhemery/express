@@ -2,7 +2,6 @@ package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.Poller;
 import com.dhemery.expressions.PollingSchedule;
-import org.hamcrest.Matcher;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -38,11 +37,6 @@ public interface PollTimerPoller extends Poller {
     @Override
     default <T> boolean poll(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
         return false;
-    }
-
-    @Override
-    default <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, Function<? super T, V> function, Matcher<? super V> matcher) {
-        return null;
     }
 
     @Override

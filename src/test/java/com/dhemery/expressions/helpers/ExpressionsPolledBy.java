@@ -5,7 +5,6 @@ import com.dhemery.expressions.PolledExpressions;
 import com.dhemery.expressions.Poller;
 import com.dhemery.expressions.PollingSchedule;
 import com.dhemery.expressions.polling.PollEvaluationResult;
-import org.hamcrest.Matcher;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -28,11 +27,6 @@ public class ExpressionsPolledBy implements PolledExpressions {
     @Override
     public <T> boolean poll(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
         return poller.poll(schedule, subject, predicate);
-    }
-
-    @Override
-    public <T, V> PollEvaluationResult<V> poll(PollingSchedule schedule, T subject, Function<? super T, V> function, Matcher<? super V> matcher) {
-        return poller.poll(schedule, subject, function, matcher);
     }
 
     @Override

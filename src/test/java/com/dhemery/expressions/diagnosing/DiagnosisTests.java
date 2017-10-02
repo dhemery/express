@@ -3,10 +3,6 @@ package com.dhemery.expressions.diagnosing;
 
 import com.dhemery.expressions.PollingSchedule;
 import com.dhemery.expressions.helpers.PollingSchedules;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
@@ -19,7 +15,6 @@ import static org.hamcrest.Matchers.is;
 class DiagnosisTests {
     private Function<String, String> function = uncallableFunction();
     private String functionValue = "function value";
-    private Matcher<String> matcher = uncallableMatcher();
     private Predicate<String> predicate = uncallablePredicate();
     private PollingSchedule schedule = PollingSchedules.random();
     private String subject = "subject";
@@ -38,22 +33,6 @@ class DiagnosisTests {
     }
 
     @Test
-    void subjectMatcher() {
-        StringDescription mismatchDescription = new StringDescription();
-        matcher.describeMismatch(subject, mismatchDescription);
-
-        String expectedDiagnosis = String.join(System.lineSeparator(),
-                "",
-                String.format("Expected: %s", matcher),
-                String.format("     but: %s", mismatchDescription)
-        );
-
-        String diagnosis = Diagnosis.of(subject, matcher);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
-    }
-
-    @Test
     void subjectPredicate() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 "",
@@ -62,22 +41,6 @@ class DiagnosisTests {
         );
 
         String diagnosis = Diagnosis.of(subject, predicate);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
-    }
-
-    @Test
-    void subjectFunctionMatcher() {
-        StringDescription mismatchDescription = new StringDescription();
-        matcher.describeMismatch(functionValue, mismatchDescription);
-
-        String expectedDiagnosis = String.join(System.lineSeparator(),
-                subject,
-                String.format("Expected: %s %s", function, matcher),
-                String.format("     but: %s %s", function, mismatchDescription)
-        );
-
-        String diagnosis = Diagnosis.of(subject, function, matcher, functionValue);
 
         assertThat(diagnosis, is(expectedDiagnosis));
     }
@@ -122,23 +85,6 @@ class DiagnosisTests {
     }
 
     @Test
-    void polledSubjectFunctionMatcher() {
-        StringDescription mismatchDescription = new StringDescription();
-        matcher.describeMismatch(functionValue, mismatchDescription);
-
-        String expectedDiagnosis = String.join(System.lineSeparator(),
-                subject,
-                String.format("Expected: %s %s", function, StringDescription.toString(matcher)),
-                String.format("     but: timed out, polling %s", schedule),
-                String.format("   final: %s %s", function, mismatchDescription)
-        );
-
-        String diagnosis = Diagnosis.of(schedule, subject, function, matcher, functionValue);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
-    }
-
-    @Test
     void polledSubjectFunctionPredicate() {
         String expectedDiagnosis = String.join(System.lineSeparator(),
                 subject,
@@ -162,25 +108,6 @@ class DiagnosisTests {
         return Named.function("function", t -> {
             throw new RuntimeException("Diagnosis unexpectedly evaluated the function");
         });
-    }
-
-    private Matcher<String> uncallableMatcher() {
-        return new BaseMatcher<>() {
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("matcher");
-            }
-
-            @Override
-            public void describeMismatch(Object item, Description description) {
-                description.appendText("mismatch of ").appendValue(item);
-            }
-
-            @Override
-            public boolean matches(Object item) {
-                throw new RuntimeException("Diagnosis unexpectedly evaluated the matcher");
-            }
-        };
     }
 
     private Predicate<String> uncallablePredicate() {

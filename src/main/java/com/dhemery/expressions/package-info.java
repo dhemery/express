@@ -76,16 +76,8 @@
  * <td>{@code supplier.getAsBoolean()} returns {@code true}</td>
  * </tr>
  * <tr>
- * <td>{@code subject}, {@code matcher}</td>
- * <td>{@code matcher.matches(subject)} returns {@code true}</td>
- * </tr>
- * <tr>
  * <td>{@code subject}, {@code predicate}</td>
  * <td>{@code predicate.test(subject)} returns {@code true}</td>
- * </tr>
- * <tr>
- * <td>{@code subject}, {@code function}, {@code matcher}</td>
- * <td>{@code matcher.matches(function.apply(subject))} returns {@code true}</td>
  * </tr>
  * <tr>
  * <td>{@code subject}, {@code function}, {@code predicate}</td>

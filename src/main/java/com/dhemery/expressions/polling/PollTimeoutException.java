@@ -2,7 +2,6 @@ package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.PollingSchedule;
 import com.dhemery.expressions.diagnosing.Diagnosis;
-import org.hamcrest.Matcher;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -23,9 +22,5 @@ public class PollTimeoutException extends RuntimeException {
 
     public <T, V> PollTimeoutException(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate, V finalFunctionValue) {
         super(Diagnosis.of(schedule, subject, function, predicate, finalFunctionValue));
-    }
-
-    public <T, V> PollTimeoutException(PollingSchedule schedule, T subject, Function<? super T, V> function, Matcher<? super V> matcher, V finalFunctionValue) {
-        super(Diagnosis.of(schedule, subject, function, matcher, finalFunctionValue));
     }
 }

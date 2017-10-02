@@ -1,9 +1,6 @@
 package com.dhemery.expressions.diagnosing;
 
 import com.dhemery.expressions.PollingSchedule;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 
 import java.util.Arrays;
 import java.util.function.BooleanSupplier;
@@ -32,22 +29,6 @@ public class Diagnosis {
                 NO_SUBJECT,
                 expected(predicate),
                 but(was(subject))
-        );
-    }
-
-    public static <T> String of(T subject, Matcher<? super T> matcher) {
-        return diagnosis(
-                NO_SUBJECT,
-                expected(matcher),
-                but(matcherRejected(matcher, subject))
-        );
-    }
-
-    public static <T, V> String of(T subject, Function<? super T, V> function, Matcher<? super V> matcher, V functionValue) {
-        return diagnosis(
-                subject.toString(),
-                expected(function, matcher),
-                but(function.toString(), matcherRejected(matcher, functionValue))
         );
     }
 
@@ -84,15 +65,6 @@ public class Diagnosis {
         );
     }
 
-    public static <T, V> String of(PollingSchedule schedule, T subject, Function<? super T, V> function, Matcher<? super V> matcher, V finalFunctionValue) {
-        return diagnosis(
-                subject.toString(),
-                expected(function, matcher),
-                but(timedOutPolling(schedule)),
-                onFinalEvaluation(function, matcherRejected(matcher, finalFunctionValue))
-        );
-    }
-
     private static String diagnosis(String... lines) {
         return Arrays.stream(lines).collect(joining(System.lineSeparator()));
     }
@@ -111,12 +83,6 @@ public class Diagnosis {
 
     private static String line(String label, Stream<String> details) {
         return details.collect(joining(" ", format("%8s: ", label), ""));
-    }
-
-    private static String matcherRejected(Matcher<?> matcher, Object actualValue) {
-        Description description = new StringDescription();
-        matcher.describeMismatch(actualValue, description);
-        return description.toString();
     }
 
     private static String timedOutPolling(PollingSchedule schedule) {
