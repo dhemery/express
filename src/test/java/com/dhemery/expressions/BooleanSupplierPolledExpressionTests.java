@@ -2,6 +2,7 @@ package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.diagnosing.Named;
+import com.dhemery.expressions.helpers.ImpatientPollingExpressions;
 import com.dhemery.expressions.helpers.PolledExpressionTestSetup;
 import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
@@ -12,66 +13,45 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
 
+import static com.dhemery.expressions.helpers.PollingSchedules.rightNow;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class BooleanSupplierPolledExpressionTests {
-    private static final PollingSchedule SCHEDULE = PollingSchedules.random();
     private static final BooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
+    private static final BooleanSupplier UNSATISFIED_CONDITION = () -> false;
+    private static final BooleanSupplier SATISFIED_CONDITION = () -> true;
+
+    private final PolledExpressions polledExpressions = new ImpatientPollingExpressions();
 
     @Nested
-    class AssertThat extends PolledExpressionTestSetup {
+    class SatisfiedThat {
         @Test
-        void returnsWithoutThrowing_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(SCHEDULE, SUPPLIER);
-                will(returnValue(true));
-            }});
-
-            expressions.assertThat(SCHEDULE, SUPPLIER);
+        void returnsTrueIfPollReturnsTrue() {
+            assertTrue(polledExpressions.satisfiedThat(rightNow(), SATISFIED_CONDITION));
         }
 
         @Test
-        void throwsAssertionError_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(SCHEDULE, SUPPLIER);
-                will(returnValue(false));
-            }});
-
-            AssertionError thrown = assertThrows(
-                    AssertionError.class,
-                    () -> expressions.assertThat(SCHEDULE, SUPPLIER)
-            );
-            assertThat(thrown.getMessage(), is(Diagnosis.of(SCHEDULE, SUPPLIER)));
-
+        void returnsFalseIfPollReturnsFalse() {
+            assertFalse(polledExpressions.satisfiedThat(rightNow(), UNSATISFIED_CONDITION));
         }
     }
 
     @Nested
-    class SatisfiedThat extends PolledExpressionTestSetup {
+    class AssertThat {
         @Test
-        void returnsTrue_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(SCHEDULE, SUPPLIER);
-                will(returnValue(true));
-            }});
-
-            boolean result = expressions.satisfiedThat(SCHEDULE, SUPPLIER);
-
-            assertThat(result, is(true));
+        void returnsIfPollReturnsTrue() {
+            polledExpressions.assertThat(rightNow(), SATISFIED_CONDITION);
         }
 
         @Test
-        void returnsFalse_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(SCHEDULE, SUPPLIER);
-                will(returnValue(false));
-            }});
-
-            boolean result = expressions.satisfiedThat(SCHEDULE, SUPPLIER);
-
-            assertThat(result, is(false));
+        void throwsAssertionErrorIfPollReturnsFalse() {
+            AssertionError thrown = assertThrows(
+                    AssertionError.class,
+                    () -> polledExpressions.assertThat(rightNow(), UNSATISFIED_CONDITION)
+            );
+            assertEquals(Diagnosis.of(rightNow(), UNSATISFIED_CONDITION), thrown.getMessage());
         }
     }
 

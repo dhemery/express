@@ -51,7 +51,6 @@ class SubjectFunctionPredicatePolledExpressionTests {
             );
             assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUBJECT, FUNCTION, PREDICATE, FUNCTION.apply(SUBJECT))));
         }
-
     }
 
     @Nested
