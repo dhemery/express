@@ -1,6 +1,7 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -10,15 +11,15 @@ import java.util.function.Predicate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SubjectPredicateImmediateExpressionTests {
-    private static final Object NON_NULL_OBJECT = new Object();
-    private static final Predicate<Object> IS_NULL = Objects::isNull;
-    private static final Predicate<Object> IS_NON_NULL = Objects::nonNull;
+    private static final String SUBJECT = "subject";
+    private static final Predicate<String> SATISFIED_PREDICATE = Named.predicate("equal to", s -> Objects.equals(s, s));
+    private static final Predicate<String> UNSATISFIED_PREDICATE = SATISFIED_PREDICATE.negate();
 
     @Nested
     class AssertThat {
         @Test
         void returnsIfPredicateAcceptsSubject() {
-            Expressions.assertThat(NON_NULL_OBJECT, IS_NON_NULL);
+            Expressions.assertThat(SUBJECT, SATISFIED_PREDICATE);
         }
 
         @Test
@@ -26,10 +27,10 @@ class SubjectPredicateImmediateExpressionTests {
 
             AssertionError thrown = assertThrows(
                     AssertionError.class,
-                    () -> Expressions.assertThat(NON_NULL_OBJECT, IS_NULL)
+                    () -> Expressions.assertThat(SUBJECT, UNSATISFIED_PREDICATE)
             );
 
-            assertEquals(Diagnosis.of(NON_NULL_OBJECT, IS_NULL), thrown.getMessage());
+            assertEquals(Diagnosis.of(SUBJECT, UNSATISFIED_PREDICATE), thrown.getMessage());
         }
     }
 
@@ -38,12 +39,12 @@ class SubjectPredicateImmediateExpressionTests {
 
         @Test
         void returnsTrueIfPredicateAcceptsSubject() {
-            assertTrue(Expressions.satisfiedThat(NON_NULL_OBJECT, IS_NON_NULL));
+            assertTrue(Expressions.satisfiedThat(SUBJECT, SATISFIED_PREDICATE));
         }
 
         @Test
         void returnsFalseIfPredicateRejectsSubject() {
-            assertFalse(Expressions.satisfiedThat(NON_NULL_OBJECT, IS_NULL));
+            assertFalse(Expressions.satisfiedThat(SUBJECT, UNSATISFIED_PREDICATE));
         }
     }
 }

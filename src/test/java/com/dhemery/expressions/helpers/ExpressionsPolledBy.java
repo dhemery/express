@@ -3,11 +3,6 @@ package com.dhemery.expressions.helpers;
 import com.dhemery.expressions.PolledExpressions;
 import com.dhemery.expressions.Poller;
 import com.dhemery.expressions.PollingSchedule;
-import com.dhemery.expressions.polling.PollEvaluationResult;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class ExpressionsPolledBy implements PolledExpressions {
     private final Poller poller;

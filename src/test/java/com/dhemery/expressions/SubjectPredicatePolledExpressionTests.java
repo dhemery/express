@@ -2,204 +2,135 @@ package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.diagnosing.Named;
-import com.dhemery.expressions.helpers.PolledExpressionTestSetup;
+import com.dhemery.expressions.helpers.ExpressionsPolledBy;
+import com.dhemery.expressions.helpers.ImpatientPoller;
 import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
-import org.jmock.Expectations;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class SubjectPredicatePolledExpressionTests {
     private static final String SUBJECT = "subject";
-    private static final Predicate<String> PREDICATE = Named.predicate("predicate", t -> true);
+    private static final Predicate<String> SATISFIED_PREDICATE = Named.predicate("equal to", s -> Objects.equals(s, s));
+    private static final Predicate<String> UNSATISFIED_PREDICATE = SATISFIED_PREDICATE.negate();
+    private static final PollingSchedule IGNORED_POLLING_SCHEDULE = null;
+    private final PollingSchedule defaultPollingSchedule = PollingSchedules.random();
+    private final PolledExpressions expressions = new ExpressionsPolledBy(new ImpatientPoller(), defaultPollingSchedule);
 
     @Nested
-    class AssertThat extends PolledExpressionTestSetup {
-        PollingSchedule schedule = PollingSchedules.random();
-
+    class AssertThat {
         @Test
-        void returnsWithoutThrowing_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(true));
-            }});
-
-            expressions.assertThat(schedule, SUBJECT, PREDICATE);
+        void returnsIfPollReturnsTrue() {
+            expressions.assertThat(IGNORED_POLLING_SCHEDULE, SUBJECT, SATISFIED_PREDICATE);
         }
 
         @Test
-        void throwsAssertionError_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(false));
-            }});
+        void throwsAssertionErrorIfPollReturnsFalse() {
+            PollingSchedule pollingSchedule = PollingSchedules.random();
 
             AssertionError thrown = assertThrows(
                     AssertionError.class,
-                    () -> expressions.assertThat(schedule, SUBJECT, PREDICATE)
+                    () -> expressions.assertThat(pollingSchedule, SUBJECT, UNSATISFIED_PREDICATE)
             );
-            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUBJECT, PREDICATE)));
+            assertEquals(Diagnosis.of(pollingSchedule, SUBJECT, UNSATISFIED_PREDICATE), thrown.getMessage());
         }
     }
 
-    static class SatisfiedThat extends PolledExpressionTestSetup {
-        PollingSchedule schedule = PollingSchedules.random();
+    @Nested
+    class SatisfiedThat {
 
         @Test
-        void returnsTrue_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(true));
-            }});
-
-            boolean result = expressions.satisfiedThat(schedule, SUBJECT, PREDICATE);
-
-            assertThat(result, is(true));
+        void returnsIfPollReturnsTrue() {
+            assertTrue(expressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, SUBJECT, SATISFIED_PREDICATE));
         }
 
         @Test
-        void returnsFalse_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(false));
-            }});
-
-            boolean result = expressions.satisfiedThat(schedule, SUBJECT, PREDICATE);
-
-            assertThat(result, is(false));
+        void returnsFalseIfPollReturnsFalse() {
+            assertFalse(expressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, SUBJECT, UNSATISFIED_PREDICATE));
         }
     }
 
-    static class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
-        private PollingSchedule defaultSchedule;
+    @Nested
+    class WaitUntil {
+        @Nested
+        class WithDefaultPollingSchedule {
+            @Test
+            void returnsIfPollReturnsTrue() {
+                expressions.waitUntil(SUBJECT, SATISFIED_PREDICATE);
+            }
 
-        @BeforeEach
-        void setUp() {
-            defaultSchedule = expressions.eventually();
+            @Test
+            void throwsPollTimeoutExceptionIfPollReturnsFalse() {
+                PollTimeoutException thrown = assertThrows(
+                        PollTimeoutException.class,
+                        () -> expressions.waitUntil(SUBJECT, UNSATISFIED_PREDICATE)
+                );
+                assertEquals(Diagnosis.of(defaultPollingSchedule, SUBJECT, UNSATISFIED_PREDICATE), thrown.getMessage());
+            }
         }
 
-        @Test
-        void returnsWithoutThrowing_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUBJECT, PREDICATE);
-                will(returnValue(true));
-            }});
+        @Nested
+        class WithExplicitPollingSchedule {
+            private final PollingSchedule explicitPollingSchedule = PollingSchedules.random();
 
-            expressions.waitUntil(SUBJECT, PREDICATE);
-        }
+            @Test
+            void returnsIfPollReturnsTrue() {
+                expressions.waitUntil(explicitPollingSchedule, SUBJECT, SATISFIED_PREDICATE);
+            }
 
-        @Test
-        void throwsPollTimeoutException_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUBJECT, PREDICATE);
-                will(returnValue(false));
-            }});
+            @Test
+            void throwsPollTimeoutExceptionIfPollReturnsFalse() {
+                PollTimeoutException thrown = assertThrows(
+                        PollTimeoutException.class,
+                        () -> expressions.waitUntil(explicitPollingSchedule, SUBJECT, UNSATISFIED_PREDICATE)
+                );
 
-            PollTimeoutException thrown = assertThrows(
-                    PollTimeoutException.class,
-                    () -> expressions.waitUntil(SUBJECT, PREDICATE)
-            );
-            assertThat(thrown.getMessage(), is(Diagnosis.of(expressions.eventually(), SUBJECT, PREDICATE)));
-        }
-    }
-
-    static class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
-        PollingSchedule schedule = PollingSchedules.random();
-
-        @Test
-        void returnsWithoutThrowing_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(true));
-            }});
-
-            expressions.waitUntil(schedule, SUBJECT, PREDICATE);
-        }
-
-        @Test
-        void throwsPollTimeoutException_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(false));
-            }});
-
-            PollTimeoutException thrown = assertThrows(
-                    PollTimeoutException.class,
-                    () -> expressions.waitUntil(schedule, SUBJECT, PREDICATE)
-            );
-
-            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUBJECT, PREDICATE)));
+                assertEquals(Diagnosis.of(explicitPollingSchedule, SUBJECT, UNSATISFIED_PREDICATE), thrown.getMessage());
+            }
         }
     }
 
-    static class WhenWithDefaultPollingSchedule extends PolledExpressionTestSetup {
-        private PollingSchedule defaultSchedule;
+    @Nested
+    class When {
+        @Nested
+        class WithDefaultPollingSchedule {
+            @Test
+            void returnsSubjectIfPollReturnsTrue() {
+                assertSame(SUBJECT, expressions.when(SUBJECT, SATISFIED_PREDICATE));
+            }
 
-        @BeforeEach
-        void setUp() {
-            defaultSchedule = expressions.eventually();
+            @Test
+            void throwsPollTimeoutExceptionIfPollReturnsFalse() {
+                PollTimeoutException thrown = assertThrows(
+                        PollTimeoutException.class,
+                        () -> expressions.when(SUBJECT, UNSATISFIED_PREDICATE)
+                );
+                assertEquals(Diagnosis.of(defaultPollingSchedule, SUBJECT, UNSATISFIED_PREDICATE), thrown.getMessage());
+            }
         }
 
-        @Test
-        void returnsSubject_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUBJECT, PREDICATE);
-                will(returnValue(true));
-            }});
+        @Nested
+        class WithExplicitPollingSchedule {
+            private final PollingSchedule explicitPollingSchedule = PollingSchedules.random();
 
-            String returnedValue = expressions.when(SUBJECT, PREDICATE);
-            assertThat(returnedValue, is(sameInstance(SUBJECT)));
-        }
+            @Test
+            void returnsSubjectIfPollReturnsTrue() {
+                assertSame(SUBJECT, expressions.when(explicitPollingSchedule, SUBJECT, SATISFIED_PREDICATE));
+            }
 
-        @Test
-        void throwsPollTimeoutException_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUBJECT, PREDICATE);
-                will(returnValue(false));
-            }});
-
-            PollTimeoutException thrown = assertThrows(
-                    PollTimeoutException.class,
-                    () -> expressions.when(SUBJECT, PREDICATE)
-            );
-            assertThat(thrown.getMessage(), is(Diagnosis.of(expressions.eventually(), SUBJECT, PREDICATE)));
-        }
-    }
-
-    static class WhenWithExplicitPollingSchedule extends PolledExpressionTestSetup {
-        PollingSchedule schedule = PollingSchedules.random();
-
-        @Test
-        void returnsSubject_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(true));
-            }});
-
-            String returnedValue = expressions.when(schedule, SUBJECT, PREDICATE);
-            assertThat(returnedValue, is(sameInstance(SUBJECT)));
-        }
-
-        @Test
-        void throwsPollTimeoutException_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUBJECT, PREDICATE);
-                will(returnValue(false));
-            }});
-
-            PollTimeoutException thrown = assertThrows(
-                    PollTimeoutException.class,
-                    () -> expressions.when(schedule, SUBJECT, PREDICATE)
-            );
-            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUBJECT, PREDICATE)));
+            @Test
+            void throwsPollTimeoutExceptionIfPollReturnsFalse() {
+                PollTimeoutException thrown = assertThrows(
+                        PollTimeoutException.class,
+                        () -> expressions.when(explicitPollingSchedule, SUBJECT, UNSATISFIED_PREDICATE)
+                );
+                assertEquals(Diagnosis.of(explicitPollingSchedule, SUBJECT, UNSATISFIED_PREDICATE), thrown.getMessage());
+            }
         }
     }
 }

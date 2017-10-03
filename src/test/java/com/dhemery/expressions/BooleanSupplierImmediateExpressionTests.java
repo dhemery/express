@@ -1,6 +1,7 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -9,8 +10,8 @@ import java.util.function.BooleanSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BooleanSupplierImmediateExpressionTests {
-    private static final BooleanSupplier UNSATISFIED_CONDITION = () -> false;
-    private static final BooleanSupplier SATISFIED_CONDITION = () -> true;
+    private static final BooleanSupplier SATISFIED_CONDITION = Named.booleanSupplier("satisfied condition", () -> true);
+    private static final BooleanSupplier UNSATISFIED_CONDITION = Named.booleanSupplier("unsatisfied condition", () -> false);
 
     @Nested
     class AssertThat {

@@ -1,6 +1,7 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
+import com.dhemery.expressions.diagnosing.Named;
 import com.dhemery.expressions.helpers.ExpressionsPolledBy;
 import com.dhemery.expressions.helpers.ImpatientPoller;
 import com.dhemery.expressions.helpers.PollingSchedules;
@@ -13,8 +14,8 @@ import java.util.function.BooleanSupplier;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BooleanSupplierPolledExpressionTests {
-    private static final BooleanSupplier UNSATISFIED_CONDITION = () -> false;
-    private static final BooleanSupplier SATISFIED_CONDITION = () -> true;
+    private static final BooleanSupplier SATISFIED_CONDITION = Named.booleanSupplier("satisfied condition", () -> true);
+    private static final BooleanSupplier UNSATISFIED_CONDITION = Named.booleanSupplier("unsatisfied condition", () -> false);
     private static final PollingSchedule IGNORED_POLLING_SCHEDULE = null;
     private final PollingSchedule defaultPollingSchedule = PollingSchedules.random();
     private final PolledExpressions polledExpressions = new ExpressionsPolledBy(new ImpatientPoller(), defaultPollingSchedule);
