@@ -12,8 +12,4 @@ public class PollingSchedules {
         Duration duration = Duration.ofMinutes(random.nextInt(60));
         return new PollingSchedule(interval, duration);
     }
-
-    public static PollingSchedule rightNow() {
-        return new PollingSchedule(Duration.ZERO, Duration.ZERO);
-    }
 }

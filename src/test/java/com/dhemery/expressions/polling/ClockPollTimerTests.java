@@ -1,14 +1,8 @@
 package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.PollingSchedule;
-import org.hamcrest.Description;
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.States;
-import org.jmock.api.Action;
-import org.jmock.api.Invocation;
-import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.time.Clock;
@@ -16,49 +10,50 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled("removing JMock")
 class ClockPollTimerTests {
-    private Mockery context = new JUnit4Mockery();
-    private States sleeperType = context.states("poll state");
-
-    private Sleeper sleeper = context.mock(Sleeper.class);
+//    private Mockery context = new JUnit4Mockery();
+//    private States sleeperType = context.states("poll state");
+//
+//    private Sleeper sleeper = context.mock(Sleeper.class);
 
     private final ManualClock clock = new ManualClock();
-    private PollTimer timer;
+    private final PollTimer timer = new ClockPollTimer(clock, null);
 
     @BeforeEach
     void setup() {
-        context.checking(new Expectations() {{
-            allowing(sleeper).sleep(with(any(Duration.class)));
-            when(sleeperType.is("default"));
-            will(advanceTheClockByTheDuration());
-        }});
+//        context.checking(new Expectations() {{
+//            allowing(sleeper).sleep(with(any(Duration.class)));
+//            when(sleeperType.is("default"));
+//            will(advanceTheClockByTheDuration());
+//        }});
 
-        sleeperType.become("default");
-        timer = new ClockPollTimer(clock, sleeper);
+//        sleeperType.become("default");
+//        timer = new ClockPollTimer(clock, sleeper);
     }
 
     @Test
     void withNegativePollDuration_isExpiredOnStart() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(-1));
         timer.start(schedule);
-        assertThat(timer.isExpired(), is(true));
+        assertTrue(timer.isExpired());
     }
 
     @Test
     void withZeroPollDuration_isExpiredOnStart() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(0));
         timer.start(schedule);
-        assertThat(timer.isExpired(), is(true));
+        assertTrue(timer.isExpired());
     }
 
     @Test
     void withPositivePollDuration_isNotExpiredOnStart() {
         PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(1));
         timer.start(schedule);
-        assertThat(timer.isExpired(), is(false));
+        assertFalse(timer.isExpired());
     }
 
     @Test
@@ -68,7 +63,7 @@ class ClockPollTimerTests {
         timer.tick();
         timer.tick();
         timer.tick();
-        assertThat(timer.isExpired(), is(false));
+        assertFalse(timer.isExpired());
     }
 
     @Test
@@ -78,7 +73,7 @@ class ClockPollTimerTests {
         timer.tick();
         timer.tick();
         timer.tick();
-        assertThat(timer.isExpired(), is(true));
+        assertTrue(timer.isExpired());
     }
 
     @Test
@@ -88,7 +83,7 @@ class ClockPollTimerTests {
         timer.tick();
         timer.tick();
         timer.tick();
-        assertThat(timer.isExpired(), is(true));
+        assertTrue(timer.isExpired());
     }
 
     @Test
@@ -96,10 +91,10 @@ class ClockPollTimerTests {
         final Duration pollingInterval = Duration.ofSeconds(1);
         PollingSchedule schedule = new PollingSchedule(pollingInterval, Duration.ofSeconds(3));
 
-        sleeperType.become("special");
-        context.checking(new Expectations() {{
-            exactly(3).of(sleeper).sleep(with(any(Duration.class)));
-        }});
+//        sleeperType.become("special");
+//        context.checking(new Expectations() {{
+//            exactly(3).of(sleeper).sleep(with(any(Duration.class)));
+//        }});
 
         timer.start(schedule);
         timer.tick();
@@ -114,11 +109,11 @@ class ClockPollTimerTests {
         Duration delayBetweenStartAndTick = Duration.ofMillis(123);
         Duration expectedSleepDuration = pollingInterval.minus(delayBetweenStartAndTick);
 
-        sleeperType.become("special");
-        context.checking(new Expectations() {{
-            oneOf(sleeper).sleep(expectedSleepDuration);
-            will(advanceTheClockByTheDuration());
-        }});
+//        sleeperType.become("special");
+//        context.checking(new Expectations() {{
+//            oneOf(sleeper).sleep(expectedSleepDuration);
+//            will(advanceTheClockByTheDuration());
+//        }});
 
         timer.start(schedule);
         clock.advance(delayBetweenStartAndTick);
@@ -149,19 +144,19 @@ class ClockPollTimerTests {
         }
     }
 
-    private Action advanceTheClockByTheDuration() {
-        return new Action() {
-            @Override
-            public Object invoke(Invocation invocation) throws Throwable {
-                Duration sleepDuration = (Duration) invocation.getParameter(0);
-                clock.advance(sleepDuration);
-                return null;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("advance the clock by the sleep duration");
-            }
-        };
-    }
+//    private Action advanceTheClockByTheDuration() {
+//        return new Action() {
+//            @Override
+//            public Object invoke(Invocation invocation) throws Throwable {
+//                Duration sleepDuration = (Duration) invocation.getParameter(0);
+//                clock.advance(sleepDuration);
+//                return null;
+//            }
+//
+//            @Override
+//            public void describeTo(Description description) {
+//                description.appendText("advance the clock by the sleep duration");
+//            }
+//        };
+//    }
 }

@@ -6,21 +6,20 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.function.Function.identity;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NamedFunctionTests {
     @Test
     void apply_delegatesToTheUnderlyingConsumer() {
         Function<String, String> function = new NamedFunction<>("", String::toUpperCase);
-        assertThat(function.apply("foo"), is("FOO"));
+        assertEquals("FOO", function.apply("foo"));
     }
 
     @Test
     void describesItselfWithTheGivenName() {
         Function<String, String> function = new NamedFunction<>("function", identity());
 
-        assertThat(String.valueOf(function), is("function"));
+        assertEquals("function", String.valueOf(function));
     }
 
     @Test
@@ -28,7 +27,7 @@ class NamedFunctionTests {
         Function<String, Integer> length = new NamedFunction<>("", String::length);
         Function<Integer, Integer> negated = new NamedFunction<>("", i -> -i);
 
-        assertThat(length.andThen(negated).apply("foo"), is(-3));
+        assertEquals(Integer.valueOf(-3), length.andThen(negated).apply("foo"));
     }
 
     @Test
@@ -38,7 +37,7 @@ class NamedFunctionTests {
 
         Function<Object, Object> composed = before.andThen(after);
 
-        assertThat(String.valueOf(composed), is(format("(%s of before)", after)));
+        assertEquals(format("(%s of before)", after), String.valueOf(composed));
     }
 
     @Test
@@ -46,7 +45,7 @@ class NamedFunctionTests {
         Function<String, Integer> length = new NamedFunction<>("", String::length);
         Function<Integer, Integer> negation = new NamedFunction<>("", i -> -i);
 
-        assertThat(negation.compose(length).apply("foo"), is(-3));
+        assertEquals(Integer.valueOf(-3), negation.compose(length).apply("foo"));
     }
 
     @Test
@@ -56,6 +55,6 @@ class NamedFunctionTests {
 
         Function<Object, Object> composed = after.compose(before);
 
-        assertThat(String.valueOf(composed), is(format("(after of %s)", before)));
+        assertEquals(format("(after of %s)", before), String.valueOf(composed));
     }
 }

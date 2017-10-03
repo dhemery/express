@@ -9,8 +9,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DiagnosisTests {
     private Function<String, String> function = uncallableFunction();
@@ -27,9 +26,7 @@ class DiagnosisTests {
                 String.format("Expected: %s", supplier)
         );
 
-        String diagnosis = Diagnosis.of(supplier);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
+        assertEquals(expectedDiagnosis, Diagnosis.of(supplier));
     }
 
     @Test
@@ -40,9 +37,7 @@ class DiagnosisTests {
                 String.format("     but: was %s", subject)
         );
 
-        String diagnosis = Diagnosis.of(subject, predicate);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
+        assertEquals(expectedDiagnosis, Diagnosis.of(subject, predicate));
     }
 
     @Test
@@ -53,9 +48,7 @@ class DiagnosisTests {
                 String.format("     but: %s was %s", function, functionValue)
         );
 
-        String diagnosis = Diagnosis.of(subject, function, predicate, functionValue);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
+        assertEquals(expectedDiagnosis, Diagnosis.of(subject, function, predicate, functionValue));
     }
 
     @Test
@@ -66,9 +59,7 @@ class DiagnosisTests {
                 String.format("     but: timed out, polling %s", schedule)
         );
 
-        String diagnosis = Diagnosis.of(schedule, supplier);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
+        assertEquals(expectedDiagnosis, Diagnosis.of(schedule, supplier));
     }
 
     @Test
@@ -79,9 +70,7 @@ class DiagnosisTests {
                 String.format("     but: timed out, polling %s", schedule)
         );
 
-        String diagnosis = Diagnosis.of(schedule, subject, predicate);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
+        assertEquals(expectedDiagnosis, Diagnosis.of(schedule, subject, predicate));
     }
 
     @Test
@@ -93,9 +82,7 @@ class DiagnosisTests {
                 String.format("   final: %s was %s", function, functionValue)
         );
 
-        String diagnosis = Diagnosis.of(schedule, subject, function, predicate, functionValue);
-
-        assertThat(diagnosis, is(expectedDiagnosis));
+        assertEquals(expectedDiagnosis, Diagnosis.of(schedule, subject, function, predicate, functionValue));
     }
 
     private BooleanSupplier uncallableBooleanSupplier() {

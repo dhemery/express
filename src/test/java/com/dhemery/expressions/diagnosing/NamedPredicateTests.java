@@ -5,16 +5,17 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static java.lang.String.format;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NamedPredicateTests {
     @Test
     void delegatesTestToTheUnderlyingPredicate() {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
 
-        assertThat(startsWithF.test("foo"), is(true));
-        assertThat(startsWithF.test("boo"), is(false));
+        assertTrue(startsWithF.test("foo"));
+        assertFalse(startsWithF.test("boo"));
     }
 
     @Test
@@ -22,7 +23,8 @@ class NamedPredicateTests {
         String name = "a name of a predicate";
         Predicate<String> predicate = new NamedPredicate<>(name, t -> true);
 
-        assertThat(String.valueOf(predicate), is(name));
+
+        assertEquals(name, String.valueOf(predicate));
     }
 
     @Test
@@ -30,10 +32,10 @@ class NamedPredicateTests {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
         Predicate<String> endsWithO = new NamedPredicate<>("", s -> s.endsWith("o"));
 
-        assertThat(startsWithF.or(endsWithO).test("foo"), is(true));
-        assertThat(startsWithF.or(endsWithO).test("fog"), is(true));
-        assertThat(startsWithF.or(endsWithO).test("bog"), is(false));
-        assertThat(startsWithF.or(endsWithO).test("boo"), is(true));
+        assertTrue(startsWithF.or(endsWithO).test("foo"));
+        assertTrue(startsWithF.or(endsWithO).test("fog"));
+        assertFalse(startsWithF.or(endsWithO).test("bog"));
+        assertTrue(startsWithF.or(endsWithO).test("boo"));
     }
 
     @Test
@@ -43,7 +45,7 @@ class NamedPredicateTests {
 
         Predicate<String> composed = first.or(second);
 
-        assertThat(String.valueOf(composed), is(format("(first or %s)", second)));
+        assertEquals(format("(first or %s)", second), String.valueOf(composed));
     }
 
     @Test
@@ -51,10 +53,10 @@ class NamedPredicateTests {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
         Predicate<String> endsWithO = new NamedPredicate<>("", s -> s.endsWith("o"));
 
-        assertThat(startsWithF.and(endsWithO).test("foo"), is(true));
-        assertThat(startsWithF.and(endsWithO).test("fog"), is(false));
-        assertThat(startsWithF.and(endsWithO).test("bog"), is(false));
-        assertThat(startsWithF.and(endsWithO).test("boo"), is(false));
+        assertTrue(startsWithF.and(endsWithO).test("foo"));
+        assertFalse(startsWithF.and(endsWithO).test("fog"));
+        assertFalse(startsWithF.and(endsWithO).test("bog"));
+        assertFalse(startsWithF.and(endsWithO).test("boo"));
     }
 
     @Test
@@ -64,15 +66,15 @@ class NamedPredicateTests {
 
         Predicate<String> composed = first.and(second);
 
-        assertThat(String.valueOf(composed), is(format("(first and %s)", second)));
+        assertEquals(format("(first and %s)", second), String.valueOf(composed));
     }
 
     @Test
     void negate_yieldsAPredicateThatPerformsALogical_NOT_OfTheUnderlyingPredicate() {
         Predicate<String> startsWithF = new NamedPredicate<>("", s -> s.startsWith("f"));
 
-        assertThat(startsWithF.negate().test("foo"), is(false));
-        assertThat(startsWithF.negate().test("boo"), is(true));
+        assertFalse(startsWithF.negate().test("foo"));
+        assertTrue(startsWithF.negate().test("boo"));
     }
 
     @Test
@@ -81,6 +83,6 @@ class NamedPredicateTests {
 
         Predicate<String> composed = positive.negate();
 
-        assertThat(String.valueOf(composed), is("(not positive)"));
+        assertEquals("(not positive)", String.valueOf(composed));
     }
 }

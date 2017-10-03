@@ -4,9 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NamedBooleanSupplierTests {
     @Test
@@ -14,7 +12,7 @@ class NamedBooleanSupplierTests {
         BooleanSupplier underlyingSupplier = () -> true;
         BooleanSupplier supplier = new NamedBooleanSupplier("", underlyingSupplier);
 
-        assertThat(supplier.getAsBoolean(), equalTo(underlyingSupplier.getAsBoolean()));
+        assertEquals(underlyingSupplier.getAsBoolean(), supplier.getAsBoolean());
     }
 
     @Test
@@ -22,7 +20,7 @@ class NamedBooleanSupplierTests {
         BooleanSupplier underlyingSupplier = () -> false;
         BooleanSupplier supplier = new NamedBooleanSupplier("", underlyingSupplier);
 
-        assertThat(supplier.getAsBoolean(), equalTo(underlyingSupplier.getAsBoolean()));
+        assertEquals(underlyingSupplier.getAsBoolean(), supplier.getAsBoolean());
     }
 
     @Test
@@ -30,6 +28,6 @@ class NamedBooleanSupplierTests {
         String name = "It was a dark and stormy night";
         BooleanSupplier supplier = new NamedBooleanSupplier(name, () -> true);
 
-        assertThat(String.valueOf(supplier), is(name));
+        assertEquals(name, String.valueOf(supplier));
     }
 }
