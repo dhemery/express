@@ -12,11 +12,14 @@ import java.util.function.Predicate;
  * Methods to compose conditions, evaluate them by polling, and act on the
  * results.
  *
- * @see Eventually
  * @see Expressions
  * @see Poller
+ * @see PollingSchedule
  */
-public interface PolledExpressions extends Poller, Eventually {
+public interface PolledExpressions {
+    Poller poller();
+    PollingSchedule eventually();
+
     /**
      * Asserts that the supplier returns {@code true} within the schedule's
      * duration.
@@ -27,9 +30,10 @@ public interface PolledExpressions extends Poller, Eventually {
      *                        {@code true}
      */
     default void assertThat(PollingSchedule schedule, BooleanSupplier supplier) {
-        if (poll(schedule, supplier)) return;
+        if (poller().poll(schedule, supplier)) return;
         throw new AssertionError(Diagnosis.of(schedule, supplier));
     }
+
 
     /**
      * Asserts that the predicate accepts the subject within the schedule's
@@ -43,7 +47,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *                        subject
      */
     default <T> void assertThat(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
-        if (poll(schedule, subject, predicate)) return;
+        if (poller().poll(schedule, subject, predicate)) return;
         throw new AssertionError(Diagnosis.of(schedule, subject, predicate));
     }
 
@@ -61,7 +65,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *                        value that the function derives from the subject
      */
     default <T, V> void assertThat(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
-        PollEvaluationResult<V> result = poll(schedule, subject, function, predicate);
+        PollEvaluationResult<V> result = poller().poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return;
         throw new AssertionError(Diagnosis.of(schedule, subject, function, predicate, result.value()));
     }
@@ -77,7 +81,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * schedule's duration, and {@code false} otherwise.
      */
     default boolean satisfiedThat(PollingSchedule schedule, BooleanSupplier supplier) {
-        return poll(schedule, supplier);
+        return poller().poll(schedule, supplier);
     }
 
     /**
@@ -92,7 +96,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * schedule's duration, and {@code false} otherwise.
      */
     default <T> boolean satisfiedThat(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
-        return poll(schedule, subject, predicate);
+        return poller().poll(schedule, subject, predicate);
     }
 
     /**
@@ -109,7 +113,7 @@ public interface PolledExpressions extends Poller, Eventually {
      * schedule's duration, and {@code false} otherwise.
      */
     default <T, V> boolean satisfiedThat(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
-        return poll(schedule, subject, function, predicate).isSatisfied();
+        return poller().poll(schedule, subject, function, predicate).isSatisfied();
     }
 
 
@@ -122,7 +126,7 @@ public interface PolledExpressions extends Poller, Eventually {
      */
     default void waitUntil(BooleanSupplier supplier) {
         PollingSchedule schedule = eventually();
-        if (poll(schedule, supplier)) return;
+        if (poller().poll(schedule, supplier)) return;
         throw new PollTimeoutException(schedule, supplier);
     }
 
@@ -137,7 +141,7 @@ public interface PolledExpressions extends Poller, Eventually {
      */
     default <T> void waitUntil(T subject, Predicate<? super T> predicate) {
         PollingSchedule schedule = eventually();
-        if (poll(schedule, subject, predicate)) return;
+        if (poller().poll(schedule, subject, predicate)) return;
         throw new PollTimeoutException(schedule, subject, predicate);
     }
 
@@ -156,7 +160,7 @@ public interface PolledExpressions extends Poller, Eventually {
      */
     default <T, V> void waitUntil(T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
         PollingSchedule schedule = eventually();
-        PollEvaluationResult<V> result = poll(schedule, subject, function, predicate);
+        PollEvaluationResult<V> result = poller().poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return;
         throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
     }
@@ -171,7 +175,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *                              satisfied
      */
     default void waitUntil(PollingSchedule schedule, BooleanSupplier supplier) {
-        if (poll(schedule, supplier)) return;
+        if (poller().poll(schedule, supplier)) return;
         throw new PollTimeoutException(schedule, supplier);
     }
 
@@ -186,7 +190,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *                              the subject
      */
     default <T> void waitUntil(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
-        if (poll(schedule, subject, predicate)) return;
+        if (poller().poll(schedule, subject, predicate)) return;
         throw new PollTimeoutException(schedule, subject, predicate);
     }
 
@@ -204,7 +208,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *                              that value that the function derives from the subject
      */
     default <T, V> void waitUntil(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
-        PollEvaluationResult<V> result = poll(schedule, subject, function, predicate);
+        PollEvaluationResult<V> result = poller().poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return;
         throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
     }
@@ -221,7 +225,7 @@ public interface PolledExpressions extends Poller, Eventually {
      */
     default <T> T when(T subject, Predicate<? super T> predicate) {
         PollingSchedule schedule = eventually();
-        if (poll(schedule, subject, predicate)) return subject;
+        if (poller().poll(schedule, subject, predicate)) return subject;
         throw new PollTimeoutException(schedule, subject, predicate);
     }
 
@@ -241,7 +245,7 @@ public interface PolledExpressions extends Poller, Eventually {
      */
     default <T, V> T when(T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
         PollingSchedule schedule = eventually();
-        PollEvaluationResult<V> result = poll(schedule, subject, function, predicate);
+        PollEvaluationResult<V> result = poller().poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return subject;
         throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
     }
@@ -258,7 +262,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *                              the subject
      */
     default <T> T when(PollingSchedule schedule, T subject, Predicate<? super T> predicate) {
-        if (poll(schedule, subject, predicate)) return subject;
+        if (poller().poll(schedule, subject, predicate)) return subject;
         throw new PollTimeoutException(schedule, subject, predicate);
     }
 
@@ -277,7 +281,7 @@ public interface PolledExpressions extends Poller, Eventually {
      *                              the value that the function derives from the subject
      */
     default <T, V> T when(PollingSchedule schedule, T subject, Function<? super T, V> function, Predicate<? super V> predicate) {
-        PollEvaluationResult<V> result = poll(schedule, subject, function, predicate);
+        PollEvaluationResult<V> result = poller().poll(schedule, subject, function, predicate);
         if (result.isSatisfied()) return subject;
         throw new PollTimeoutException(schedule, subject, function, predicate, result.value());
     }

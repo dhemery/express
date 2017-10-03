@@ -1,40 +1,34 @@
 package com.dhemery.expressions;
 
 import com.dhemery.expressions.diagnosing.Diagnosis;
-import com.dhemery.expressions.diagnosing.Named;
-import com.dhemery.expressions.helpers.ImpatientPollingExpressions;
-import com.dhemery.expressions.helpers.PolledExpressionTestSetup;
+import com.dhemery.expressions.helpers.ExpressionsPolledBy;
+import com.dhemery.expressions.helpers.ImpatientPoller;
 import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
-import org.jmock.Expectations;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.BooleanSupplier;
 
-import static com.dhemery.expressions.helpers.PollingSchedules.rightNow;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BooleanSupplierPolledExpressionTests {
-    private static final BooleanSupplier SUPPLIER = Named.booleanSupplier("supplier", () -> true);
     private static final BooleanSupplier UNSATISFIED_CONDITION = () -> false;
     private static final BooleanSupplier SATISFIED_CONDITION = () -> true;
-
-    private final PolledExpressions polledExpressions = new ImpatientPollingExpressions();
+    private static final PollingSchedule IGNORED_POLLING_SCHEDULE = null;
+    private final PollingSchedule defaultPollingSchedule = PollingSchedules.random();
+    private final PolledExpressions polledExpressions = new ExpressionsPolledBy(new ImpatientPoller(), defaultPollingSchedule);
 
     @Nested
     class SatisfiedThat {
         @Test
         void returnsTrueIfPollReturnsTrue() {
-            assertTrue(polledExpressions.satisfiedThat(rightNow(), SATISFIED_CONDITION));
+            assertTrue(polledExpressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, SATISFIED_CONDITION));
         }
 
         @Test
         void returnsFalseIfPollReturnsFalse() {
-            assertFalse(polledExpressions.satisfiedThat(rightNow(), UNSATISFIED_CONDITION));
+            assertFalse(polledExpressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, UNSATISFIED_CONDITION));
         }
     }
 
@@ -42,79 +36,58 @@ class BooleanSupplierPolledExpressionTests {
     class AssertThat {
         @Test
         void returnsIfPollReturnsTrue() {
-            polledExpressions.assertThat(rightNow(), SATISFIED_CONDITION);
+            polledExpressions.assertThat(IGNORED_POLLING_SCHEDULE, SATISFIED_CONDITION);
         }
 
         @Test
         void throwsAssertionErrorIfPollReturnsFalse() {
+            PollingSchedule pollingSchedule = PollingSchedules.random();
             AssertionError thrown = assertThrows(
                     AssertionError.class,
-                    () -> polledExpressions.assertThat(rightNow(), UNSATISFIED_CONDITION)
+                    () -> polledExpressions.assertThat(pollingSchedule, UNSATISFIED_CONDITION)
             );
-            assertEquals(Diagnosis.of(rightNow(), UNSATISFIED_CONDITION), thrown.getMessage());
+            assertEquals(Diagnosis.of(pollingSchedule, UNSATISFIED_CONDITION), thrown.getMessage());
         }
     }
 
     @Nested
-    class WaitUntilWithDefaultPollingSchedule extends PolledExpressionTestSetup {
-        private PollingSchedule defaultSchedule;
+    class WaitUntil {
+        @Nested
+        class WithDefaultPollingSchedule {
+            @Test
+            void returnsIfPollReturnsTrue() {
+                polledExpressions.waitUntil(SATISFIED_CONDITION);
+            }
 
-        @BeforeEach
-        void setUp() {
-            defaultSchedule = expressions.eventually();
+            @Test
+            void throwsPollTimeoutExceptionIfPollReturnsFalse() {
+                PollTimeoutException thrown = assertThrows(
+                        PollTimeoutException.class,
+                        () -> polledExpressions.waitUntil(UNSATISFIED_CONDITION)
+                );
+
+                assertEquals(Diagnosis.of(defaultPollingSchedule, UNSATISFIED_CONDITION), thrown.getMessage());
+            }
         }
 
-        @Test
-        void returnsWithoutThrowing_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUPPLIER);
-                will(returnValue(true));
-            }});
+        @Nested
+        class WithExplicitPollingSchedule {
+            private PollingSchedule pollingSchedule = PollingSchedules.random();
 
-            expressions.waitUntil(SUPPLIER);
-        }
+            @Test
+            void returnsIfPollReturnsTrue() {
+                polledExpressions.waitUntil(pollingSchedule, SATISFIED_CONDITION);
+            }
 
-        @Test
-        void throwsPollTimeoutException_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(defaultSchedule, SUPPLIER);
-                will(returnValue(false));
-            }});
+            @Test
+            void throwsPollTimeoutExceptionIfPollReturnsFalse() {
+                PollTimeoutException thrown = assertThrows(
+                        PollTimeoutException.class,
+                        () -> polledExpressions.waitUntil(pollingSchedule, UNSATISFIED_CONDITION)
+                );
 
-            PollTimeoutException thrown = assertThrows(
-                    PollTimeoutException.class,
-                    () -> expressions.waitUntil(SUPPLIER)
-            );
-            assertThat(thrown.getMessage(), is(Diagnosis.of(defaultSchedule, SUPPLIER)));
-        }
-    }
-
-    @Nested
-    class WaitUntilWithExplicitPollingSchedule extends PolledExpressionTestSetup {
-        private PollingSchedule schedule = PollingSchedules.random();
-
-        @Test
-        void returnsWithoutThrowing_ifPollReturnsTrue() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUPPLIER);
-                will(returnValue(true));
-            }});
-
-            expressions.waitUntil(schedule, SUPPLIER);
-        }
-
-        @Test
-        void throwsPollTimeoutException_ifPollReturnsFalse() {
-            context.checking(new Expectations() {{
-                allowing(poller).poll(schedule, SUPPLIER);
-                will(returnValue(false));
-            }});
-
-            PollTimeoutException thrown = assertThrows(
-                    PollTimeoutException.class,
-                    () -> expressions.waitUntil(schedule, SUPPLIER)
-            );
-            assertThat(thrown.getMessage(), is(Diagnosis.of(schedule, SUPPLIER)));
+                assertEquals(Diagnosis.of(pollingSchedule, UNSATISFIED_CONDITION), thrown.getMessage());
+            }
         }
     }
 }

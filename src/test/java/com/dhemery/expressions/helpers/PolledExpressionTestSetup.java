@@ -1,6 +1,5 @@
 package com.dhemery.expressions.helpers;
 
-import com.dhemery.expressions.Eventually;
 import com.dhemery.expressions.PolledExpressions;
 import com.dhemery.expressions.Poller;
 import com.dhemery.expressions.PollingSchedule;
@@ -15,11 +14,10 @@ public class PolledExpressionTestSetup {
     public PolledExpressions expressions;
 
     private PollingSchedule defaultSchedule = PollingSchedules.random();
-    private Eventually eventually = () -> defaultSchedule;
 
     @BeforeEach
     public void polledExpressionTestSetup() {
         poller = context.mock(Poller.class);
-        expressions = new ExpressionsPolledBy(poller, eventually);
+        expressions = new ExpressionsPolledBy(poller, defaultSchedule);
     }
 }

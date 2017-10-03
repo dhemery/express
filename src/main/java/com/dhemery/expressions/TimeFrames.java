@@ -18,11 +18,10 @@ import java.time.temporal.TemporalUnit;
  * assertThat(<strong>checkedEvery(1, SECONDS)</strong>, searchField, isDisplayed());
  * </pre>
  */
-public interface TimeFrames extends Eventually {
+public interface TimeFrames {
     /**
      * @return {@link DefaultPollingSchedule#INSTANCE}.
      */
-    @Override
     default PollingSchedule eventually() {
         return DefaultPollingSchedule.INSTANCE;
     }
@@ -52,7 +51,7 @@ public interface TimeFrames extends Eventually {
      * @return a polling schedule with the given duration and the default polling interval
      *
      * @implSpec the returned schedule must have the same polling interval as
-     * the schedules returned by {@link Eventually#eventually eventually}.
+     * the schedules returned by {@link #eventually}.
      */
     default Within within(int amount, TemporalUnit unit) {
         return within(Duration.of(amount, unit));
@@ -82,7 +81,7 @@ public interface TimeFrames extends Eventually {
      * @return a polling schedule with the given duration and default interval
      *
      * @implSpec the returned schedule must have the same polling interval as
-     * the schedules returned by {@link Eventually#eventually eventually}.
+     * the schedules returned by {@link #eventually}.
      */
     default Within within(Duration duration) {
         return new Within(eventually().interval(), duration);
@@ -108,7 +107,7 @@ public interface TimeFrames extends Eventually {
      * @return a polling schedule with the given interval and default polling duration
      *
      * @implSpec the returned schedule must have the same polling duration as
-     * the schedules returned by {@link Eventually#eventually eventually}.
+     * the schedules returned by {@link #eventually}.
      */
     default PollingSchedule checkedEvery(int amount, TemporalUnit unit) {
         return new PollingSchedule(Duration.of(amount, unit), eventually().duration());
@@ -133,7 +132,7 @@ public interface TimeFrames extends Eventually {
      * @return a polling schedule with the given interval and default polling duration
      *
      * @implSpec the returned schedule must have the same polling duration as
-     * the schedules returned by {@link Eventually#eventually eventually}.
+     * the schedules returned by {@link #eventually}.
      */
     default PollingSchedule checkedEvery(Duration interval) {
         return new PollingSchedule(interval, eventually().duration());
