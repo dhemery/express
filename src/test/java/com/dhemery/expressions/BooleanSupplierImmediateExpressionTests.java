@@ -4,6 +4,8 @@ import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.diagnosing.Named;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.function.BooleanSupplier;
 
@@ -14,20 +16,16 @@ class BooleanSupplierImmediateExpressionTests {
     private static final BooleanSupplier UNSATISFIED_CONDITION = Named.booleanSupplier("unsatisfied condition", () -> false);
 
     @Nested
-    class AssertThat {
-        @Test
-        void returnsTrueIfSupplierSuppliesTrue() {
-            assertTrue(Expressions.satisfiedThat(SATISFIED_CONDITION));
-        }
-
-        @Test
-        void returnsFalseIfSupplierSuppliesFalse() {
-            assertFalse(Expressions.satisfiedThat(UNSATISFIED_CONDITION));
+    class SatisfiedThat {
+        @ParameterizedTest
+        @CsvSource({"true", "false"})
+        void returnsValueSuppliedBySupplier(boolean suppliedValue) {
+            assertEquals(suppliedValue, Expressions.satisfiedThat(() -> suppliedValue));
         }
     }
 
     @Nested
-    class SatisfiedThat {
+    class AssertThat {
         @Test
         void returnsIfSupplierSuppliesTrue() {
             Expressions.assertThat(SATISFIED_CONDITION);
