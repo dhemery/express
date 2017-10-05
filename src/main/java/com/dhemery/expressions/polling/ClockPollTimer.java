@@ -11,24 +11,23 @@ import java.time.Instant;
  * a {@link Sleeper}.
  */
 public class ClockPollTimer implements PollTimer {
-    private final Clock realClock;
+    private final Clock clock;
     private final Sleeper sleeper;
 
     private Duration interval;
     private Instant expiration;
-    private Clock intervalAlignedClock;
 
     /**
      * Creates a poll timer that tells time using a {@link Clock#systemUTC() system clock}
-     * and ticks by putting the current thread to sleep until the next wakeup time.
+     * and ticks using a sleeper that causes the thread to sleep.
      */
     public ClockPollTimer() {
         this(Clock.systemUTC());
     }
 
     /**
-     * Creates a poll timer that tells time using the given clock and ticks by
-     * putting the thread to sleep until the next wakeup time.
+     * Creates a poll timer that tells time using the given clock
+     * and ticks using a sleeper that causes the thread to sleep.
      *
      * @param clock
      *         tells the time
@@ -38,8 +37,8 @@ public class ClockPollTimer implements PollTimer {
     }
 
     /**
-     * Creates a poll timer that tells time using the given clock and ticks using
-     * the given sleeper.
+     * Creates a poll timer that tells time using the given clock
+     * and ticks using the given sleeper.
      *
      * @param clock
      *         tells the time
@@ -50,30 +49,24 @@ public class ClockPollTimer implements PollTimer {
      * the clock and to provide a mechanism for pretending to sleep.
      */
     public ClockPollTimer(Clock clock, Sleeper sleeper) {
-        this.realClock = clock;
+        this.clock = clock;
         this.sleeper = sleeper;
     }
 
     @Override
     public void start(PollingSchedule schedule) {
         interval = schedule.interval();
-        Clock tickingClock = Clock.tick(realClock, interval);
-        Instant realClockTime = realClock.instant();
-        Duration intervalAlignedClockOffset = Duration.between(tickingClock.instant(), realClockTime);
-        intervalAlignedClock = Clock.offset(tickingClock, intervalAlignedClockOffset);
-        expiration = realClockTime.plus(schedule.duration());
+        expiration = clock.instant().plus(schedule.duration());
     }
 
     @Override
     public boolean isExpired() {
-        return realClock.instant().compareTo(expiration) >= 0;
+        return !clock.instant().isBefore(expiration);
     }
 
     @Override
     public void tick() {
-        Duration sleepDuration = durationUntilNextPoll();
-        if (sleepDuration.isNegative()) return;
-        sleeper.sleep(sleepDuration);
+        sleeper.sleep(interval);
     }
 
     private static Sleeper threadSleeper() {
@@ -83,10 +76,5 @@ public class ClockPollTimer implements PollTimer {
             } catch (InterruptedException ignored) {
             }
         };
-    }
-
-    private Duration durationUntilNextPoll() {
-        Instant wakeupTime = intervalAlignedClock.instant().plus(interval);
-        return Duration.between(realClock.instant(), wakeupTime);
     }
 }

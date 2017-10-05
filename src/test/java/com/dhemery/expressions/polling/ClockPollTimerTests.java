@@ -2,102 +2,115 @@ package com.dhemery.expressions.polling;
 
 import com.dhemery.expressions.PollingSchedule;
 import com.dhemery.expressions.helpers.ManualClock;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ClockPollTimerTests {
-    private final ManualClock clock = new ManualClock();
-    private final PollTimer timer = new ClockPollTimer(clock, null);
+    private ManualClock clock;
+    private PollTimer timer;
 
     @Nested
     class Start {
+        @BeforeEach
+        void createTimer() {
+            clock = new ManualClock();
+            timer = new ClockPollTimer(clock);
+        }
+
         @Test
         void expiredIfPollDurationIsNegative() {
-            PollingSchedule polingScheduleWithNegativeDuration = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(-1));
-            timer.start(polingScheduleWithNegativeDuration);
+            PollingSchedule pollingScheduleWithNegativeDuration = new PollingSchedule(Duration.ofSeconds(1), Duration.ofNanos(-1));
+
+            timer.start(pollingScheduleWithNegativeDuration);
+
             assertTrue(timer.isExpired());
         }
 
         @Test
         void expiredIfPollDurationIsZero() {
-            PollingSchedule pollingScheduleWithZeroDuration = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(0));
+            PollingSchedule pollingScheduleWithZeroDuration = new PollingSchedule(Duration.ofSeconds(1), Duration.ofNanos(0));
+
             timer.start(pollingScheduleWithZeroDuration);
+
             assertTrue(timer.isExpired());
         }
 
         @Test
         void notExpiredIfPollDurationIsPositive() {
-            PollingSchedule pollingScheduleWithPositiveDuration = new PollingSchedule(Duration.ofSeconds(1), Duration.ofMinutes(1));
+            PollingSchedule pollingScheduleWithPositiveDuration = new PollingSchedule(Duration.ofSeconds(1), Duration.ofNanos(1));
+
             timer.start(pollingScheduleWithPositiveDuration);
+
             assertFalse(timer.isExpired());
         }
     }
 
     @Nested
-    class Tick {
-        @Disabled("needs new implementation")
-        @Test
-        void notExpiredIfTimeElapsedSinceStartIsLessThanPollDuration() {
-            PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3).plus(Duration.ofNanos(1)));
+    class IsExpired {
+        private PollingSchedule schedule;
+
+        @BeforeEach
+        void startTimer() {
+            clock = new ManualClock();
+            timer = new ClockPollTimer(clock);
+            schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(100));
             timer.start(schedule);
-            timer.tick();
-            timer.tick();
-            timer.tick();
+        }
+
+
+        @Test
+        void falseIfTimeElapsedSinceStartIsLessThanPollDuration() {
+            clock.advance(schedule.duration().minusNanos(1));
+
             assertFalse(timer.isExpired());
         }
 
-        @Disabled("needs new implementation")
         @Test
         void expiredIfTimeElapsedSinceStartIsExactlyPollDuration() {
-            PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3));
-            timer.start(schedule);
-            timer.tick();
-            timer.tick();
-            timer.tick();
+            clock.advance(schedule.duration());
+
             assertTrue(timer.isExpired());
         }
 
-        @Disabled("needs new implementation")
         @Test
         void expiredIfTimeElapsedSinceStartExceedsPollDuration() {
-            PollingSchedule schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(3).minus(Duration.ofNanos(1)));
-            timer.start(schedule);
-            timer.tick();
-            timer.tick();
-            timer.tick();
+            clock.advance(schedule.duration().plusNanos(1));
+
             assertTrue(timer.isExpired());
-        }
-
-        @Disabled("needs new implementation")
-        @Test
-        void sleepsUsingSleeper() {
-            final Duration pollingInterval = Duration.ofSeconds(1);
-            PollingSchedule schedule = new PollingSchedule(pollingInterval, Duration.ofSeconds(3));
-
-            timer.start(schedule);
-            timer.tick();
-            timer.tick();
-            timer.tick();
-        }
-
-        @Disabled("needs new implementation")
-        @Test
-        void tick_sleepsUntilNextPollingIntervalBoundary() {
-            final Duration pollingInterval = Duration.ofSeconds(1);
-            PollingSchedule schedule = new PollingSchedule(pollingInterval, Duration.ofSeconds(3));
-            Duration delayBetweenStartAndTick = Duration.ofMillis(123);
-            Duration expectedSleepDuration = pollingInterval.minus(delayBetweenStartAndTick);
-
-            timer.start(schedule);
-            clock.advance(delayBetweenStartAndTick);
-            timer.tick();
         }
     }
 
+    @Nested
+    class Tick {
+        private PollingSchedule schedule;
+        private Sleeper sleeper;
+
+        @BeforeEach
+        void startTimer() {
+            schedule = new PollingSchedule(Duration.ofSeconds(1), Duration.ofSeconds(100));
+            clock = new ManualClock();
+            sleeper = clock::advance;
+            timer = new ClockPollTimer(clock, sleeper);
+            timer.start(schedule);
+        }
+
+        @Test
+        void sleepsForPollingInterval() throws Throwable {
+            // Simulate the passage of some amount of time
+            clock.advance(Duration.ofSeconds(222));
+
+            Instant expectedWakeTime = clock.instant().plus(schedule.interval());
+
+            timer.tick();
+
+            assertEquals(expectedWakeTime, clock.instant());
+        }
+    }
 }
