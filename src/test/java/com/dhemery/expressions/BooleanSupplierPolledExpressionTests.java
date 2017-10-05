@@ -8,6 +8,8 @@ import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.function.BooleanSupplier;
 
@@ -22,14 +24,10 @@ class BooleanSupplierPolledExpressionTests {
 
     @Nested
     class SatisfiedThat {
-        @Test
-        void returnsTrueIfPollReturnsTrue() {
-            assertTrue(polledExpressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, SATISFIED_CONDITION));
-        }
-
-        @Test
-        void returnsFalseIfPollReturnsFalse() {
-            assertFalse(polledExpressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, UNSATISFIED_CONDITION));
+        @ParameterizedTest
+        @CsvSource({"true", "false"})
+        void returnsPollResult(boolean pollResult) {
+            assertEquals(pollResult, polledExpressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, () -> pollResult));
         }
     }
 

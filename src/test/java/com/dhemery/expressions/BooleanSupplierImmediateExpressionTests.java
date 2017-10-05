@@ -14,16 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class BooleanSupplierImmediateExpressionTests {
     private static final BooleanSupplier SATISFIED_CONDITION = Named.booleanSupplier("satisfied condition", () -> true);
     private static final BooleanSupplier UNSATISFIED_CONDITION = Named.booleanSupplier("unsatisfied condition", () -> false);
-
-    @Nested
-    class SatisfiedThat {
-        @ParameterizedTest
-        @CsvSource({"true", "false"})
-        void returnsValueSuppliedBySupplier(boolean suppliedValue) {
-            assertEquals(suppliedValue, Expressions.satisfiedThat(() -> suppliedValue));
-        }
-    }
-
     @Nested
     class AssertThat {
         @Test
@@ -39,6 +29,15 @@ class BooleanSupplierImmediateExpressionTests {
             );
 
             assertEquals(Diagnosis.of(UNSATISFIED_CONDITION), thrown.getMessage());
+        }
+    }
+
+    @Nested
+    class SatisfiedThat {
+        @ParameterizedTest
+        @CsvSource({"true", "false"})
+        void returnsValueSuppliedBySupplier(boolean suppliedValue) {
+            assertEquals(suppliedValue, Expressions.satisfiedThat(() -> suppliedValue));
         }
     }
 }

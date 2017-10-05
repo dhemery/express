@@ -8,6 +8,8 @@ import com.dhemery.expressions.helpers.PollingSchedules;
 import com.dhemery.expressions.polling.PollTimeoutException;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -45,15 +47,10 @@ class SubjectFunctionPredicatePolledExpressionTests {
 
     @Nested
     class SatisfiedThat {
-
-        @Test
-        void returnsIfPollReturnsTrue() {
-            assertTrue(expressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, SUBJECT, FUNCTION, SATISFIED_PREDICATE));
-        }
-
-        @Test
-        void returnsFalseIfPollReturnsFalse() {
-            assertFalse(expressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, SUBJECT, FUNCTION, UNSATISFIED_PREDICATE));
+        @ParameterizedTest
+        @CsvSource({"true", "false"})
+        void returnsPollResult(boolean pollResult) {
+            assertEquals(pollResult, expressions.satisfiedThat(IGNORED_POLLING_SCHEDULE, SUBJECT, FUNCTION, t -> pollResult));
         }
     }
 

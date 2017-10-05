@@ -4,6 +4,8 @@ import com.dhemery.expressions.diagnosing.Diagnosis;
 import com.dhemery.expressions.diagnosing.Named;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -36,15 +38,10 @@ class SubjectPredicateImmediateExpressionTests {
 
     @Nested
     class SatisfiedThat {
-
-        @Test
-        void returnsTrueIfPredicateAcceptsSubject() {
-            assertTrue(Expressions.satisfiedThat(SUBJECT, SATISFIED_PREDICATE));
-        }
-
-        @Test
-        void returnsFalseIfPredicateRejectsSubject() {
-            assertFalse(Expressions.satisfiedThat(SUBJECT, UNSATISFIED_PREDICATE));
+        @ParameterizedTest
+        @CsvSource({"true", "false"})
+        void returnsWhetherPredicateAcceptsSubject(boolean predicateReturnValue) {
+            assertEquals(predicateReturnValue, Expressions.satisfiedThat(SUBJECT, v -> predicateReturnValue));
         }
     }
 }
