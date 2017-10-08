@@ -10,6 +10,11 @@ import java.util.function.Predicate;
 
 public class ImpatientPoller implements Poller {
     @Override
+    public boolean poll(BooleanSupplier condition) {
+        return condition.getAsBoolean();
+    }
+
+    @Override
     public boolean poll(PollingSchedule ignored, BooleanSupplier supplier) {
         return supplier.getAsBoolean();
     }

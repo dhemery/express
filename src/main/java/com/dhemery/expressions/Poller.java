@@ -11,6 +11,8 @@ import java.util.function.Predicate;
  * duration expires.
  */
 public interface Poller {
+    boolean poll(BooleanSupplier condition);
+
     /**
      * Polls the supplier.
      *
